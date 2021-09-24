@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./MobileAuthApp
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: gradlew permission
+        run: chmod +x ./gradlew
+
+      - name: run gradlew
+        run: ./gradlew assembleDebug
+        
+      - name: upload apk
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: MobileAuthApp/app/build/outputs/apk/debug/app-debug.apk
