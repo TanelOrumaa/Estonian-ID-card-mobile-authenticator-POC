@@ -18,8 +18,6 @@ import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
  */
 class UserFragment : Fragment() {
 
-    private val TAG = UserFragment::class.java.name
-
     private val viewModel: SmartCardViewModel by activityViewModels()
 
     private var binding: FragmentUserBinding? = null
@@ -36,14 +34,14 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding!!.userName.text = getString(R.string.user_name, viewModel.userFirstName, viewModel.userLastName)
+        binding!!.userName.text =
+            getString(R.string.user_name, viewModel.userFirstName, viewModel.userLastName)
         binding!!.identificationNumber.text = viewModel.userIdentificationNumber
         binding!!.clearButton.setOnClickListener { goToTheStart() }
     }
 
     private fun goToTheStart() {
         viewModel.clearUserInfo()
-        Log.i(TAG, "First name value after clearUserInfo ${viewModel.userFirstName}")
         findNavController().navigate(R.id.action_userFragment_to_homeFragment)
     }
 
