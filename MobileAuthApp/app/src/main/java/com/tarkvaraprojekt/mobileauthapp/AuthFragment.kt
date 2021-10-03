@@ -1,6 +1,7 @@
 package com.tarkvaraprojekt.mobileauthapp
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,10 @@ class AuthFragment : Fragment() {
 
     private var binding: FragmentAuthBinding? = null
 
+    private lateinit var timer: CountDownTimer
+
+    private var timeRemaining: Int = 90
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,7 +37,16 @@ class AuthFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        timer = object : CountDownTimer(90000, 1000) {
+            override fun onTick(p0: Long) {
+                binding!!.timeCounter.text = getString(R.string.time_left, timeRemaining)
+                timeRemaining--
+            }
 
+            override fun onFinish() {
+                binding!!.timeCounter.text = getString(R.string.no_time)
+            }
+        }.start()
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
     }
@@ -42,11 +56,13 @@ class AuthFragment : Fragment() {
         viewModel.setUserFirstName("John")
         viewModel.setUserLastName("Doe")
         viewModel.setUserIdentificationNumber("012345678910")
+        timer.cancel()
         findNavController().navigate(R.id.action_authFragment_to_userFragment)
     }
 
     private fun goToTheStart() {
         viewModel.clearUserInfo()
+        timer.cancel()
         findNavController().navigate(R.id.action_authFragment_to_homeFragment)
     }
 
