@@ -12,9 +12,11 @@
     <string name="clear_text">Clear</string>
     <string name="cancel_text">Cancel</string>
 
-    <string name="test_info">Test information</string>
-    <string name="info_text">%1$s: %2$s</string>
-
     <string name="enter_can">Enter CAN</string>
     <string name="enter_pin">Enter PIN</string>
+
+    <!-- string resources for UserFragment layout -->
+    <string name="user_name_label">NIMI</string>
+    <string name="user_name">%1$s %2$s</string>
+    <string name="identification_number_label">ISIKUKOOD</string>
 </resources>

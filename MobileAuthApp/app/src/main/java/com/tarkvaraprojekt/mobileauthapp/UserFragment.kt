@@ -36,9 +36,8 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding!!.firstName.text = getString(R.string.info_text, "First name", viewModel.userFirstName)
-        binding!!.lastName.text = getString(R.string.info_text, "Last name", viewModel.userLastName)
-        binding!!.identificationNumber.text = getString(R.string.info_text, "Idenfitication number", viewModel.userIdentificationNumber)
+        binding!!.userName.text = getString(R.string.user_name, viewModel.userFirstName, viewModel.userLastName)
+        binding!!.identificationNumber.text = viewModel.userIdentificationNumber
         binding!!.clearButton.setOnClickListener { goToTheStart() }
     }
 
