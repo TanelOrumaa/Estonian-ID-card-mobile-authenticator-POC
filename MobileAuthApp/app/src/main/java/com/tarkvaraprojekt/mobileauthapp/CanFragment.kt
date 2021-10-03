@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -36,10 +37,16 @@ class CanFragment : Fragment() {
     }
 
     private fun goToNextFragment() {
-        viewModel.setUserCan(
-            binding!!.canEditText.text.toString()
-        )
-        findNavController().navigate(R.id.action_canFragment_to_authFragment)
+        val enteredCan = binding!!.canEditText.editText?.text.toString()
+        if (enteredCan.length != 6) {
+            Toast.makeText(requireContext(), getString(R.string.length_can), Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            viewModel.setUserCan(
+                binding!!.canEditText.editText?.text.toString()
+            )
+            findNavController().navigate(R.id.action_canFragment_to_authFragment)
+        }
     }
 
     private fun goToTheStart() {
