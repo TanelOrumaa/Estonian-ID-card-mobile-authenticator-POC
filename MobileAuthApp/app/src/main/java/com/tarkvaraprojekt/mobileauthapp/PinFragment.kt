@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -36,10 +37,16 @@ class PinFragment : Fragment() {
     }
 
     private fun goToNextFragment() {
-        viewModel.setUserPin(
-            binding!!.pinEditText.text.toString()
-        )
-        findNavController().navigate(R.id.action_pinFragment_to_canFragment)
+        val enteredPin1 = binding!!.pinEditText.editText?.text.toString()
+        if (enteredPin1.length in 4..12) {
+            viewModel.setUserPin(
+                binding!!.pinEditText.editText?.text.toString()
+            )
+            findNavController().navigate(R.id.action_pinFragment_to_canFragment)
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun goToTheStart() {
