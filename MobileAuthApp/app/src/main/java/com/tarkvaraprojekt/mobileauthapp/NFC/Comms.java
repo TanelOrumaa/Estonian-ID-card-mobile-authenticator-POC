@@ -1,4 +1,4 @@
-package ee.ut.math.lemmo.readnfctag;
+package com.tarkvaraprojekt.mobileauthapp.NFC;
 
 import android.nfc.tech.IsoDep;
 import android.util.Log;
