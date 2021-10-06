@@ -25,6 +25,9 @@ jobs:
       - name: run gradlew
         run: ./gradlew assembleDebug
         
+      - name: run tests
+        run: ./gradlew test
+        
       - name: upload apk
         uses: actions/upload-artifact@v2
         with:
