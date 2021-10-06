@@ -55,4 +55,8 @@ dependencies {
 
     //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+    //For cryptography
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.69'
+
 }
