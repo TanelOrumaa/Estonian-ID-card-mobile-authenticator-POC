@@ -1,15 +1,18 @@
 <resources>
     <string name="app_name">Mobile Authenticator</string>
-    <string name="home_fragment">This is home fragment</string>
-    <string name="pin_fragment">This is pin fragment</string>
-    <string name="can_fragment">This is can fragment</string>
+    <string name="home_fragment">Work in progress</string>
 
     <string name="begin_text">ALUSTA</string>
     <string name="next_text">EDASI</string>
     <string name="cancel_text">KATKESTA</string>
-    <string name="enter_pin">Sisesta PIN</string>
 
-    <!-- string resource sfor CanFragment -->
+    <!-- string resources for PinFragment -->
+    <string name="pin_fragment">Palun sisesta PIN1</string>
+    <string name="enter_pin">PIN1</string>
+    <string name="example_pin">Näide. 1234</string>
+    <string name="length_pin">PIN1 lubatud pikkus on 4-12</string>
+
+    <!-- string resources for CanFragment -->
     <string name="example_can">Näide. 123456</string>
     <string name="text_can">CAN</string>
     <string name="enter_can">Sisesta ID kaardi CAN (Card Access Number)</string>
