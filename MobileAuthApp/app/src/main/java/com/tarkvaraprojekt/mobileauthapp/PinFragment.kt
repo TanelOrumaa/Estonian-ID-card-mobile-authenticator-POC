@@ -44,8 +44,11 @@ class PinFragment : Fragment() {
             )
             findNavController().navigate(R.id.action_pinFragment_to_canFragment)
         } else {
-            Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
-                .show()
+            // Currently it is not important to enter PIN1 so we will allow the user to leave this field empty
+            //Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
+            //    .show()
+            viewModel.setUserPin("1234")
+            findNavController().navigate(R.id.action_pinFragment_to_canFragment)
         }
     }
 

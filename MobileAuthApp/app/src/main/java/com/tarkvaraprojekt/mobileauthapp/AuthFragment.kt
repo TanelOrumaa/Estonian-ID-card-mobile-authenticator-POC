@@ -1,5 +1,9 @@
 package com.tarkvaraprojekt.mobileauthapp
 
+import android.app.Activity
+import android.content.Context
+import android.nfc.NfcAdapter
+import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -8,8 +12,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import kotlin.concurrent.thread
 
 /**
  * Fragment that asks the user to detect the ID card with mobile NFC chip.
@@ -49,13 +55,37 @@ class AuthFragment : Fragment() {
         }.start()
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
+        val adapter = NfcAdapter.getDefaultAdapter(activity)
+        if (adapter != null)
+            getInfoFromIdCard(adapter)
+    }
+
+    private fun getInfoFromIdCard(adapter: NfcAdapter) {
+        adapter.enableReaderMode(activity, { tag ->
+            timer.cancel()
+            requireActivity().runOnUiThread {
+                binding!!.timeCounter.text = getString(R.string.card_detected)
+            }
+            val card = IsoDep.get(tag)
+            card.timeout = 32768
+            card.use {
+                val comms = Comms(it, viewModel.userCan)
+                val response = comms.readPersonalData(byteArrayOf(1, 2, 6))
+                if (response != null) {
+                    viewModel.setUserFirstName(response[1])
+                    viewModel.setUserLastName(response[0])
+                    viewModel.setUserIdentificationNumber(response[2])
+                    requireActivity().runOnUiThread{
+                        binding!!.timeCounter.text = getString(R.string.data_read)
+                    }
+                }
+                it.close()
+                adapter.disableReaderMode(activity)
+            }
+        }, NfcAdapter.FLAG_READER_NFC_A, null)
     }
 
     private fun goToNextFragment() {
-        //Dummy data for now
-        viewModel.setUserFirstName("John")
-        viewModel.setUserLastName("Doe")
-        viewModel.setUserIdentificationNumber("012345678910")
         timer.cancel()
         findNavController().navigate(R.id.action_authFragment_to_userFragment)
     }

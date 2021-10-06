@@ -1,7 +1,9 @@
 package com.tarkvaraprojekt.mobileauthapp
 
+import android.nfc.NfcAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.tarkvaraprojekt.mobileauthapp.databinding.ActivityMainBinding
