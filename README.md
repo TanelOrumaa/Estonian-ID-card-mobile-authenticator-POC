@@ -8,6 +8,6 @@ This is a proof-of-concept project for creating an Android app for authenticatin
 
 [Project plan](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-plan)
 
-[Use Cases](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Cases)
+[Use Cases](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Cases) *updated 08.10*
 
 [User stories](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/User-stories)
