@@ -34,6 +34,9 @@ class PinFragment : Fragment() {
 
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
+        // Currently PIN 1 is not required and thus this step is immediately skipped.
+        // In the future the UI flow will be changed in the nav_graph.
+        goToNextFragment()
     }
 
     private fun goToNextFragment() {

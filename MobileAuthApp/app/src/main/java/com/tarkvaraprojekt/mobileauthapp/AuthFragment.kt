@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import java.lang.Exception
 import kotlin.concurrent.thread
 
 /**
@@ -43,14 +44,19 @@ class AuthFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        timer = object : CountDownTimer(90000, 1000) {
+        timer = object : CountDownTimer((timeRemaining * 1000).toLong(), 1000) {
             override fun onTick(p0: Long) {
-                binding!!.timeCounter.text = getString(R.string.time_left, timeRemaining)
                 timeRemaining--
+                if (timeRemaining == 0) {
+                    binding!!.timeCounter.text = getString(R.string.no_time)
+                } else {
+                    binding!!.timeCounter.text = getString(R.string.time_left, timeRemaining)
+                }
             }
 
             override fun onFinish() {
-                binding!!.timeCounter.text = getString(R.string.no_time)
+                Thread.sleep(750)
+                goToTheStart()
             }
         }.start()
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
@@ -69,18 +75,28 @@ class AuthFragment : Fragment() {
             val card = IsoDep.get(tag)
             card.timeout = 32768
             card.use {
-                val comms = Comms(it, viewModel.userCan)
-                val response = comms.readPersonalData(byteArrayOf(1, 2, 6))
-                if (response != null) {
-                    viewModel.setUserFirstName(response[1])
-                    viewModel.setUserLastName(response[0])
-                    viewModel.setUserIdentificationNumber(response[2])
-                    requireActivity().runOnUiThread{
-                        binding!!.timeCounter.text = getString(R.string.data_read)
+                try {
+                    val comms = Comms(it, viewModel.userCan)
+                    val response = comms.readPersonalData(byteArrayOf(1, 2, 6))
+                    if (response != null) {
+                        viewModel.setUserFirstName(response[1])
+                        viewModel.setUserLastName(response[0])
+                        viewModel.setUserIdentificationNumber(response[2])
+                        requireActivity().runOnUiThread{
+                            binding!!.timeCounter.text = getString(R.string.data_read)
+                        }
                     }
+                } catch (e: Exception) {
+                    requireActivity().runOnUiThread {
+                        binding!!.timeCounter.text = getString(R.string.no_success)
+                    }
+                    // Gives user some time to read the error message
+                    Thread.sleep(1000)
+                    goToTheStart()
+                } finally {
+                    it.close()
+                    adapter.disableReaderMode(activity)
                 }
-                it.close()
-                adapter.disableReaderMode(activity)
             }
         }, NfcAdapter.FLAG_READER_NFC_A, null)
     }
