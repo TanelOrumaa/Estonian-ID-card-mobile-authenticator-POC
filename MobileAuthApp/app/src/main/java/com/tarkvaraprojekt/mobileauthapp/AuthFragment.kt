@@ -6,6 +6,7 @@ import android.nfc.NfcAdapter
 import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,13 +79,11 @@ class AuthFragment : Fragment() {
                 try {
                     val comms = Comms(it, viewModel.userCan)
                     val response = comms.readPersonalData(byteArrayOf(1, 2, 6))
-                    if (response != null) {
-                        viewModel.setUserFirstName(response[1])
-                        viewModel.setUserLastName(response[0])
-                        viewModel.setUserIdentificationNumber(response[2])
-                        requireActivity().runOnUiThread{
-                            binding!!.timeCounter.text = getString(R.string.data_read)
-                        }
+                    viewModel.setUserFirstName(response[1])
+                    viewModel.setUserLastName(response[0])
+                    viewModel.setUserIdentificationNumber(response[2])
+                    requireActivity().runOnUiThread{
+                        binding!!.timeCounter.text = getString(R.string.data_read)
                     }
                 } catch (e: Exception) {
                     requireActivity().runOnUiThread {
@@ -94,7 +93,6 @@ class AuthFragment : Fragment() {
                     Thread.sleep(1000)
                     goToTheStart()
                 } finally {
-                    it.close()
                     adapter.disableReaderMode(activity)
                 }
             }
