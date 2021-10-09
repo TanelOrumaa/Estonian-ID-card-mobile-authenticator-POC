@@ -95,6 +95,10 @@ public class Comms {
         keyMAC = keys[1];
     }
 
+    public byte[] getAuthenticationCertificate() {
+        return new byte[0];
+    }
+
     /**
      * Calculates the message authentication code
      *
