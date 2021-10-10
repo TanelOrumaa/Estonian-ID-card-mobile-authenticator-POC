@@ -4,6 +4,8 @@ This is a proof-of-concept project for creating an Android app for authenticatin
 
 [Project Vision](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-Vision)
 
+[Release Notes](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Release-notes)
+
 [Project tasks](https://tvp-mobile-authentication.atlassian.net/jira/software/projects/MOB/boards/1/backlog) (Ask Tanel for JIRA permissions if needed).
 
 [Project plan](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-plan)
