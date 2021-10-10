@@ -21,16 +21,10 @@ More info about installing third party applications on the Android phones: https
 **NB! Before using the application make sure that the NFC is enabled on the phone, otherwise information can not be read from the ID card.**
 
 ### Wiki pages relevant for the "Software project" subject
-[Project Vision](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-Vision)
-
-[Release Notes](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Release-notes)
-
-[Project tasks](https://tvp-mobile-authentication.atlassian.net/jira/software/projects/MOB/boards/1/backlog) (Ask Tanel for JIRA permissions if needed).
-
-[Project plan](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-plan)
-
-[Use Cases](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Cases) *updated 08.10*
-
-[User stories](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/User-stories)
-
-[Use Case Tests](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Case-Tests)
+* [Project Vision](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-Vision)
+* [Release Notes](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Release-notes)
+* [Project tasks](https://tvp-mobile-authentication.atlassian.net/jira/software/projects/MOB/boards/1/backlog) (Ask Tanel for JIRA permissions if needed).
+* [Project plan](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-plan)
+* [Use Cases](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Cases) *updated 08.10*
+* [User stories](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/User-stories)
+* [Use Case Tests](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Case-Tests)
