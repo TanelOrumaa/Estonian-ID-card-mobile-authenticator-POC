@@ -34,6 +34,9 @@ class PinFragment : Fragment() {
 
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
+        // Currently PIN 1 is not required and thus this step is immediately skipped.
+        // In the future the UI flow will be changed in the nav_graph.
+        goToNextFragment()
     }
 
     private fun goToNextFragment() {
@@ -44,8 +47,11 @@ class PinFragment : Fragment() {
             )
             findNavController().navigate(R.id.action_pinFragment_to_canFragment)
         } else {
-            Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
-                .show()
+            // Currently it is not important to enter PIN1 so we will allow the user to leave this field empty
+            //Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
+            //    .show()
+            viewModel.setUserPin("1234")
+            findNavController().navigate(R.id.action_pinFragment_to_canFragment)
         }
     }
 

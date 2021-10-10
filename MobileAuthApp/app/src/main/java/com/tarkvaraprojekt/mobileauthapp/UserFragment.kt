@@ -13,8 +13,8 @@ import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 
 /**
  * Fragment that is used to display the persons name and national identification number.
- * Currently needed in order to test that the app is working because the results at the moment
- * are not sent to some other website or app.
+ * Currently needed in order to test that the app is working and information is read
+ * from the ID card via NFC.
  */
 class UserFragment : Fragment() {
 
