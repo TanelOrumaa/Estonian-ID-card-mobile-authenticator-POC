@@ -380,38 +380,7 @@ public class Comms {
      */
     public byte[] getAuthenticationCertificate() throws NoSuchPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, IOException {
 
-        selectIASECCApplication();
-
-        byte[] APDU = createSecureAPDU(new byte[]{-83, -15}, selectFile);
-        byte[] response = idCard.transceive(APDU);
-        Log.i("Select AWP Application", Hex.toHexString(response));
-
-        APDU = createSecureAPDU(new byte[]{52, 1}, selectFile);
-        response = idCard.transceive(APDU);
-        Log.i("Select certificate", Hex.toHexString(response));
-
-        byte[] responses = new byte[0];
-        byte[] readCert = Arrays.copyOf(read, read.length);
-        for (int i = 0; i < 5; i++) {
-
-            readCert[2] = (byte) i;
-            APDU = createSecureAPDU(new byte[0], readCert);
-            response = idCard.transceive(APDU);
-            Log.i("Read certificate", Hex.toHexString(response));
-
-            if (!Hex.toHexString(response).substring(response.length * 2 - 4).equals("6b00")) {
-                byte[] decrypted = encryptDecryptData(Arrays.copyOfRange(response, 4, 244), Cipher.DECRYPT_MODE);
-                responses = Arrays.copyOf(responses, responses.length + decrypted.length);
-                System.arraycopy(decrypted, 0, responses, responses.length - decrypted.length, decrypted.length);
-            } else {
-                break;
-            }
-
-        }
-
-        Log.i("Certificate", new String(responses, StandardCharsets.UTF_8));
-
-        return responses;
+        return new byte[0];
 
     }
 }
