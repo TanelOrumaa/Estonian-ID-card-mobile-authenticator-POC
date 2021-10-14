@@ -30,65 +30,35 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Comms {
-    private static final byte[] selectMaster = { // select IAS-ECC
-            0, -92, 4, 12, 16, -96, 0, 0, 0, 119, 1, 8, 0, 7, 0, 0, -2, 0, 0, 1, 0
-    };
 
-    private static final byte[] MSESetAT = { // manage security environment: set authentication template
-            0, 34, -63, -92, 15, -128, 10, 4, 0, 127, 0, 7, 2, 2, 4, 2, 4, -125, 1, 2, 0
-    };
+    private static final byte[] selectMaster = Hex.decode("00a4040c10a000000077010800070000fe00000100");
 
-    private static final byte[] GAGetNonce = { // general authenticate: get nonce
-            16, -122, 0, 0, 2, 124, 0, 0
-    };
+    private static final byte[] MSESetAT = Hex.decode("0022c1a40f800a04007f0007020204020483010200");
 
-    private static final byte[] GAMapNonceIncomplete = {
-            16, -122, 0, 0, 69, 124, 67, -127, 65
-    };
+    private static final byte[] GAGetNonce = Hex.decode("10860000027c0000");
 
-    private static final byte[] GAKeyAgreementIncomplete = {
-            16, -122, 0, 0, 69, 124, 67, -125, 65
-    };
+    private static final byte[] GAMapNonceIncomplete = Hex.decode("10860000457c438141");
 
-    private static final byte[] GAMutualAuthenticationIncomplete = {
-            0, -122, 0, 0, 12, 124, 10, -123, 8
-    };
+    private static final byte[] GAKeyAgreementIncomplete = Hex.decode("10860000457c438341");
 
-    private static final byte[] dataForMACIncomplete = {
-            127, 73, 79, 6, 10, 4, 0, 127, 0, 7, 2, 2, 4, 2, 4, -122, 65
-    };
+    private static final byte[] GAMutualAuthenticationIncomplete = Hex.decode("008600000c7c0a8508");
 
-    private static final byte[] selectMasterSecure = {
-            12, -92, 4, 12, 45, -121, 33, 1
-    };
+    private static final byte[] dataForMACIncomplete = Hex.decode("7f494f060a04007f000702020402048641");
 
-    private static final byte[] IASECCAID = { // Identification Authentication Signature - European Citizen Card Application Identifier
-            -96, 0, 0, 0, 119, 1, 8, 0, 7, 0, 0, -2, 0, 0, 1, 0
-    };
+    private static final byte[] selectFile = Hex.decode("0ca4010c1d871101");
 
-    private static final byte[] selectFile = { //
-            12, -92, 1, 12, 29, -121, 17, 1
-    };
+    private static final byte[] readFile = Hex.decode("0cb000000d970100");
 
-    private static final byte[] read = {
-            12, -80, 0, 0, 13, -105, 1, 0
-    };
+    private static final byte[] verifyPIN1 = Hex.decode("0c2000011d871101");
 
-    private static final byte[] verifyPIN1 = {
-            12, 32, 0, 1, 29, -121, 17, 1
-    };
+    private static final byte[] verifyPIN2 = Hex.decode("0c2000851d871101");
 
-    private static final byte[] verifyPIN2 = {
-            12, 32, 0, -123, 29, -121, 17, 1
-    };
-
-    private static final byte[] IASECCFID = {63, 0};
-    private static final byte[] personalDF = {80, 0};
-    private static final byte[] AWP = {-83, -15};
-    private static final byte[] QSCD = {-83, -14};
-    private static final byte[] authCert = {52, 1};
-    private static final byte[] signCert = {52, 31};
-
+    private static final byte[] IASECCFID = {0x3f, 0x00};
+    private static final byte[] personalDF = {0x50, 0x00};
+    private static final byte[] AWP = {(byte) 0xad, (byte) 0xf1};
+    private static final byte[] QSCD = {(byte) 0xad, (byte) 0xf2};
+    private static final byte[] authCert = {0x34, 0x01};
+    private static final byte[] signCert = {0x34, 0x1f};
 
     private final IsoDep idCard;
     private final byte[] keyEnc;
@@ -241,7 +211,7 @@ public class Comms {
      */
     private byte[] readFile(byte[] FID, String info) throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, IOException {
         selectFile(FID, info);
-        byte[] APDU = createSecureAPDU(new byte[0], read);
+        byte[] APDU = createSecureAPDU(new byte[0], readFile);
         byte[] response = idCard.transceive(APDU);
         Log.i("Read binary", Hex.toHexString(response));
         if (response[response.length - 2] != -112 || response[response.length - 1] != 0) {
@@ -300,7 +270,7 @@ public class Comms {
         if (encryptedData.length > 0) {
             System.arraycopy(encryptedData, 0, APDU, incomplete.length, encryptedData.length);
         }
-        System.arraycopy(new byte[]{-114, 8}, 0, APDU, incomplete.length + encryptedData.length, 2); // MAC is encapsulated using the tag 0x8E
+        System.arraycopy(new byte[]{(byte) 0x8E, 0x08}, 0, APDU, incomplete.length + encryptedData.length, 2); // MAC is encapsulated using the tag 0x8E
         System.arraycopy(MAC, 0, APDU, incomplete.length + encryptedData.length + 2, MAC.length);
         ssc++;
         return APDU;
@@ -368,7 +338,7 @@ public class Comms {
         }
 
         // pad the PIN and use the chip for verification
-        byte[] paddedPIN1 = new byte[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+        byte[] paddedPIN1 = Hex.decode("ffffffffffffffffffffffff");
         System.arraycopy(PIN, 0, paddedPIN1, 0, PIN.length);
         byte[] APDU = createSecureAPDU(paddedPIN1, oneOrTwo ? verifyPIN1 : verifyPIN2);
         byte[] response = idCard.transceive(APDU);
@@ -400,7 +370,7 @@ public class Comms {
         selectFile(authOrSign ? authCert : signCert, "the certificate");
 
         byte[] certificate = new byte[0];
-        byte[] readCert = Arrays.copyOf(read, read.length);
+        byte[] readCert = Arrays.copyOf(readFile, readFile.length);
         // Construct the certificate byte array n=indexOfTerminator bytes at a time
         for (int i = 0; i < 16; i++) {
 
