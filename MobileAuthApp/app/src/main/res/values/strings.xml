@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mobile Authenticator</string>
+    <string name="app_name">NFC authentication</string>
     <string name="home_fragment">Work in progress</string>
 
     <string name="begin_text">ALUSTA</string>
@@ -31,4 +31,9 @@
     <string name="user_name">%1$s %2$s</string>
     <string name="identification_number_label">ISIKUKOOD</string>
     <string name="clear_button">UNUSTA</string>
+
+    <!-- menu -->
+    <string name="menu_settings_title">Seaded</string>
+    <string name="menu_language_title">Keel</string>
+    <string name="menu_action_unavailable">Toiming pole hetkel saadaval</string>
 </resources>
