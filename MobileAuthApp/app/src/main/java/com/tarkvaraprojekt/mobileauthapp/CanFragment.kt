@@ -1,5 +1,7 @@
 package com.tarkvaraprojekt.mobileauthapp
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +37,9 @@ class CanFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (viewModel.userCan.length == 6) {
+            skip()
+        }
         if (args.saving) {
             binding!!.nextButton.text = getString(R.string.save_text)
         }
@@ -42,6 +47,12 @@ class CanFragment : Fragment() {
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
     }
 
+    // If CAN is already set
+    private fun skip() {
+        findNavController().navigate(R.id.action_canFragment_to_authFragment)
+    }
+
+    // Might need some rework, must break it up and make logic better.
     private fun goToNextFragment() {
         val enteredCan = binding!!.canEditText.editText?.text.toString()
         if (enteredCan.length != 6) {
@@ -52,9 +63,27 @@ class CanFragment : Fragment() {
                 binding!!.canEditText.editText?.text.toString()
             )
             if (args.saving) {
+                viewModel.storeCan(requireContext())
                 findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
             } else {
-                findNavController().navigate(R.id.action_canFragment_to_authFragment)
+                val canStoreQuestion: AlertDialog? = activity?.let { frag ->
+                    val builder = AlertDialog.Builder(frag)
+                    builder.apply {
+                        setPositiveButton(R.string.save_text) { _, _ ->
+                            viewModel.storeCan(
+                                requireContext()
+                            )
+                            findNavController().navigate(R.id.action_canFragment_to_authFragment)
+                        }
+                        setNegativeButton(R.string.deny_text) { _, _ ->
+                            findNavController().navigate(R.id.action_canFragment_to_authFragment)
+                        }
+                    }
+                    builder.setMessage(R.string.can_save_request)
+                    builder.setTitle(R.string.save_can_title)
+                    builder.create()
+                }
+                canStoreQuestion?.show()
             }
         }
     }

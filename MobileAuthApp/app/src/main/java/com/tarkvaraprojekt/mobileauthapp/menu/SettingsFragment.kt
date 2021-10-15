@@ -43,7 +43,7 @@ class SettingsFragment : Fragment() {
                 findNavController().navigate(action)
             } else {
                 // If can in ViewModel is 6 we know that we can only delete it.
-                viewModel.setUserCan("")
+                viewModel.deleteCan(requireContext())
                 binding!!.canSaved.text = getString(R.string.saved_can, "puudub")
                 binding!!.canMenuAction.text = getString(R.string.can_add)
             }

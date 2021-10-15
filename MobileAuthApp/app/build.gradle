@@ -59,4 +59,7 @@ dependencies {
     //For cryptography
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.69'
 
+    //SecureDataStoring
+    implementation("androidx.security:security-crypto:1.0.0")
+
 }
