@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentCanBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 
@@ -20,6 +21,9 @@ class CanFragment : Fragment() {
 
     private var binding: FragmentCanBinding? = null
 
+    // Navigation arguments. saving = true means that we are navigating here from the settings menu and must return to the settings
+    private val args: CanFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,7 +35,9 @@ class CanFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        if (args.saving) {
+            binding!!.nextButton.text = getString(R.string.save_text)
+        }
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
     }
@@ -45,13 +51,21 @@ class CanFragment : Fragment() {
             viewModel.setUserCan(
                 binding!!.canEditText.editText?.text.toString()
             )
-            findNavController().navigate(R.id.action_canFragment_to_authFragment)
+            if (args.saving) {
+                findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
+            } else {
+                findNavController().navigate(R.id.action_canFragment_to_authFragment)
+            }
         }
     }
 
     private fun goToTheStart() {
-        viewModel.clearUserInfo()
-        findNavController().navigate(R.id.action_canFragment_to_homeFragment)
+        if (args.saving) {
+            findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
+        } else {
+            viewModel.clearUserInfo()
+            findNavController().navigate(R.id.action_canFragment_to_homeFragment)
+        }
     }
 
     override fun onDestroy() {

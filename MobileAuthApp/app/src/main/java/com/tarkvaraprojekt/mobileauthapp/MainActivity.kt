@@ -8,8 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.tarkvaraprojekt.mobileauthapp.databinding.ActivityMainBinding
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,14 +34,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_language_option -> {
-            Toast.makeText(this, getString(R.string.menu_action_unavailable), Toast.LENGTH_SHORT)
-                .show()
-            true
-        }
         R.id.menu_settings_option -> {
-            Toast.makeText(this, getString(R.string.menu_action_unavailable), Toast.LENGTH_SHORT)
-                .show()
+            navigationController.navigate(R.id.action_homeFragment_to_settingsFragment)
             true
         }
         else -> super.onOptionsItemSelected(item)

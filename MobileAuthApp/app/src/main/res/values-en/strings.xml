@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Must translate to English, but should work now -->
     <string name="app_name">NFC authentication</string>
     <string name="home_fragment">Work in progress</string>
 

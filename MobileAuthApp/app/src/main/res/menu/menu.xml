@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_language_option"
-        android:title="@string/menu_language_title"
-        android:icon="@drawable/ic_baseline_language_24"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/menu_settings_option"
         android:title="@string/menu_settings_title"
         android:icon="@drawable/ic_settings"
