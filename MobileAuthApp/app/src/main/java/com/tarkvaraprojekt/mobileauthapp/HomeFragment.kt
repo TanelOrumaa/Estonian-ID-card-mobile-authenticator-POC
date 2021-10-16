@@ -29,11 +29,12 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.checkCan(requireContext())
+        viewModel.checkPin(requireContext())
         binding!!.beginButton.setOnClickListener { goToNextFragment() }
     }
 
     private fun goToNextFragment() {
-        findNavController().navigate(R.id.action_homeFragment_to_pinFragment)
+        findNavController().navigate(R.id.action_homeFragment_to_canFragment)
     }
 
     override fun onDestroyView() {

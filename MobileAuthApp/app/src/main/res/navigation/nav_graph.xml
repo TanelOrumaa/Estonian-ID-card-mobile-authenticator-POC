@@ -9,39 +9,45 @@
         android:id="@+id/homeFragment"
         android:name="com.tarkvaraprojekt.mobileauthapp.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_pinFragment"
-            app:destination="@id/pinFragment"
-            />
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_canFragment"
+            app:destination="@id/canFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/pinFragment"
         android:name="com.tarkvaraprojekt.mobileauthapp.PinFragment"
         android:label="fragment_pin"
-        tools:layout="@layout/fragment_pin" >
-        <action
-            android:id="@+id/action_pinFragment_to_canFragment"
-            app:destination="@id/canFragment"
-            app:popUpTo="@id/homeFragment" />
+        tools:layout="@layout/fragment_pin">
         <action
             android:id="@+id/action_pinFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_pinFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="saving"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_pinFragment_to_authFragment"
+            app:destination="@id/authFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/canFragment"
         android:name="com.tarkvaraprojekt.mobileauthapp.CanFragment"
         android:label="fragment_can"
-        tools:layout="@layout/fragment_can" >
-        <action
-            android:id="@+id/action_canFragment_to_authFragment"
-            app:destination="@id/authFragment"
-            app:popUpTo="@id/homeFragment"/>
+        tools:layout="@layout/fragment_can">
         <action
             android:id="@+id/action_canFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -51,21 +57,25 @@
             android:id="@+id/action_canFragment_to_settingsFragment"
             app:destination="@id/settingsFragment"
             app:popUpTo="@id/settingsFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
         <argument
             android:name="saving"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_canFragment_to_pinFragment"
+            app:destination="@id/pinFragment"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/authFragment"
         android:name="com.tarkvaraprojekt.mobileauthapp.AuthFragment"
         android:label="fragment_auth"
-        tools:layout="@layout/fragment_auth" >
+        tools:layout="@layout/fragment_auth">
         <action
             android:id="@+id/action_authFragment_to_userFragment"
             app:destination="@id/userFragment"
-            app:popUpTo="@id/homeFragment"/>
+            app:popUpTo="@id/homeFragment" />
         <action
             android:id="@+id/action_authFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -76,20 +86,23 @@
         android:id="@+id/userFragment"
         android:name="com.tarkvaraprojekt.mobileauthapp.UserFragment"
         android:label="fragment_user"
-        tools:layout="@layout/fragment_user" >
+        tools:layout="@layout/fragment_user">
         <action
             android:id="@+id/action_userFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.tarkvaraprojekt.mobileauthapp.menu.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_canFragment"
             app:destination="@id/canFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_pinFragment"
+            app:destination="@id/pinFragment" />
     </fragment>
 </navigation>

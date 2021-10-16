@@ -42,11 +42,22 @@
                 android:textSize="20sp"
                 android:padding="12dp"
                 android:text="@string/saved_pin"/>
-            <Button
-                android:id="@+id/pin_menu_action"
-                android:layout_margin="12dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/pin_menu_action"
+                    android:layout_margin="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/pin_menu_show"
+                    android:layout_margin="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

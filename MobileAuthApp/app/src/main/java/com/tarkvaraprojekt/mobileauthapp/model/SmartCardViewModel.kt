@@ -83,4 +83,23 @@ class SmartCardViewModel: ViewModel() {
         _userCan = ""
     }
 
+    fun storePin(context: Context) {
+        val sharedPreferences: SharedPreferences = getSharedPreferences(context)
+        sharedPreferences.edit().putString("PIN1", userPin).apply()
+    }
+
+    fun checkPin(context: Context) {
+        val sharedPreferences: SharedPreferences = getSharedPreferences(context)
+        val foundPin = sharedPreferences.getString("PIN1", null)
+        foundPin?.let {
+            _userPin = it
+        }
+    }
+
+    fun deletePin(context: Context) {
+        val sharedPreferences: SharedPreferences = getSharedPreferences(context)
+        sharedPreferences.edit().remove("PIN1").apply()
+        _userPin = ""
+    }
+
 }

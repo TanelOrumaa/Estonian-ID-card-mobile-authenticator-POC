@@ -14,6 +14,8 @@
     <string name="enter_pin">PIN 1</string>
     <string name="example_pin">Näide. 1234</string>
     <string name="length_pin">PIN 1 lubatud pikkus on 4..12</string>
+    <string name="pin_save_request">Praegu ei ole rakenduses PIN 1 salvestatud. Kas sa soovid sisestatud PIN 1-te salvestada? Sellisel juhul sisestatakse see järgmisel korral automaatselt. Salvestatud PIN 1-te saab alati menüüs muuta ja kustutada.</string>
+    <string name="save_pin_title">Salvesta PIN 1</string>
 
     <!-- string resources for CanFragment -->
     <string name="example_can">Näide. 123456</string>
@@ -22,7 +24,7 @@
     <string name="length_can">CANi pikkus on vale</string>
     <string name="card_detected">Kaart on tuvastatud. Hoia kaarti vastu telefoni.</string>
     <string name="data_read">Andmed loetud. Võid edasi minna.</string>
-    <string name="can_save_request">Praegu ei ole rakenduses CANi salvestatud. Kas sa soovid sisestatud CANi salvestada? Sellisel juhul sisestatakse see järgmisel korral automaatselt. Salvestatud CANi saab alati menüüs muuta ja kustutada.</string>    <string name="save_can_title">Salvesta CAN</string>
+    <string name="can_save_request">Praegu ei ole rakenduses CAN salvestatud. Kas sa soovid sisestatud CANi salvestada? Sellisel juhul sisestatakse see järgmisel korral automaatselt. Salvestatud CANi saab alati menüüs muuta ja kustutada.</string>    <string name="save_can_title">Salvesta CAN</string>
 
     <!-- string resources for AuthFragment layout -->
     <string name="auth_instruction_text">ID kaardiga ühenduse loomiseks pane kaart vastu telefoni</string>
@@ -46,4 +48,8 @@
     <string name="saved_pin">PIN1: %s</string>
     <string name="pin1_add">Lisa PIN1</string>
     <string name="pin1_delete">Kustuta PIN1</string>
+    <string name="missing">puudub</string>
+    <string name="show">NÄITA</string>
+    <string name="hide">PEIDA</string>
+    <string name="hidden_pin">****</string>
 </resources>

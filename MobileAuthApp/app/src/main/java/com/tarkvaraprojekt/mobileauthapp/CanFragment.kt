@@ -49,7 +49,7 @@ class CanFragment : Fragment() {
 
     // If CAN is already set
     private fun skip() {
-        findNavController().navigate(R.id.action_canFragment_to_authFragment)
+        findNavController().navigate(R.id.action_canFragment_to_pinFragment)
     }
 
     // Might need some rework, must break it up and make logic better.
@@ -73,10 +73,10 @@ class CanFragment : Fragment() {
                             viewModel.storeCan(
                                 requireContext()
                             )
-                            findNavController().navigate(R.id.action_canFragment_to_authFragment)
+                            findNavController().navigate(R.id.action_canFragment_to_pinFragment)
                         }
                         setNegativeButton(R.string.deny_text) { _, _ ->
-                            findNavController().navigate(R.id.action_canFragment_to_authFragment)
+                            findNavController().navigate(R.id.action_canFragment_to_pinFragment)
                         }
                     }
                     builder.setMessage(R.string.can_save_request)

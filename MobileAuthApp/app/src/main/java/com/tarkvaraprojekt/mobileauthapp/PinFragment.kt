@@ -1,5 +1,6 @@
 package com.tarkvaraprojekt.mobileauthapp
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentPinBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 
@@ -20,6 +22,9 @@ class PinFragment : Fragment() {
 
     private var binding: FragmentPinBinding? = null
 
+    // Navigation arguments. saving = true means that we are navigating here from the settings menu and must return to the settings
+    private val args: CanFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,12 +36,18 @@ class PinFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        if (viewModel.userPin.length in 4..12) {
+            skip()
+        }
+        if (args.saving) {
+            binding!!.nextButton.text = getString(R.string.save_text)
+        }
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
-        // Currently PIN 1 is not required and thus this step is immediately skipped.
-        // In the future the UI flow will be changed in the nav_graph.
-        goToNextFragment()
+    }
+
+    private fun skip() {
+        findNavController().navigate(R.id.action_pinFragment_to_authFragment)
     }
 
     private fun goToNextFragment() {
@@ -45,19 +56,42 @@ class PinFragment : Fragment() {
             viewModel.setUserPin(
                 binding!!.pinEditText.editText?.text.toString()
             )
-            findNavController().navigate(R.id.action_pinFragment_to_canFragment)
+            if (args.saving) {
+                viewModel.storePin(requireContext())
+                findNavController().navigate(R.id.action_pinFragment_to_settingsFragment)
+            } else {
+                val canStoreQuestion: AlertDialog? = activity?.let { frag ->
+                    val builder = AlertDialog.Builder(frag)
+                    builder.apply {
+                        setPositiveButton(R.string.save_text) { _, _ ->
+                            viewModel.storePin(
+                                requireContext()
+                            )
+                            findNavController().navigate(R.id.action_pinFragment_to_authFragment)
+                        }
+                        setNegativeButton(R.string.deny_text) { _, _ ->
+                            findNavController().navigate(R.id.action_pinFragment_to_authFragment)
+                        }
+                    }
+                    builder.setMessage(R.string.pin_save_request)
+                    builder.setTitle(R.string.save_pin_title)
+                    builder.create()
+                }
+                canStoreQuestion?.show()
+            }
         } else {
-            // Currently it is not important to enter PIN1 so we will allow the user to leave this field empty
-            //Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
-            //    .show()
-            viewModel.setUserPin("1234")
-            findNavController().navigate(R.id.action_pinFragment_to_canFragment)
+            Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
     private fun goToTheStart() {
-        viewModel.clearUserInfo()
-        findNavController().navigate(R.id.action_pinFragment_to_homeFragment)
+        if (args.saving) {
+            findNavController().navigate(R.id.action_pinFragment_to_settingsFragment)
+        } else {
+            viewModel.clearUserInfo()
+            findNavController().navigate(R.id.action_pinFragment_to_homeFragment)
+        }
     }
 
     override fun onDestroy() {
