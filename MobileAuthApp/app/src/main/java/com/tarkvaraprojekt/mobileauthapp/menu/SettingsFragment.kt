@@ -34,8 +34,15 @@ class SettingsFragment : Fragment() {
             binding!!.canSaved.text = getString(R.string.saved_can, viewModel.userCan)
             binding!!.canMenuAction.text = getString(R.string.can_delete)
         } else {
-            binding!!.canSaved.text = getString(R.string.saved_can, "puudub")
+            binding!!.canSaved.text = getString(R.string.saved_can, getString(R.string.missing))
             binding!!.canMenuAction.text = getString(R.string.can_add)
+        }
+        if (viewModel.userPin.length in 4..12) {
+            binding!!.pinSaved.text = getString(R.string.saved_pin, viewModel.userPin)
+            binding!!.pinMenuAction.text = getString(R.string.pin1_delete)
+        } else {
+            binding!!.pinSaved.text = getString(R.string.saved_pin, getString(R.string.missing))
+            binding!!.pinMenuAction.text = getString(R.string.pin1_add)
         }
         binding!!.canMenuAction.setOnClickListener {
             if (viewModel.userCan.length != 6) {

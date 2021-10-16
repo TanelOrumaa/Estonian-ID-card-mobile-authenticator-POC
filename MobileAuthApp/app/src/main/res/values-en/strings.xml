@@ -45,4 +45,7 @@
     <string name="saved_can">CAN: %s</string>
     <string name="can_add">Lisa CAN</string>
     <string name="can_delete">Kustuta CAN</string>
+    <string name="saved_pin">PIN1: %s</string>
+    <string name="pin1_add">Lisa PIN1</string>
+    <string name="pin1_delete">Kustuta PIN1</string>
 </resources>
