@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:text="@string/begin_text"
         android:layout_marginTop="24dp"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:layout_constraintTop_toBottomOf="@id/saved_states"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

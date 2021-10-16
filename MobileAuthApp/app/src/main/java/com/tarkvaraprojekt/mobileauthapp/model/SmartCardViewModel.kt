@@ -23,12 +23,24 @@ class SmartCardViewModel: ViewModel() {
     private var _userIdentificationNumber: String = ""
     val userIdentificationNumber get() = _userIdentificationNumber
 
+    private var _gender: String = ""
+    val gender get() = _gender
+
+    private var _expiration: String = ""
+    val expiration get() = _expiration
+
+    private var _citizenship: String = ""
+    val citizenship get() = _citizenship
+
     fun clearUserInfo() {
         _userPin = ""
         _userCan = ""
         _userFirstName = ""
         _userLastName = ""
         _userIdentificationNumber = ""
+        _expiration = ""
+        _citizenship = ""
+        _gender = ""
     }
 
     fun setUserPin(newUserPin: String) {
@@ -49,6 +61,18 @@ class SmartCardViewModel: ViewModel() {
 
     fun setUserIdentificationNumber(newUserIdentificationNumber: String) {
         _userIdentificationNumber = newUserIdentificationNumber
+    }
+
+    fun setExpiration(newExpiration: String) {
+        _expiration = newExpiration
+    }
+
+    fun setCitizenship(newCitizenship: String) {
+        _citizenship = newCitizenship
+    }
+
+    fun setGender(newGender: String) {
+        _gender = newGender
     }
 
 

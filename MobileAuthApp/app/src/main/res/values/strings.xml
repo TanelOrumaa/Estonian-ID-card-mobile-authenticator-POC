@@ -43,6 +43,9 @@
     <string name="user_name_label">NIMI</string>
     <string name="user_name">%1$s %2$s</string>
     <string name="identification_number_label">ISIKUKOOD</string>
+    <string name="expiration_label">KEHTIV KUNI</string>
+    <string name="citizenship_label">KODAKONDSUS</string>
+    <string name="gender_label">SUGU</string>
     <string name="clear_button">UNUSTA</string>
 
     <!-- menu -->
