@@ -42,6 +42,10 @@
             android:id="@+id/action_pinFragment_to_authFragment"
             app:destination="@id/authFragment"
             app:popUpTo="@id/homeFragment" />
+        <argument
+            android:name="reading"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/canFragment"
@@ -66,6 +70,10 @@
             android:id="@+id/action_canFragment_to_pinFragment"
             app:destination="@id/pinFragment"
             app:popUpTo="@id/homeFragment" />
+        <argument
+            android:name="reading"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/authFragment"
@@ -104,5 +112,10 @@
         <action
             android:id="@+id/action_settingsFragment_to_pinFragment"
             app:destination="@id/pinFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

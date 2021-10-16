@@ -42,6 +42,7 @@ class SettingsFragment : Fragment() {
         binding!!.canMenuAction.setOnClickListener { canAction() }
         binding!!.pinMenuAction.setOnClickListener { pinAction() }
         binding!!.pinMenuShow.setOnClickListener { togglePin() }
+        binding!!.returnButton.setOnClickListener { backToHome() }
     }
 
     /**
@@ -66,7 +67,7 @@ class SettingsFragment : Fragment() {
             viewModel.deleteCan(requireContext())
             showCanField()
         } else {
-            val action = SettingsFragmentDirections.actionSettingsFragmentToCanFragment(true)
+            val action = SettingsFragmentDirections.actionSettingsFragmentToCanFragment(saving = true)
             findNavController().navigate(action)
         }
     }
@@ -100,7 +101,7 @@ class SettingsFragment : Fragment() {
             viewModel.deletePin(requireContext())
             showPinField()
         } else {
-            val action = SettingsFragmentDirections.actionSettingsFragmentToPinFragment(true)
+            val action = SettingsFragmentDirections.actionSettingsFragmentToPinFragment(saving = true)
             findNavController().navigate(action)
         }
     }
@@ -123,6 +124,13 @@ class SettingsFragment : Fragment() {
         } else {
             binding!!.pinMenuShow.text = getString(R.string.show)
         }
+    }
+
+    /**
+     * Navigates back to home fragment.
+     */
+    private fun backToHome() {
+        findNavController().navigate(R.id.action_settingsFragment_to_homeFragment)
     }
 
     override fun onDestroy() {

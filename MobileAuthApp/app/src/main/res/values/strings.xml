@@ -2,11 +2,18 @@
     <string name="app_name">NFC authentication</string>
     <string name="home_fragment">Work in progress</string>
 
-    <string name="begin_text">ALUSTA</string>
+    <string name="begin_text">LOE ID KAARTI</string>
     <string name="next_text">EDASI</string>
     <string name="cancel_text">KATKESTA</string>
     <string name="save_text">SALVESTA</string>
     <string name="deny_text">EI</string>
+    <string name="return_text">TAGASI</string>
+
+    <!-- string resources for HomeFragment -->
+    <string name="pin_status_saved">PIN 1 on salvestatud</string>
+    <string name="pin_status_negative">PIN 1 ei ole salvestatud</string>
+    <string name="can_status_saved">CAN on salvestatud</string>
+    <string name="can_status_negative">CAN ei ole salvestatud</string>
 
     <!-- string resources for PinFragment -->
     <string name="pin_fragment">Palun sisesta PIN 1</string>
@@ -52,4 +59,5 @@
     <string name="show">NÄITA</string>
     <string name="hide">PEIDA</string>
     <string name="hidden_pin">****</string>
+    <string name="unavailable">Seaded pole hetkel saadaval</string>
 </resources>

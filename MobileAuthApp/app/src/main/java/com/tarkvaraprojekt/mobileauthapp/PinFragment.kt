@@ -14,7 +14,9 @@ import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentPinBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 
 /**
- * Fragment that deals with asking the user for PIN1
+ * Fragment that deals with asking the user for PIN 1. If the user has already saved the PIN 1 then it is not asked again
+ * and the fragment is skipped and if the PIN 1 is not saved then the user is asked whether it should be saved or
+ * not before continuing.
  */
 class PinFragment : Fragment() {
 
@@ -22,7 +24,10 @@ class PinFragment : Fragment() {
 
     private var binding: FragmentPinBinding? = null
 
-    // Navigation arguments. saving = true means that we are navigating here from the settings menu and must return to the settings
+    // Navigation arguments:
+    // saving = true means that the user must be returned to the settings menu
+    // reading = true means that we are reading information from the ID card that does
+    //                not require PIN 1 so it is not necessary to ask it.
     private val args: CanFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -36,48 +41,51 @@ class PinFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (viewModel.userPin.length in 4..12) {
-            skip()
-        }
+        checkIfSkip()
+        // If the user arrives from the settings menu then the button says
+        // save instead of continue.
         if (args.saving) {
             binding!!.nextButton.text = getString(R.string.save_text)
         }
-        binding!!.nextButton.setOnClickListener { goToNextFragment() }
+        binding!!.nextButton.setOnClickListener { checkEnteredPin() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
     }
 
-    private fun skip() {
+    /**
+     * Checks if the current fragment can be skipped or not.
+     * If the user has PIN 1 saved on the device or PIN 1 is not required
+     * then the PIN 1 won't be asked.
+     */
+    private fun checkIfSkip() {
+        if (args.reading) {
+            goToTheNextFragment()
+        } else if (viewModel.userPin.length in 4..12) {
+            goToTheNextFragment()
+        }
+    }
+
+    /**
+     * Takes user to the next fragment, which is AuthFragment.
+     */
+    private fun goToTheNextFragment() {
         findNavController().navigate(R.id.action_pinFragment_to_authFragment)
     }
 
-    private fun goToNextFragment() {
-        val enteredPin1 = binding!!.pinEditText.editText?.text.toString()
-        if (enteredPin1.length in 4..12) {
-            viewModel.setUserPin(
-                binding!!.pinEditText.editText?.text.toString()
-            )
+    /**
+     * Checks whether the user has entered a PIN 1 with length between [4, 12] in the
+     * input field. If yes then the user is allowed to continue otherwise the user is
+     * allowed to modify the entered PIN 1.
+     */
+    private fun checkEnteredPin() {
+        val enteredPin = binding!!.pinEditText.editText?.text.toString()
+        if (enteredPin.length in 4..12) {
+            viewModel.setUserPin(enteredPin)
             if (args.saving) {
                 viewModel.storePin(requireContext())
-                findNavController().navigate(R.id.action_pinFragment_to_settingsFragment)
+                goToTheStart()
             } else {
-                val canStoreQuestion: AlertDialog? = activity?.let { frag ->
-                    val builder = AlertDialog.Builder(frag)
-                    builder.apply {
-                        setPositiveButton(R.string.save_text) { _, _ ->
-                            viewModel.storePin(
-                                requireContext()
-                            )
-                            findNavController().navigate(R.id.action_pinFragment_to_authFragment)
-                        }
-                        setNegativeButton(R.string.deny_text) { _, _ ->
-                            findNavController().navigate(R.id.action_pinFragment_to_authFragment)
-                        }
-                    }
-                    builder.setMessage(R.string.pin_save_request)
-                    builder.setTitle(R.string.save_pin_title)
-                    builder.create()
-                }
-                canStoreQuestion?.show()
+                val storePinQuestion = getDialog()
+                storePinQuestion?.show()
             }
         } else {
             Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
@@ -85,6 +93,35 @@ class PinFragment : Fragment() {
         }
     }
 
+    /**
+     * Builds a dialog that asks the user whether the entered PIN 1 should be saved
+     * on the device or not.
+     */
+    private fun getDialog(): AlertDialog? {
+        return activity?.let { frag ->
+            val builder = AlertDialog.Builder(frag)
+            builder.apply {
+                // If response is positive save the PIN 1 on the device.
+                setPositiveButton(R.string.save_text) { _, _ ->
+                    viewModel.storePin(
+                        requireContext()
+                    )
+                    goToTheNextFragment()
+                }
+                setNegativeButton(R.string.deny_text) { _, _ ->
+                    goToTheNextFragment()
+                }
+            }
+            builder.setMessage(R.string.pin_save_request)
+            builder.setTitle(R.string.save_pin_title)
+            builder.create()
+        }
+    }
+
+    /**
+     * Returns user to the start. If the user arrived from the settings menu then the start is
+     * settings menu not the HomeFragment.
+     */
     private fun goToTheStart() {
         if (args.saving) {
             findNavController().navigate(R.id.action_pinFragment_to_settingsFragment)
