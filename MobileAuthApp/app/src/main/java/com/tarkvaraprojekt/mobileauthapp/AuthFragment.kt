@@ -78,10 +78,13 @@ class AuthFragment : Fragment() {
             card.use {
                 try {
                     val comms = Comms(it, viewModel.userCan)
-                    val response = comms.readPersonalData(byteArrayOf(1, 2, 6))
+                    val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
                     viewModel.setUserFirstName(response[1])
                     viewModel.setUserLastName(response[0])
                     viewModel.setUserIdentificationNumber(response[2])
+                    viewModel.setGender(response[3])
+                    viewModel.setCitizenship(response[4])
+                    viewModel.setExpiration(response[5])
                     requireActivity().runOnUiThread{
                         binding!!.timeCounter.text = getString(R.string.data_read)
                     }
@@ -89,6 +92,8 @@ class AuthFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         binding!!.timeCounter.text = getString(R.string.no_success)
                     }
+                    // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
+                    viewModel.deleteCan(requireContext())
                     // Gives user some time to read the error message
                     Thread.sleep(1000)
                     goToTheStart()

@@ -33,13 +33,25 @@ class UserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding!!.userName.text =
-            getString(R.string.user_name, viewModel.userFirstName, viewModel.userLastName)
-        binding!!.identificationNumber.text = viewModel.userIdentificationNumber
+        displayInformation()
         binding!!.clearButton.setOnClickListener { goToTheStart() }
     }
 
+    /**
+     * Assigns text values to the fields in order to display user information.
+     */
+    private fun displayInformation() {
+        binding!!.userName.text =
+            getString(R.string.user_name, viewModel.userFirstName, viewModel.userLastName)
+        binding!!.identificationNumber.text = viewModel.userIdentificationNumber
+        binding!!.gender.text = viewModel.gender
+        binding!!.expiration.text = viewModel.expiration.replace(" ", "/")
+        binding!!.citizenship.text = viewModel.citizenship
+    }
+
+    /**
+     * Navigates user back to the start and also deletes any temporary information.
+     */
     private fun goToTheStart() {
         viewModel.clearUserInfo()
         findNavController().navigate(R.id.action_userFragment_to_homeFragment)

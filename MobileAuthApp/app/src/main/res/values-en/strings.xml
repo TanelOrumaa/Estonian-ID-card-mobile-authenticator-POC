@@ -1,6 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Must translate to English, but should work now -->
     <string name="app_name">NFC authentication</string>
     <string name="home_fragment">Work in progress</string>
+
+    <!-- string resources for HomeFragment -->
+    <string name="pin_status_saved">PIN 1 on salvestatud</string>
+    <string name="pin_status_negative">PIN 1 ei ole salvestatud</string>
+    <string name="can_status_saved">CAN on salvestatud</string>
+    <string name="can_status_negative">CAN ei ole salvestatud</string>
 
     <string name="begin_text">LOE ID KAARTI</string>
     <string name="next_text">EDASI</string>
@@ -8,12 +16,6 @@
     <string name="save_text">SALVESTA</string>
     <string name="deny_text">EI</string>
     <string name="return_text">TAGASI</string>
-
-    <!-- string resources for HomeFragment -->
-    <string name="pin_status_saved">PIN 1 on salvestatud</string>
-    <string name="pin_status_negative">PIN 1 ei ole salvestatud</string>
-    <string name="can_status_saved">CAN on salvestatud</string>
-    <string name="can_status_negative">CAN ei ole salvestatud</string>
 
     <!-- string resources for PinFragment -->
     <string name="pin_fragment">Palun sisesta PIN 1</string>
@@ -56,8 +58,8 @@
     <string name="can_add">Lisa CAN</string>
     <string name="can_delete">Kustuta CAN</string>
     <string name="saved_pin">PIN1: %s</string>
-    <string name="pin1_add">Lisa PIN 1</string>
-    <string name="pin1_delete">Kustuta PIN 1</string>
+    <string name="pin1_add">Lisa PIN1</string>
+    <string name="pin1_delete">Kustuta PIN1</string>
     <string name="missing">puudub</string>
     <string name="show">NÄITA</string>
     <string name="hide">PEIDA</string>
