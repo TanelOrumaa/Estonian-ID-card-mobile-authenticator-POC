@@ -1,23 +1,20 @@
 package com.tarkvaraprojekt.mobileauthapp
 
-import android.app.Activity
-import android.content.Context
 import android.nfc.NfcAdapter
 import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
-import kotlin.concurrent.thread
 
 /**
  * Fragment that asks the user to detect the ID card with mobile NFC chip.
@@ -29,6 +26,8 @@ class AuthFragment : Fragment() {
     private val viewModel: SmartCardViewModel by activityViewModels()
 
     private var binding: FragmentAuthBinding? = null
+
+    private val args: CanFragmentArgs by navArgs()
 
     private lateinit var timer: CountDownTimer
 
@@ -106,7 +105,11 @@ class AuthFragment : Fragment() {
 
     private fun goToNextFragment() {
         timer.cancel()
-        findNavController().navigate(R.id.action_authFragment_to_userFragment)
+        if (args.auth) {
+            findNavController().navigate(R.id.action_authFragment_to_resultFragment)
+        } else {
+            findNavController().navigate(R.id.action_authFragment_to_userFragment)
+        }
     }
 
     private fun goToTheStart() {

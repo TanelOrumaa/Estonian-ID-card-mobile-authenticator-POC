@@ -37,6 +37,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialChecks()
+        // TODO: If app launched with intent then go to the CanFragment immediately.
+        if (true){ // Currently true for testing purposes
+            goToTheNextFragment(true)
+        }
         binding!!.beginButton.setOnClickListener { goToTheNextFragment() }
     }
 
@@ -52,13 +56,19 @@ class HomeFragment : Fragment() {
     /**
      * Starts the process of interacting with the ID card by sending user to the CAN fragment.
      */
-    private fun goToTheNextFragment() {
+    private fun goToTheNextFragment(auth: Boolean = false) {
         // Making settings menu inactive
         (activity as MainActivity).menuAvailable = false
         // Currently saving is true because the application is not yet integrated with
         // other applications or websites.
-        val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = true)
-        findNavController().navigate(action)
+        // TODO: Check the navigation action default values. Not everything has to be declared implicitly.
+        if (auth) {
+            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = false, auth = true)
+            findNavController().navigate(action)
+        } else {
+            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = true, auth = false)
+            findNavController().navigate(action)
+        }
     }
 
     /**

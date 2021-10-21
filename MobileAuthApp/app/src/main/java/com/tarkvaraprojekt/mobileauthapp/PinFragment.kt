@@ -68,7 +68,8 @@ class PinFragment : Fragment() {
      * Takes user to the next fragment, which is AuthFragment.
      */
     private fun goToTheNextFragment() {
-        findNavController().navigate(R.id.action_pinFragment_to_authFragment)
+        val action = PinFragmentDirections.actionPinFragmentToAuthFragment(auth = args.auth)
+        findNavController().navigate(action)
     }
 
     /**

@@ -50,6 +50,9 @@
     <string name="gender_label">SUGU</string>
     <string name="clear_button">UNUSTA</string>
 
+    <!-- string resources for ResultFragment layout-->
+    <string name="result_text">See Fragment vastutab vastuse tagastamise eest.</string>
+
     <!-- menu -->
     <string name="menu_settings_title">Seaded</string>
     <string name="menu_language_title">Keel</string>

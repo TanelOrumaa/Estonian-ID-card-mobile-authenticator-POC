@@ -65,7 +65,7 @@ class CanFragment : Fragment() {
      * Takes user to the next fragment, which is PinFragment.
      */
     private fun goToTheNextFragment() {
-        val action = CanFragmentDirections.actionCanFragmentToPinFragment(reading = args.reading)
+        val action = CanFragmentDirections.actionCanFragmentToPinFragment(reading = args.reading, auth = args.auth)
         findNavController().navigate(action)
     }
 
@@ -122,7 +122,8 @@ class CanFragment : Fragment() {
      * not the HomeFragment.
      */
     private fun goToTheStart() {
-        if (args.saving) {
+        // TODO: Needs special handling when the app is launched with intent. Temporary solution at the moment.
+        if (args.saving || args.auth) {
             findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
         } else {
             findNavController().navigate(R.id.action_canFragment_to_homeFragment)
