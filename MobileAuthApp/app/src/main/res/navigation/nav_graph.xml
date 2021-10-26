@@ -105,6 +105,10 @@
             android:name="auth"
             app:argType="boolean"
             android:defaultValue="false" />
+        <argument
+            android:name="reading"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"

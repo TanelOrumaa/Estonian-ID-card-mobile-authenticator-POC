@@ -1,12 +1,15 @@
 package com.tarkvaraprojekt.mobileauthapp
 
+import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -115,7 +118,13 @@ class AuthFragment : Fragment() {
     private fun goToTheStart() {
         viewModel.clearUserInfo()
         timer.cancel()
-        findNavController().navigate(R.id.action_authFragment_to_homeFragment)
+        if (args.reading) {
+            findNavController().navigate(R.id.action_authFragment_to_homeFragment)
+        } else {
+            val resultIntent = Intent()
+            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+            requireActivity().finish()
+        }
     }
 
     override fun onDestroy() {

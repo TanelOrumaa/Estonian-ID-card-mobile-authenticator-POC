@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TestMobileApp</string>
+    <string name="login_text">Logi sisse</string>
+    <string name="choose_login_method">Vali sobiv meetod</string>
+    <string name="method_nfc">NFC auth</string>
+    <string name="auth_success">Autentimine õnnestus</string>
+    <string name="auth_failure">Autentimine ebaõnnestus</string>
+</resources>

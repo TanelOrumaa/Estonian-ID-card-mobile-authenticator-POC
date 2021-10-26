@@ -1,6 +1,7 @@
 package com.tarkvaraprojekt.mobileauthapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +39,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initialChecks()
         // TODO: If app launched with intent then go to the CanFragment immediately.
-        if (true){ // Currently true for testing purposes
+        val auth = requireActivity().intent.getBooleanExtra("auth", false)
+        if (auth){ // Currently true for testing purposes
             goToTheNextFragment(true)
         }
         binding!!.beginButton.setOnClickListener { goToTheNextFragment() }

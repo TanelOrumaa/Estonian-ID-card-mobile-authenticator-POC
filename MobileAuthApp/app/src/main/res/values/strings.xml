@@ -50,6 +50,7 @@
 
     <!-- string resources for ResultFragment layout-->
     <string name="result_text">See Fragment vastutab vastuse tagastamise eest.</string>
+    <string name="result_info">Hiljem sulgeb rakendus automaatselt.</string>
 
     <!-- menu -->
     <string name="menu_settings_title">Seaded</string>
