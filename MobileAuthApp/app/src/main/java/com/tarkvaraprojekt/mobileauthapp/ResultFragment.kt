@@ -13,7 +13,8 @@ import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 
 /**
  * ResultFragment is used to create a JWT and to send response to the website/application
- * that launched the MobileAuthApp.
+ * that launched the MobileAuthApp. If the mobile auth app was started by a website
+ * the result is sent to a server with a POST request.
  */
 class ResultFragment : Fragment() {
 

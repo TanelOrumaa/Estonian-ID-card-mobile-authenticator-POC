@@ -40,7 +40,7 @@ class HomeFragment : Fragment() {
         initialChecks()
         // TODO: If app launched with intent then go to the CanFragment immediately.
         val auth = requireActivity().intent.getBooleanExtra("auth", false)
-        if (auth){ // Currently true for testing purposes
+        if (auth){
             goToTheNextFragment(true)
         }
         binding!!.beginButton.setOnClickListener { goToTheNextFragment() }

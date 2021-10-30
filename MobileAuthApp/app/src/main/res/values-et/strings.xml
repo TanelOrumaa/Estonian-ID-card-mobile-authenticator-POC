@@ -24,6 +24,12 @@
     <string name="pin_save_request">Praegu ei ole rakenduses PIN 1 salvestatud. Kas sa soovid sisestatud PIN 1-te salvestada? Sellisel juhul sisestatakse see järgmisel korral automaatselt. Salvestatud PIN 1-te saab alati menüüs muuta ja kustutada.</string>
     <string name="save_pin_title">Salvesta PIN 1</string>
 
+    <!-- string resources for Pin2Fragment -->
+    <string name="pin2_fragment">Palun sisesta PIN 2</string>
+    <string name="enter_pin2">PIN 2</string>
+    <string name="example_pin2">Näide. 123456</string>
+    <string name="length_pin2">PIN 2 lubatud pikkus on 5..12</string>
+
     <!-- string resources for CanFragment -->
     <string name="example_can">Näide. 123456</string>
     <string name="text_can">CAN</string>
