@@ -50,6 +50,10 @@
             android:name="auth"
             app:argType="boolean"
             android:defaultValue="false" />
+        <argument
+            android:name="mobile"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/canFragment"
@@ -82,6 +86,10 @@
             android:name="auth"
             app:argType="boolean"
             android:defaultValue="false" />
+        <argument
+            android:name="mobile"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/authFragment"
@@ -107,6 +115,10 @@
             android:defaultValue="false" />
         <argument
             android:name="reading"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="mobile"
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>
@@ -142,5 +154,10 @@
         android:id="@+id/resultFragment"
         android:name="com.tarkvaraprojekt.mobileauthapp.ResultFragment"
         android:label="fragment_result"
-        tools:layout="@layout/fragment_result" />
+        tools:layout="@layout/fragment_result" >
+        <argument
+            android:name="mobile"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 </navigation>

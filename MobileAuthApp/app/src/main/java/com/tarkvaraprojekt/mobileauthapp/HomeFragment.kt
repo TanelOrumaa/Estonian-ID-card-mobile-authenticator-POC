@@ -1,5 +1,6 @@
 package com.tarkvaraprojekt.mobileauthapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -38,10 +39,13 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialChecks()
-        // TODO: If app launched with intent then go to the CanFragment immediately.
+        var mobile = false
+        if (requireActivity().intent.data?.getQueryParameter("arg1") != null) {
+            mobile = true
+        }
         val auth = requireActivity().intent.getBooleanExtra("auth", false)
-        if (auth){
-            goToTheNextFragment(true)
+        if (auth || mobile){
+            goToTheNextFragment(true, mobile)
         }
         binding!!.beginButton.setOnClickListener { goToTheNextFragment() }
     }
@@ -58,17 +62,17 @@ class HomeFragment : Fragment() {
     /**
      * Starts the process of interacting with the ID card by sending user to the CAN fragment.
      */
-    private fun goToTheNextFragment(auth: Boolean = false) {
+    private fun goToTheNextFragment(auth: Boolean = false, mobile: Boolean = false) {
         // Making settings menu inactive
         (activity as MainActivity).menuAvailable = false
         // Currently saving is true because the application is not yet integrated with
         // other applications or websites.
         // TODO: Check the navigation action default values. Not everything has to be declared implicitly.
         if (auth) {
-            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = false, auth = true)
+            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = false, auth = true, mobile = mobile)
             findNavController().navigate(action)
         } else {
-            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = true, auth = false)
+            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = true, auth = false, mobile = mobile)
             findNavController().navigate(action)
         }
     }

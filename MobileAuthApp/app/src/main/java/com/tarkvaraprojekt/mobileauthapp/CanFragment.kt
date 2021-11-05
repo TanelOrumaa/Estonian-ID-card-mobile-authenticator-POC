@@ -67,7 +67,7 @@ class CanFragment : Fragment() {
      * Takes user to the next fragment, which is PinFragment.
      */
     private fun goToTheNextFragment() {
-        val action = CanFragmentDirections.actionCanFragmentToPinFragment(reading = args.reading, auth = args.auth)
+        val action = CanFragmentDirections.actionCanFragmentToPinFragment(reading = args.reading, auth = args.auth, mobile = args.mobile)
         findNavController().navigate(action)
     }
 

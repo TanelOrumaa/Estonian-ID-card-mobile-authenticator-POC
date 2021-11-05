@@ -109,7 +109,8 @@ class AuthFragment : Fragment() {
     private fun goToNextFragment() {
         timer.cancel()
         if (args.auth) {
-            findNavController().navigate(R.id.action_authFragment_to_resultFragment)
+            val action = AuthFragmentDirections.actionAuthFragmentToResultFragment(mobile = args.mobile)
+            findNavController().navigate(action)
         } else {
             findNavController().navigate(R.id.action_authFragment_to_userFragment)
         }

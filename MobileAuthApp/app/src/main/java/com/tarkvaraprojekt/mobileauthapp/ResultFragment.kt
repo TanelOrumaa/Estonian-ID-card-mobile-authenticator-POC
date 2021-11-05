@@ -2,12 +2,14 @@ package com.tarkvaraprojekt.mobileauthapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentResultBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 
@@ -21,6 +23,8 @@ class ResultFragment : Fragment() {
     private val viewModel: SmartCardViewModel by activityViewModels()
 
     private var binding: FragmentResultBinding? = null
+
+    private val args: CanFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
