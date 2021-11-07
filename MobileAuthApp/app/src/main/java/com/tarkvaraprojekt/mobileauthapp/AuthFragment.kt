@@ -1,7 +1,6 @@
 package com.tarkvaraprojekt.mobileauthapp
 
-import android.app.Activity
-import android.content.Context
+import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.tech.IsoDep
 import android.os.Bundle
@@ -10,14 +9,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
-import kotlin.concurrent.thread
 
 /**
  * Fragment that asks the user to detect the ID card with mobile NFC chip.
@@ -29,6 +29,8 @@ class AuthFragment : Fragment() {
     private val viewModel: SmartCardViewModel by activityViewModels()
 
     private var binding: FragmentAuthBinding? = null
+
+    private val args: CanFragmentArgs by navArgs()
 
     private lateinit var timer: CountDownTimer
 
@@ -68,51 +70,66 @@ class AuthFragment : Fragment() {
     }
 
     private fun getInfoFromIdCard(adapter: NfcAdapter) {
-        adapter.enableReaderMode(activity, { tag ->
-            timer.cancel()
-            requireActivity().runOnUiThread {
-                binding!!.timeCounter.text = getString(R.string.card_detected)
-            }
-            val card = IsoDep.get(tag)
-            card.timeout = 32768
-            card.use {
-                try {
-                    val comms = Comms(it, viewModel.userCan)
-                    val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
-                    viewModel.setUserFirstName(response[1])
-                    viewModel.setUserLastName(response[0])
-                    viewModel.setUserIdentificationNumber(response[2])
-                    viewModel.setGender(response[3])
-                    viewModel.setCitizenship(response[4])
-                    viewModel.setExpiration(response[5])
-                    requireActivity().runOnUiThread{
-                        binding!!.timeCounter.text = getString(R.string.data_read)
-                    }
-                } catch (e: Exception) {
-                    requireActivity().runOnUiThread {
-                        binding!!.timeCounter.text = getString(R.string.no_success)
-                    }
-                    // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
-                    viewModel.deleteCan(requireContext())
-                    // Gives user some time to read the error message
-                    Thread.sleep(1000)
-                    goToTheStart()
-                } finally {
-                    adapter.disableReaderMode(activity)
+        if (args.reading) {
+            adapter.enableReaderMode(activity, { tag ->
+                timer.cancel()
+                requireActivity().runOnUiThread {
+                    binding!!.timeCounter.text = getString(R.string.card_detected)
                 }
-            }
-        }, NfcAdapter.FLAG_READER_NFC_A, null)
+                val card = IsoDep.get(tag)
+                card.timeout = 32768
+                card.use {
+                    try {
+                        val comms = Comms(it, viewModel.userCan)
+                        val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
+                        viewModel.setUserFirstName(response[1])
+                        viewModel.setUserLastName(response[0])
+                        viewModel.setUserIdentificationNumber(response[2])
+                        viewModel.setGender(response[3])
+                        viewModel.setCitizenship(response[4])
+                        viewModel.setExpiration(response[5])
+                        requireActivity().runOnUiThread {
+                            binding!!.timeCounter.text = getString(R.string.data_read)
+                        }
+                    } catch (e: Exception) {
+                        requireActivity().runOnUiThread {
+                            binding!!.timeCounter.text = getString(R.string.no_success)
+                        }
+                        // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
+                        viewModel.deleteCan(requireContext())
+                        // Gives user some time to read the error message
+                        Thread.sleep(1000)
+                        goToTheStart()
+                    } finally {
+                        adapter.disableReaderMode(activity)
+                    }
+                }
+            }, NfcAdapter.FLAG_READER_NFC_A, null)
+        } else { //We want to create a JWT instead of reading the info from the card.
+            goToNextFragment()
+        }
     }
 
     private fun goToNextFragment() {
         timer.cancel()
-        findNavController().navigate(R.id.action_authFragment_to_userFragment)
+        if (args.auth) {
+            val action = AuthFragmentDirections.actionAuthFragmentToResultFragment(mobile = args.mobile)
+            findNavController().navigate(action)
+        } else {
+            findNavController().navigate(R.id.action_authFragment_to_userFragment)
+        }
     }
 
     private fun goToTheStart() {
         viewModel.clearUserInfo()
         timer.cancel()
-        findNavController().navigate(R.id.action_authFragment_to_homeFragment)
+        if (args.reading) {
+            findNavController().navigate(R.id.action_authFragment_to_homeFragment)
+        } else {
+            val resultIntent = Intent()
+            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+            requireActivity().finish()
+        }
     }
 
     override fun onDestroy() {

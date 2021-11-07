@@ -1,11 +1,13 @@
 package com.tarkvaraprojekt.mobileauthapp
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -65,7 +67,7 @@ class CanFragment : Fragment() {
      * Takes user to the next fragment, which is PinFragment.
      */
     private fun goToTheNextFragment() {
-        val action = CanFragmentDirections.actionCanFragmentToPinFragment(reading = args.reading)
+        val action = CanFragmentDirections.actionCanFragmentToPinFragment(reading = args.reading, auth = args.auth, mobile = args.mobile)
         findNavController().navigate(action)
     }
 
@@ -122,8 +124,13 @@ class CanFragment : Fragment() {
      * not the HomeFragment.
      */
     private fun goToTheStart() {
+        // TODO: Needs special handling when the app is launched with intent. Temporary solution at the moment.
         if (args.saving) {
             findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
+        } else if (args.auth) {
+            val resultIntent = Intent()
+            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+            requireActivity().finish()
         } else {
             findNavController().navigate(R.id.action_canFragment_to_homeFragment)
         }

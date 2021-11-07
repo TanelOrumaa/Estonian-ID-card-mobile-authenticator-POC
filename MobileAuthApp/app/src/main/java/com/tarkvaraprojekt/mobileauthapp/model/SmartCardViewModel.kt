@@ -11,6 +11,9 @@ class SmartCardViewModel: ViewModel() {
     private var _userPin: String = ""
     val userPin get() = _userPin
 
+    private var _userPin2: String = ""
+    val userPin2 get() = _userPin2
+
     private var _userCan: String = ""
     val userCan get() = _userCan
 
@@ -34,6 +37,7 @@ class SmartCardViewModel: ViewModel() {
 
     fun clearUserInfo() {
         _userPin = ""
+        _userPin2 = ""
         _userCan = ""
         _userFirstName = ""
         _userLastName = ""
@@ -45,6 +49,10 @@ class SmartCardViewModel: ViewModel() {
 
     fun setUserPin(newUserPin: String) {
         _userPin = newUserPin
+    }
+
+    fun setUserPin2(newUserPin2: String) {
+        _userPin2 = newUserPin2
     }
 
     fun setUserCan(newUserCan: String) {

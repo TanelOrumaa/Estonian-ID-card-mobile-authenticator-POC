@@ -1,14 +1,13 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.tarkvaraprojekt.mobileauthapp"
+        applicationId "com.example.testmobileapp"
         minSdk 26
         targetSdk 31
         versionCode 1
@@ -36,33 +35,12 @@ android {
 }
 
 dependencies {
-    def lifecycle_version = "2.3.1"
+    implementation 'com.koushikdutta.ion:ion:3.1.0'
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-    //To use activityViewModels
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    //For navigation component
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-
-    //ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-
-    //For cryptography
-    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.69'
-
-    //SecureDataStoring
-    implementation("androidx.security:security-crypto:1.0.0")
-
-    // Retrofit + Moshi Converter
-    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
-    implementation 'com.squareup.moshi:moshi-kotlin:1.9.3'
 }

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TestMobileApp</string>
+    <string name="login_text">Login</string>
+    <string name="choose_login_method">Choose login method</string>
+    <string name="method_nfc">NFC auth</string>
+    <string name="auth_success">Successful response</string>
+    <string name="auth_failure">Response failed</string>
+</resources>
