@@ -38,7 +38,9 @@ class ResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding!!.resultBackButton.setOnClickListener {
-            createResponse()
+            if (!args.mobile) {
+                createResponse()
+            }
         }
     }
 

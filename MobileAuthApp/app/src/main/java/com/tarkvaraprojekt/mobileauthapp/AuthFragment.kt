@@ -70,40 +70,44 @@ class AuthFragment : Fragment() {
     }
 
     private fun getInfoFromIdCard(adapter: NfcAdapter) {
-        adapter.enableReaderMode(activity, { tag ->
-            timer.cancel()
-            requireActivity().runOnUiThread {
-                binding!!.timeCounter.text = getString(R.string.card_detected)
-            }
-            val card = IsoDep.get(tag)
-            card.timeout = 32768
-            card.use {
-                try {
-                    val comms = Comms(it, viewModel.userCan)
-                    val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
-                    viewModel.setUserFirstName(response[1])
-                    viewModel.setUserLastName(response[0])
-                    viewModel.setUserIdentificationNumber(response[2])
-                    viewModel.setGender(response[3])
-                    viewModel.setCitizenship(response[4])
-                    viewModel.setExpiration(response[5])
-                    requireActivity().runOnUiThread{
-                        binding!!.timeCounter.text = getString(R.string.data_read)
-                    }
-                } catch (e: Exception) {
-                    requireActivity().runOnUiThread {
-                        binding!!.timeCounter.text = getString(R.string.no_success)
-                    }
-                    // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
-                    viewModel.deleteCan(requireContext())
-                    // Gives user some time to read the error message
-                    Thread.sleep(1000)
-                    goToTheStart()
-                } finally {
-                    adapter.disableReaderMode(activity)
+        if (args.reading) {
+            adapter.enableReaderMode(activity, { tag ->
+                timer.cancel()
+                requireActivity().runOnUiThread {
+                    binding!!.timeCounter.text = getString(R.string.card_detected)
                 }
-            }
-        }, NfcAdapter.FLAG_READER_NFC_A, null)
+                val card = IsoDep.get(tag)
+                card.timeout = 32768
+                card.use {
+                    try {
+                        val comms = Comms(it, viewModel.userCan)
+                        val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
+                        viewModel.setUserFirstName(response[1])
+                        viewModel.setUserLastName(response[0])
+                        viewModel.setUserIdentificationNumber(response[2])
+                        viewModel.setGender(response[3])
+                        viewModel.setCitizenship(response[4])
+                        viewModel.setExpiration(response[5])
+                        requireActivity().runOnUiThread {
+                            binding!!.timeCounter.text = getString(R.string.data_read)
+                        }
+                    } catch (e: Exception) {
+                        requireActivity().runOnUiThread {
+                            binding!!.timeCounter.text = getString(R.string.no_success)
+                        }
+                        // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
+                        viewModel.deleteCan(requireContext())
+                        // Gives user some time to read the error message
+                        Thread.sleep(1000)
+                        goToTheStart()
+                    } finally {
+                        adapter.disableReaderMode(activity)
+                    }
+                }
+            }, NfcAdapter.FLAG_READER_NFC_A, null)
+        } else { //We want to create a JWT instead of reading the info from the card.
+            goToNextFragment()
+        }
     }
 
     private fun goToNextFragment() {

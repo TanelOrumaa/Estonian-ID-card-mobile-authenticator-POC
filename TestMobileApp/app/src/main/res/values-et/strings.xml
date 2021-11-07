@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TestMobileApp</string>
+    <string name="login_text">Logi sisse</string>
+    <string name="choose_login_method">Vali sobiv meetod</string>
+    <string name="method_nfc">NFC auth</string>
+    <string name="auth_success">Vastus kätte saadud</string>
+    <string name="auth_failure">Vastust ei õnnestunud kätte saada</string>
+</resources>
