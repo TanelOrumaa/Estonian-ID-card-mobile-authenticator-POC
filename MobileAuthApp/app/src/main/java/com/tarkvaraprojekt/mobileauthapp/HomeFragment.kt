@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
         (activity as MainActivity).menuAvailable = false
         // Currently saving is true because the application is not yet integrated with
         // other applications or websites.
-        // TODO: Check the navigation action default values. Not everything has to be declared implicitly.
+        // TODO: Check the navigation action default values. Not everything has to be declared explicitly.
         if (auth) {
             val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = false, auth = true, mobile = mobile)
             findNavController().navigate(action)
