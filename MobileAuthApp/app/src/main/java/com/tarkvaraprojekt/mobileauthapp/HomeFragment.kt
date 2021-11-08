@@ -6,11 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentHomeBinding
+import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import java.lang.Exception
 
 /**
  * HomeFragment is only shown to the user when then the user launches the application. When the application
@@ -22,6 +25,8 @@ import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 class HomeFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
+
+    private val intentParams: ParametersViewModel by activityViewModels()
 
     private var binding: FragmentHomeBinding? = null
 
@@ -39,12 +44,30 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialChecks()
-        var mobile = false
-        if (requireActivity().intent.data?.getQueryParameter("arg1") != null) {
-            mobile = true
+        var auth = false
+        if (requireActivity().intent.data?.getQueryParameter("action") != null) {
+            // Currently we only support authentication not signing.
+            auth = true
         }
-        val auth = requireActivity().intent.getBooleanExtra("auth", false)
+        val mobile = requireActivity().intent.getBooleanExtra("mobile", false)
         if (auth || mobile){
+            try {
+                if (mobile) {
+                    // We use !! because we want an exception when something is not right.
+                    intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
+                    intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
+                } else { //Website
+                    // Currently the test website won't send the authUrl parameter
+                    //Log.i("intentDebugging", requireActivity().intent.data.toString())
+                    intentParams.setChallenge(requireActivity().intent.data!!.getQueryParameter("challenge")!!)
+                    //intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
+                }
+            } catch (e: Exception) {
+                // There was a problem with parameters, which means that authentication is not possible.
+                val resultIntent = Intent()
+                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+                requireActivity().finish()
+            }
             goToTheNextFragment(true, mobile)
         }
         binding!!.beginButton.setOnClickListener { goToTheNextFragment() }

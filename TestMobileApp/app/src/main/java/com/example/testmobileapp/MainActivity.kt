@@ -35,17 +35,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.loginOptionNfcButton.setOnClickListener { launchAuth() }
+        //binding.loginOptionNfcButton.setOnClickListener { getData() }
 
     }
 
     /**
      * Method that creates an intent to launch the MobileAuthApp
      */
-    private fun launchAuth(arg: String = "nothing") {
+    private fun launchAuth(challenge: String = "challenge", authUrl: String = "authUrl") {
         val launchIntent = Intent()
         launchIntent.setClassName("com.tarkvaraprojekt.mobileauthapp", "com.tarkvaraprojekt.mobileauthapp.MainActivity")
-        launchIntent.putExtra("auth", true)
-        launchIntent.putExtra("nonce", arg) // Currently nothing
+        launchIntent.putExtra("action", "auth")
+        launchIntent.putExtra("challenge", challenge)
+        launchIntent.putExtra("authUrl", authUrl)
+        launchIntent.putExtra("mobile", true)
         authLauncher.launch(launchIntent)
     }
 
@@ -54,14 +57,17 @@ class MainActivity : AppCompatActivity() {
      * Ion library is used as it is very convenient for making simple GET requests.
      */
     private fun getData() {
-        val url = "real-address-here"
+        // Enter the server endpoint address to here
+        val baseUrl = "enter-base-url-here"
+        val url = "$baseUrl/auth/challenge"
         Ion.with(applicationContext)
             .load(url)
             .asJsonObject()
             .setCallback { _, result ->
                 try {
                     // Get data from the result and call launchAuth method
-                    launchAuth()
+                    val challenge = result.asJsonObject["nonce"].toString()
+                    launchAuth(challenge, baseUrl)
                 } catch (e: Exception) {
                     Log.i("GETrequest", "was unsuccessful")
                 }

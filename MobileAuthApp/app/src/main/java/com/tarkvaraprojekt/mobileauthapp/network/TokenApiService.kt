@@ -22,12 +22,9 @@ private val retrofit = Retrofit.Builder().addConverterFactory(MoshiConverterFact
     .baseUrl(BASE_URL).build()
 
 interface TokenApiService {
-    @GET("something")
-    suspend fun getData(): ResponseItem
-
     @Headers("Content-Type: application/json")
-    @POST("posts")
-    suspend fun addData(@Body data: ResponseItem): Response<ResponseItem>
+    @POST("auth/authentication")
+    suspend fun postToken(@Body data: TokenItem): Response<TokenItem>
 }
 
 object TokenApi {

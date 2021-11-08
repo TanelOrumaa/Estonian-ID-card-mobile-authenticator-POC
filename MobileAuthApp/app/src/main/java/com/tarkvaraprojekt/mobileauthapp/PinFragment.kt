@@ -30,7 +30,7 @@ class PinFragment : Fragment() {
     // saving = true means that the user must be returned to the settings menu
     // reading = true means that we are reading information from the ID card that does
     //                not require PIN 1 so it is not necessary to ask it.
-    private val args: CanFragmentArgs by navArgs()
+    private val args: PinFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
