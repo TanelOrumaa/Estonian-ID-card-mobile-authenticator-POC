@@ -419,6 +419,7 @@ public class Comms {
         InternalAuthenticate[4] = (byte) (0x1d + 16 * (token.length / 16));
         InternalAuthenticate[6] = (byte) (0x11 + 16 * (token.length / 16));
         response = getResponse(token, InternalAuthenticate, "Internal Authenticate");
+
         if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != 0x00) {
             throw new RuntimeException("Signing the token failed.");
         }
@@ -428,6 +429,7 @@ public class Comms {
 
         return Arrays.copyOf(signature, indexOfTerminator);
     }
+
 
     private byte[] getResponse(byte[] data, byte[] command, String log) throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, IOException {
         byte[] response = idCard.transceive(createSecureAPDU(data, command));

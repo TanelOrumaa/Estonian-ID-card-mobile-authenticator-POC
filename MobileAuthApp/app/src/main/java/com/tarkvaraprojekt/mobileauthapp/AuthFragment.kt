@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
+import com.tarkvaraprojekt.mobileauthapp.auth.Authenticator
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
