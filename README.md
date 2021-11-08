@@ -22,7 +22,7 @@ More info about installing third party applications on the Android phones: https
 
 ### Wiki pages relevant for the "Software project" subject
 * [Project Vision](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-Vision) *last updated on 10.10*
-* [Release Notes](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Release-notes) *last updated for iteration 2 on 10.10*
+* [Release Notes](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Release-notes) *last updated for iteration3 on 08.11*
 * [Project tasks](https://tvp-mobile-authentication.atlassian.net/jira/software/projects/MOB/boards/1/backlog) (Ask Tanel for JIRA permissions if needed).
 * [Project plan](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-plan) *last updated on 10.10*
 * [Use Cases](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Cases) *last updated on 10.10*
