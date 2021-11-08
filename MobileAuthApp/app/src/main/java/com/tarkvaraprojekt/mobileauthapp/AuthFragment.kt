@@ -5,7 +5,6 @@ import android.nfc.NfcAdapter
 import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
+import com.tarkvaraprojekt.mobileauthapp.auth.AuthAppException
+import com.tarkvaraprojekt.mobileauthapp.auth.InvalidCANException
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import java.io.IOException
 import java.lang.Exception
+import java.security.GeneralSecurityException
 import kotlin.system.exitProcess
 
 /**
@@ -80,6 +83,8 @@ class AuthFragment : Fragment() {
                 requireActivity().runOnUiThread {
                     binding!!.timeCounter.text = getString(R.string.card_detected)
                 }
+                var msgCode = 0
+
                 val card = IsoDep.get(tag)
                 card.timeout = 32768
                 card.use {
@@ -95,17 +100,36 @@ class AuthFragment : Fragment() {
                         requireActivity().runOnUiThread {
                             binding!!.timeCounter.text = getString(R.string.data_read)
                         }
-                    } catch (e: Exception) {
-                        requireActivity().runOnUiThread {
-                            binding!!.timeCounter.text = getString(R.string.no_success)
-                        }
+
+                    } catch (e: android.nfc.TagLostException) {
+                        msgCode = R.string.tag_lost
+                    } catch (e: InvalidCANException) {
+                        msgCode = R.string.invalid_can
                         // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
                         viewModel.deleteCan(requireContext())
+                    } catch (e: AuthAppException) {
+                        msgCode = when (e.code) {
+                            448 -> R.string.err_bad_data
+                            500 -> R.string.err_internal
+                            else -> R.string.err_unknown
+                        }
+                    } catch (e: GeneralSecurityException) {
+                        msgCode = R.string.err_internal
+                    } catch (e: IOException) {
+                        msgCode = R.string.err_reading_card
+                    } catch (e: Exception) {
+                        msgCode = R.string.err_unknown
+                    } finally {
+                        adapter.disableReaderMode(activity)
+                    }
+
+                    if (msgCode != 0) {
+                        requireActivity().runOnUiThread {
+                            binding!!.timeCounter.text = getString(msgCode)
+                        }
                         // Gives user some time to read the error message
                         Thread.sleep(1000)
                         goToTheStart()
-                    } finally {
-                        adapter.disableReaderMode(activity)
                     }
                 }
             }, NfcAdapter.FLAG_READER_NFC_A, null)

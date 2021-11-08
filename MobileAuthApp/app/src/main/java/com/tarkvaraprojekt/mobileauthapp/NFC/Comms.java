@@ -3,6 +3,9 @@ package com.tarkvaraprojekt.mobileauthapp.NFC;
 import android.nfc.tech.IsoDep;
 import android.util.Log;
 
+import com.tarkvaraprojekt.mobileauthapp.auth.AuthAppException;
+import com.tarkvaraprojekt.mobileauthapp.auth.InvalidCANException;
+
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.macs.CMac;
@@ -209,13 +212,13 @@ public class Comms {
         Log.i("Mutual authentication", Hex.toHexString(response));
 
         // if the chip-side verification fails, crash and burn
-        if (response.length == 2) throw new RuntimeException("Invalid CAN.");
+        if (response.length == 2) throw new InvalidCANException();
 
         // otherwise verify chip's MAC and return session keys
         APDU = createAPDU(dataForMACIncomplete, publicKey.getEncoded(false), 65);
         MAC = getMAC(APDU, keyMAC);
         if (!Hex.toHexString(response, 4, 8).equals(Hex.toHexString(MAC))) {
-            throw new RuntimeException("Could not verify chip's MAC."); // Should never happen.
+            throw new AuthAppException("Could not verify chip's MAC.", 448); // Should never happen.
         }
         return new byte[][]{keyEnc, keyMAC};
 
@@ -304,7 +307,7 @@ public class Comms {
         for (int i = 0; i < FID.length; i++) {
 
             byte index = FID[i];
-            if (index > 15 || index < 1) throw new RuntimeException("Invalid personal data FID.");
+            if (index > 15 || index < 1) throw new AuthAppException("Invalid personal data FID.", 500);
 
             data[1] = index;
             APDU = createSecureAPDU(data, personal);
