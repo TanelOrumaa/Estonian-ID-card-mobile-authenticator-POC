@@ -55,9 +55,9 @@ class AuthFragment : Fragment() {
             override fun onTick(p0: Long) {
                 timeRemaining--
                 if (timeRemaining == 0) {
-                    binding!!.timeCounter.text = getString(R.string.no_time)
+                    binding?.timeCounter?.text = getString(R.string.no_time)
                 } else {
-                    binding!!.timeCounter.text = getString(R.string.time_left, timeRemaining)
+                    binding?.timeCounter?.text = getString(R.string.time_left, timeRemaining)
                 }
             }
 

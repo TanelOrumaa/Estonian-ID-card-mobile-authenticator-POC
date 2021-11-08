@@ -57,8 +57,10 @@ class HomeFragment : Fragment() {
                     intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
                     intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
                 } else { //Website
+                    // Currently the test website won't send the authUrl parameter
+                    //Log.i("intentDebugging", requireActivity().intent.data.toString())
                     intentParams.setChallenge(requireActivity().intent.data!!.getQueryParameter("challenge")!!)
-                    intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
+                    //intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
                 }
             } catch (e: Exception) {
                 // There was a problem with parameters, which means that authentication is not possible.

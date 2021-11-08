@@ -1,7 +1,6 @@
 package com.tarkvaraprojekt.mobileauthapp.model
 
 import androidx.lifecycle.ViewModel
-import com.tarkvaraprojekt.mobileauthapp.network.TokenItem
 
 class ParametersViewModel: ViewModel() {
 
