@@ -2,6 +2,7 @@ package com.tarkvaraprojekt.mobileauthapp
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.tech.IsoDep
 import android.os.Bundle
@@ -10,15 +11,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.auth.Authenticator
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
+import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
-import kotlin.concurrent.thread
+import kotlin.system.exitProcess
 
 /**
  * Fragment that asks the user to detect the ID card with mobile NFC chip.
@@ -29,7 +33,11 @@ class AuthFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
+    private val intentParameters: ParametersViewModel by activityViewModels()
+
     private var binding: FragmentAuthBinding? = null
+
+    private val args: CanFragmentArgs by navArgs()
 
     private lateinit var timer: CountDownTimer
 
@@ -50,9 +58,9 @@ class AuthFragment : Fragment() {
             override fun onTick(p0: Long) {
                 timeRemaining--
                 if (timeRemaining == 0) {
-                    binding!!.timeCounter.text = getString(R.string.no_time)
+                    binding?.timeCounter?.text = getString(R.string.no_time)
                 } else {
-                    binding!!.timeCounter.text = getString(R.string.time_left, timeRemaining)
+                    binding?.timeCounter?.text = getString(R.string.time_left, timeRemaining)
                 }
             }
 
@@ -79,14 +87,23 @@ class AuthFragment : Fragment() {
             card.use {
                 try {
                     val comms = Comms(it, viewModel.userCan)
-                    val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
-                    viewModel.setUserFirstName(response[1])
-                    viewModel.setUserLastName(response[0])
-                    viewModel.setUserIdentificationNumber(response[2])
-                    viewModel.setGender(response[3])
-                    viewModel.setCitizenship(response[4])
-                    viewModel.setExpiration(response[5])
-                    requireActivity().runOnUiThread{
+                    if (args.auth) {
+                        val jws = Authenticator(comms).authenticate(
+                            intentParameters.challenge,
+                            intentParameters.authUrl,
+                            viewModel.userPin
+                        )
+                        intentParameters.setToken(jws)
+                    } else {
+                        val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
+                        viewModel.setUserFirstName(response[1])
+                        viewModel.setUserLastName(response[0])
+                        viewModel.setUserIdentificationNumber(response[2])
+                        viewModel.setGender(response[3])
+                        viewModel.setCitizenship(response[4])
+                        viewModel.setExpiration(response[5])
+                    }
+                    requireActivity().runOnUiThread {
                         binding!!.timeCounter.text = getString(R.string.data_read)
                     }
                 } catch (e: Exception) {
@@ -107,13 +124,30 @@ class AuthFragment : Fragment() {
 
     private fun goToNextFragment() {
         timer.cancel()
-        findNavController().navigate(R.id.action_authFragment_to_userFragment)
+        if (args.auth) {
+            val action = AuthFragmentDirections.actionAuthFragmentToResultFragment(mobile = args.mobile)
+            findNavController().navigate(action)
+        } else {
+            findNavController().navigate(R.id.action_authFragment_to_userFragment)
+        }
     }
 
     private fun goToTheStart() {
         viewModel.clearUserInfo()
         timer.cancel()
-        findNavController().navigate(R.id.action_authFragment_to_homeFragment)
+        if (args.reading) {
+            findNavController().navigate(R.id.action_authFragment_to_homeFragment)
+        } else {
+            if (!args.mobile) {
+                //Currently for some reason the activity is not killed entirely. Must be looked into further.
+                requireActivity().finish()
+                exitProcess(0)
+            } else {
+                val resultIntent = Intent()
+                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+                requireActivity().finish()
+            }
+        }
     }
 
     override fun onDestroy() {

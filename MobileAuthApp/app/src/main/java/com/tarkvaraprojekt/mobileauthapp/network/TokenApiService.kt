@@ -14,20 +14,17 @@ import retrofit2.http.POST
  * Class for making HTTP requests
  * Based on https://developer.android.com/courses/pathways/android-basics-kotlin-unit-4-pathway-2
  */
-private const val BASE_URL =
-    "add-endpoint-url-here"
+const val BASE_URL =
+    "https://6bb0-85-253-195-252.ngrok.io"
 
 private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 private val retrofit = Retrofit.Builder().addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL).build()
 
 interface TokenApiService {
-    @GET("something")
-    suspend fun getData(): ResponseItem
-
     @Headers("Content-Type: application/json")
-    @POST("posts")
-    suspend fun addData(@Body data: ResponseItem): Response<ResponseItem>
+    @POST("auth/authentication")
+    suspend fun postToken(@Body data: TokenItem): Response<TokenItem>
 }
 
 object TokenApi {

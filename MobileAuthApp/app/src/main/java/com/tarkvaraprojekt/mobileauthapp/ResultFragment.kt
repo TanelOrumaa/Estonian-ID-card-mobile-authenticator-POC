@@ -11,7 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentResultBinding
+import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import com.tarkvaraprojekt.mobileauthapp.network.BASE_URL
+import com.tarkvaraprojekt.mobileauthapp.network.TokenApi
+import com.tarkvaraprojekt.mobileauthapp.network.TokenApiService
+import com.tarkvaraprojekt.mobileauthapp.network.TokenItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 /**
  * ResultFragment is used to create a JWT and to send response to the website/application
@@ -20,11 +29,11 @@ import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
  */
 class ResultFragment : Fragment() {
 
-    private val viewModel: SmartCardViewModel by activityViewModels()
+    private val paramsModel: ParametersViewModel by activityViewModels()
 
     private var binding: FragmentResultBinding? = null
 
-    private val args: CanFragmentArgs by navArgs()
+    private val args: ResultFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,15 +47,47 @@ class ResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding!!.resultBackButton.setOnClickListener {
-            if (!args.mobile) {
-                createResponse()
+//            if (args.mobile) {
+//                createResponse()
+//            }
+            postToken()
+        }
+    }
+
+    /**
+     * Makes a POST request to the backend server with a tokenItem
+     */
+    fun postToken() {
+        val tokenData = TokenItem(
+            paramsModel.token,
+            paramsModel.challenge
+        )
+        CoroutineScope(Dispatchers.Default).launch {
+            val response = TokenApi.retrofitService.postToken(tokenData)
+            Log.v("Response", response.message())
+            if (response.isSuccessful) {
+                Log.v("GREAAAT", "SUCCESSSS")
+                //Success scenario here
+            } else {
+                //Failure scenario here
+                if (args.mobile) {
+                    createResponse(false)
+                } else {
+                    //Currently for some reason the activity is not killed entirely. Must be looked into further.
+                    requireActivity().finish()
+                    exitProcess(0)
+                }
             }
         }
     }
 
-    private fun createResponse() {
+    /**
+     * Only used when the MobileAuthApp was launched by an app. Not for website use.
+     */
+    private fun createResponse(success: Boolean = true) {
+        val responseCode = if (success) AppCompatActivity.RESULT_OK else AppCompatActivity.RESULT_CANCELED
         val resultIntent = Intent()
-        requireActivity().setResult(AppCompatActivity.RESULT_OK, resultIntent)
+        requireActivity().setResult(responseCode, resultIntent)
         requireActivity().finish()
     }
 
