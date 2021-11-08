@@ -44,8 +44,10 @@ class MainActivity : AppCompatActivity() {
     private fun launchAuth(arg: String = "nothing") {
         val launchIntent = Intent()
         launchIntent.setClassName("com.tarkvaraprojekt.mobileauthapp", "com.tarkvaraprojekt.mobileauthapp.MainActivity")
-        launchIntent.putExtra("auth", true)
-        launchIntent.putExtra("nonce", arg) // Currently nothing
+        launchIntent.putExtra("action", "auth")
+        launchIntent.putExtra("challenge", "challengerValue")
+        launchIntent.putExtra("authUrl", "authUrl is here")
+        launchIntent.putExtra("mobile", true)
         authLauncher.launch(launchIntent)
     }
 

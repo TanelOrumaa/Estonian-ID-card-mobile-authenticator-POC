@@ -16,8 +16,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
+import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
+import kotlin.system.exitProcess
 
 /**
  * Fragment that asks the user to detect the ID card with mobile NFC chip.
@@ -27,6 +29,8 @@ import java.lang.Exception
 class AuthFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
+
+    private val intentParameters: ParametersViewModel by activityViewModels()
 
     private var binding: FragmentAuthBinding? = null
 
@@ -126,9 +130,15 @@ class AuthFragment : Fragment() {
         if (args.reading) {
             findNavController().navigate(R.id.action_authFragment_to_homeFragment)
         } else {
-            val resultIntent = Intent()
-            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
-            requireActivity().finish()
+            if (!args.mobile) {
+                //Currently for some reason the activity is not killed entirely. Must be looked into further.
+                requireActivity().finish()
+                exitProcess(0)
+            } else {
+                val resultIntent = Intent()
+                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+                requireActivity().finish()
+            }
         }
     }
 
