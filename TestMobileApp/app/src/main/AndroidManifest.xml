@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tarkvaraprojekt.mobileauthapp">
-
-    <uses-permission android:name="android.permission.NFC" />
+    package="com.example.testmobileapp">
 
     <application
         android:allowBackup="true"
@@ -10,7 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MobileAuthApp">
+        android:theme="@style/Theme.TestMobileApp">
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -18,13 +16,6 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <!-- for launching the app with deep links -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="authapp" android:host="start" android:path="/" />
             </intent-filter>
         </activity>
     </application>
