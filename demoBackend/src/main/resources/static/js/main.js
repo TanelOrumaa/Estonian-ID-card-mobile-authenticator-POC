@@ -45,7 +45,11 @@ function createParametrizedIntentUrl(challenge, action) {
     if (action == null) {
         console.error("There has to be an action for intent.")
     }
-    return intentUrl + "?" + "action=" + action + (challenge != null ? "&challenge=" + challenge : "");
+    else if (challenge == null) {
+        console.error("Challenge missing, can't authenticate without it.")
+    } else {
+        return intentUrl + "?" + "action=" + action + "&challenge=" + challenge + "&authUrl=" + originUrl + authenticationRequestUrl;
+    }
 }
 
 function isAndroid() {
