@@ -44,7 +44,9 @@
     <string name="auth_instruction_text">Put the ID card against the phone to establish connection</string>
     <string name="time_left">Time left %d sek</string>
     <string name="no_time">No time left</string>
-    <string name="no_success">Wrong CAN</string>
+    <string name="err_unknown">Unknown error</string>
+    <string name="invalid_can">Wrong CAN</string>
+    <string name="tag_lost">Connection between device and ID-card lost</string>
 
     <!-- string resources for UserFragment layout -->
     <string name="user_name_label">NAME</string>
@@ -75,4 +77,7 @@
     <string name="hidden_pin">****</string>
     <string name="unavailable">Settings currently unavailabe</string>
     <string name="can_save_request">CAN is currently not saved. Do you wish to save the CAN? Saved CAN will be entered automatically in the future. Saved CAN can be changed and deleted in the settings menu.</string>
+    <string name="err_reading_card">Failed to read data from the ID-card</string>
+    <string name="err_internal">Internal error</string>
+    <string name="err_bad_data">Read bad data from the ID-card, try using the card again</string>
 </resources>

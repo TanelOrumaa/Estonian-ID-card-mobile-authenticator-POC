@@ -43,7 +43,9 @@
     <string name="auth_instruction_text">ID kaardiga ühenduse loomiseks pane kaart vastu telefoni</string>
     <string name="time_left">Aega on jäänud %d sek</string>
     <string name="no_time">Aeg on otsas</string>
-    <string name="no_success">Vale CAN</string>
+    <string name="err_unknown">Tundmatu viga</string>
+    <string name="invalid_can">Vale CAN</string>
+    <string name="tag_lost">Ühendus seadme ja kaardi vahel katkes</string>
 
     <!-- string resources for UserFragment layout -->
     <string name="user_name_label">NIMI</string>
@@ -73,4 +75,7 @@
     <string name="hide">PEIDA</string>
     <string name="hidden_pin">****</string>
     <string name="unavailable">Seaded pole hetkel saadaval</string>
+    <string name="err_reading_card">Ei saanud ID-kaardilt andmeid lugeda</string>
+    <string name="err_internal">Rakendusesisene viga</string>
+    <string name="err_bad_data">ID-kaardilt loeti vigased andmed, proovi uuesti kaarti kasutada</string>
 </resources>
