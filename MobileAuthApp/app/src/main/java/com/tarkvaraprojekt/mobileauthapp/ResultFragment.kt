@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import com.google.gson.JsonObject
+import com.koushikdutta.ion.Ion
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentResultBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
@@ -58,27 +60,36 @@ class ResultFragment : Fragment() {
      * Makes a POST request to the backend server with a tokenItem
      */
     fun postToken() {
-        val tokenData = TokenItem(
-            paramsModel.token,
-            paramsModel.challenge
-        )
-        CoroutineScope(Dispatchers.Default).launch {
-            val response = TokenApi.retrofitService.postToken(tokenData)
-            Log.v("Response", response.message())
-            if (response.isSuccessful) {
-                Log.v("GREAAAT", "SUCCESSSS")
-                //Success scenario here
-            } else {
-                //Failure scenario here
-                if (args.mobile) {
-                    createResponse(false)
-                } else {
-                    //Currently for some reason the activity is not killed entirely. Must be looked into further.
-                    requireActivity().finish()
-                    exitProcess(0)
+        val json = JsonObject()
+        json.addProperty("token", paramsModel.token)
+        json.addProperty("challenge", paramsModel.challenge)
+
+        Ion.getDefault(activity).getConscryptMiddleware().enable(false)
+
+        Ion.with(activity)
+            .load("https://6bb0-85-253-195-252.ngrok.io/auth/authentication")
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback { e, result ->
+                    // do stuff with the result or error
+                    Log.i("Log thingy", result.toString())
                 }
-            }
-        }
+//        CoroutineScope(Dispatchers.Default).launch {
+//            val response = TokenApi.retrofitService.postToken(jsonBody)
+//            Log.v("Response", response.message())
+//            if (response.isSuccessful) {
+//                //Success scenario here
+//            } else {
+//                //Failure scenario here
+//                if (args.mobile) {
+//                    createResponse(false)
+//                } else {
+//                    //Currently for some reason the activity is not killed entirely. Must be looked into further.
+//                    requireActivity().finish()
+//                    exitProcess(0)
+//                }
+//            }
+//        }
     }
 
     /**

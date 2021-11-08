@@ -19,7 +19,9 @@ class AuthenticationController {
 
 
     @PostMapping("authentication", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun authenticate(@RequestBody authToken : AuthTokenDTO): Authentication {
+    fun authenticate(@RequestBody body : String): Authentication {
+        val parts = body.split("\"")
+        val authToken = AuthTokenDTO(parts[3], parts[7])
         // Create Spring Security Authentication object with supplied token as credentials.
         val auth = PreAuthenticatedAuthenticationToken(null, authToken)
 
