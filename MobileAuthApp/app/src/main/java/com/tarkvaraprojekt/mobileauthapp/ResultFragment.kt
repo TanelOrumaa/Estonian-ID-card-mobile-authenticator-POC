@@ -67,7 +67,7 @@ class ResultFragment : Fragment() {
         Ion.getDefault(activity).getConscryptMiddleware().enable(false)
 
         Ion.with(activity)
-            .load("https://6bb0-85-253-195-252.ngrok.io/auth/authentication")
+            .load(paramsModel.origin + paramsModel.authUrl)
                 .setJsonObjectBody(json)
                 .asJsonObject()
                 .setCallback { e, result ->

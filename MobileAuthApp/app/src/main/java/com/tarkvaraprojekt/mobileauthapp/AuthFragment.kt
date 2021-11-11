@@ -90,7 +90,7 @@ class AuthFragment : Fragment() {
                     if (args.auth) {
                         val jws = Authenticator(comms).authenticate(
                             intentParameters.challenge,
-                            intentParameters.authUrl,
+                            intentParameters.origin,
                             viewModel.userPin
                         )
                         intentParameters.setToken(jws)

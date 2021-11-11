@@ -11,7 +11,7 @@ function launchAuthApp(action) {
     httpGetAsync(originUrl + challengeUrl, (body) => {
         let data = JSON.parse(body);
         let challenge = data.nonce;
-        let intent = createParametrizedIntentUrl(challenge, action); // TODO: Error handling.
+        let intent = createParametrizedIntentUrl(challenge, action, originUrl); // TODO: Error handling.
         console.log(intent);
         window.location.href = intent;
         pollForAuth(POLLING_INTERVAL, challenge);
@@ -20,8 +20,8 @@ function launchAuthApp(action) {
 
 function pollForAuth(timeout, challenge) {
     console.log("Polling for auth");
-    let requestUrl = originUrl + authenticationRequestUrl + "?challenge=" + challenge;
-
+    let encodedChallenge = encodeURIComponent(challenge);
+    let requestUrl = originUrl + authenticationRequestUrl + "?challenge=" + encodedChallenge;
     let counter = 0;
     let timer = setInterval(() => {
         // Fetch authentication object.
@@ -48,7 +48,7 @@ function createParametrizedIntentUrl(challenge, action) {
     else if (challenge == null) {
         console.error("Challenge missing, can't authenticate without it.")
     } else {
-        return intentUrl + "?" + "action=" + action + "&challenge=" + challenge + "&authUrl=" + originUrl + authenticationRequestUrl;
+        return intentUrl + "?" + "action=" + action + "&challenge=" + encodeURIComponent(challenge) + "&authUrl=" + authenticationRequestUrl + "&originUrl=" + originUrl;
     }
 }
 

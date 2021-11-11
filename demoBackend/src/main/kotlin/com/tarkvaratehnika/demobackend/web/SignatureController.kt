@@ -1,6 +1,6 @@
 package com.tarkvaratehnika.demobackend.web
 
-import com.tarkvaratehnika.demobackend.security.AuthTokenDTOAuthenticationProvider.Companion.ROLE_USER
+import com.tarkvaratehnika.demobackend.config.ValidationConfiguration.Companion.ROLE_USER
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model

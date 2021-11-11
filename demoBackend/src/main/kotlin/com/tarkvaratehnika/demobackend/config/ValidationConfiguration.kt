@@ -1,6 +1,8 @@
 package com.tarkvaratehnika.demobackend.config
 
 import com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
@@ -28,14 +30,25 @@ import javax.cache.configuration.MutableConfiguration
 import javax.cache.expiry.CreatedExpiryPolicy
 import javax.cache.expiry.Duration
 
+import javax.cache.configuration.FactoryBuilder.factoryOf
+
 @Configuration
 class ValidationConfiguration {
+
+    private val LOG: Logger = LoggerFactory.getLogger(ValidationConfiguration::class.java)
 
     private val NONCE_TTL_MINUTES: Long = 5
     private val CACHE_NAME = "nonceCache"
     private val CERTS_RESOURCE_PATH = "/certs/"
     private val TRUSTED_CERTIFICATES_JKS = "trusted_certificates.jks"
     private val TRUSTSTORE_PASSWORD = "changeit"
+    companion object {
+        const val ROLE_USER : String = "ROLE_USER"
+    }
+
+    init {
+        LOG.warn("Creating new ValidationConfiguration.")
+    }
 
     @Bean
     fun cacheManager(): CacheManager {
@@ -47,7 +60,9 @@ class ValidationConfiguration {
         val cacheManager: CacheManager = cacheManager()
         var cache =
             cacheManager.getCache<String?, ZonedDateTime?>(CACHE_NAME)
+
         if (cache == null) {
+            LOG.warn("Creating new cache.")
             cache = createNonceCache(cacheManager)
         }
         return cache
@@ -65,7 +80,7 @@ class ValidationConfiguration {
         val cacheConfig: CompleteConfiguration<String, ZonedDateTime> = MutableConfiguration<String, ZonedDateTime>()
             .setTypes(String::class.java, ZonedDateTime::class.java)
             .setExpiryPolicyFactory(
-                FactoryBuilder.factoryOf(
+                factoryOf(
                     CreatedExpiryPolicy(
                         Duration(
                             TimeUnit.MINUTES,

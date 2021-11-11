@@ -26,7 +26,7 @@ class AuthenticationController {
         val auth = PreAuthenticatedAuthenticationToken(null, authToken)
 
         // Return authentication object if success.
-        return AuthTokenDTOAuthenticationProvider().authenticate(auth)
+        return AuthTokenDTOAuthenticationProvider.authenticate(auth)
     }
 
     @GetMapping("authentication", produces = [MediaType.APPLICATION_JSON_VALUE])

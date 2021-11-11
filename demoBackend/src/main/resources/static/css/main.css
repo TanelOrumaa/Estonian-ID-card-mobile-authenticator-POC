@@ -1,3 +1,7 @@
+html {
+    font-size: 4vw;
+}
+
 .cont {
     display: grid;
     width: 80%;

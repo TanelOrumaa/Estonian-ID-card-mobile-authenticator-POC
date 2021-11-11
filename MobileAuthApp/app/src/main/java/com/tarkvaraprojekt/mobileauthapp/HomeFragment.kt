@@ -14,6 +14,7 @@ import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentHomeBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
+import java.net.URLDecoder
 
 /**
  * HomeFragment is only shown to the user when then the user launches the application. When the application
@@ -29,6 +30,7 @@ class HomeFragment : Fragment() {
     private val intentParams: ParametersViewModel by activityViewModels()
 
     private var binding: FragmentHomeBinding? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,11 +58,16 @@ class HomeFragment : Fragment() {
                     // We use !! because we want an exception when something is not right.
                     intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
                     intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
+                    intentParams.setOrigin(requireActivity().intent.getStringExtra("originUrl")!!)
                 } else { //Website
                     // Currently the test website won't send the authUrl parameter
                     //Log.i("intentDebugging", requireActivity().intent.data.toString())
-                    intentParams.setChallenge(requireActivity().intent.data!!.getQueryParameter("challenge")!!)
+                    var challenge = requireActivity().intent.data!!.getQueryParameter("challenge")!!
+                    // TODO: Since due to encoding plus gets converted to space, temporary solution is to replace it back.
+                    challenge = challenge.replace(" ", "+")
+                    intentParams.setChallenge(challenge)
                     intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
+                    intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
                 }
             } catch (e: Exception) {
                 // There was a problem with parameters, which means that authentication is not possible.

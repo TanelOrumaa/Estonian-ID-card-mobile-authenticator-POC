@@ -8,7 +8,7 @@ import java.security.MessageDigest
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-class Authenticator(val comms : Comms) {
+class Authenticator(val comms: Comms) {
 
     val type = "JWT"
     val algorithm = "ES384"
@@ -36,7 +36,7 @@ class Authenticator(val comms : Comms) {
         // Get header and claims.
         val header = """{"typ":"$type","alg":"$algorithm","x5c":["$base64cert"]}"""
         val claims =
-            """{"iat":"$epoch","exp":"$exp","aud":"$originUrl","iss":"$iss","sub":"$sub","nonce":"$challenge","cnf":{"tbh":""}}"""
+            """{"iat":"$epoch","exp":"$exp","aud":["$originUrl"],"iss":"$iss","sub":"$sub","nonce":"$challenge","cnf":{"tbh":""}}"""
 
         val jwt = base64Encode(header.toByteArray(Charsets.UTF_8)) + "." + base64Encode(
             claims.toByteArray(Charsets.UTF_8)
@@ -51,7 +51,7 @@ class Authenticator(val comms : Comms) {
         return jwt + "." + base64Encode(signed)
     }
 
-    fun base64Encode(bytes: ByteArray) : String? {
+    fun base64Encode(bytes: ByteArray): String? {
         val encoded = java.util.Base64.getUrlEncoder().encodeToString(bytes)
         return encoded.replace("=", "")
     }

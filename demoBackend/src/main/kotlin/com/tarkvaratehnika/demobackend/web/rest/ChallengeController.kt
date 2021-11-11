@@ -24,6 +24,7 @@ package com.tarkvaratehnika.demobackend.web.rest
 
 import com.tarkvaratehnika.demobackend.dto.ChallengeDto
 import com.tarkvaratehnika.demobackend.security.WebEidAuthentication
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -33,10 +34,12 @@ import org.webeid.security.nonce.NonceGenerator
 @RequestMapping("auth")
 class ChallengeController (val nonceGenerator: NonceGenerator) {
 
+    private val LOG = LoggerFactory.getLogger(ChallengeController::class.java)
 
     @GetMapping("challenge")
     fun challenge(): ChallengeDto {
         val challengeDto = ChallengeDto(nonceGenerator.generateAndStoreNonce())
+        LOG.warn(challengeDto.nonce)
 //        WebEidAuthentication.addAuth(challengeDto.nonce) // For testing.
         return challengeDto
     }

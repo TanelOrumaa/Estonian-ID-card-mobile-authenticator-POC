@@ -23,6 +23,9 @@
 package com.tarkvaratehnika.demobackend.security
 
 import com.tarkvaratehnika.demobackend.config.ValidationConfiguration
+import com.tarkvaratehnika.demobackend.config.ValidationConfiguration.Companion.ROLE_USER
+import com.tarkvaratehnika.demobackend.web.rest.AuthenticationController
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
@@ -37,11 +40,11 @@ import java.security.cert.X509Certificate
 
 
 @Component
-class AuthTokenDTOAuthenticationProvider {
+object AuthTokenDTOAuthenticationProvider {
 
-    companion object {
-        const val ROLE_USER : String = "ROLE_USER"
-    }
+    private val LOG = LoggerFactory.getLogger(AuthTokenDTOAuthenticationProvider::class.java)
+
+
     private val USER_ROLE: GrantedAuthority = SimpleGrantedAuthority(ROLE_USER)
 
 
@@ -52,7 +55,6 @@ class AuthTokenDTOAuthenticationProvider {
         val authentication = auth as PreAuthenticatedAuthenticationToken
         val token = (authentication.credentials as AuthTokenDTO).token
         val challenge = (authentication.credentials as AuthTokenDTO).challenge
-
         val authorities = arrayListOf<GrantedAuthority>()
         authorities.add(USER_ROLE)
 
