@@ -60,8 +60,6 @@ class HomeFragment : Fragment() {
                     intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
                     intentParams.setOrigin(requireActivity().intent.getStringExtra("originUrl")!!)
                 } else { //Website
-                    // Currently the test website won't send the authUrl parameter
-                    //Log.i("intentDebugging", requireActivity().intent.data.toString())
                     var challenge = requireActivity().intent.data!!.getQueryParameter("challenge")!!
                     // TODO: Since due to encoding plus gets converted to space, temporary solution is to replace it back.
                     challenge = challenge.replace(" ", "+")

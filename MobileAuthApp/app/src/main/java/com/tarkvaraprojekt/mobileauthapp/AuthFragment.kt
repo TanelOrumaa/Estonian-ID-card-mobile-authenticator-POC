@@ -69,6 +69,7 @@ class AuthFragment : Fragment() {
                 goToTheStart()
             }
         }.start()
+        //binding!!.nextButton.visibility = View.INVISIBLE
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
         val adapter = NfcAdapter.getDefaultAdapter(activity)
@@ -140,8 +141,7 @@ class AuthFragment : Fragment() {
         } else {
             if (!args.mobile) {
                 //Currently for some reason the activity is not killed entirely. Must be looked into further.
-                requireActivity().finish()
-                exitProcess(0)
+                requireActivity().finishAndRemoveTask()
             } else {
                 val resultIntent = Intent()
                 requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)

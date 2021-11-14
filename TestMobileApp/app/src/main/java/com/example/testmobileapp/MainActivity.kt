@@ -5,9 +5,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.testmobileapp.databinding.ActivityMainBinding
+import com.google.gson.JsonObject
 import com.koushikdutta.ion.Ion
 
 /**
@@ -18,9 +20,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var authLauncher: ActivityResultLauncher<Intent>
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         authLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { response ->
@@ -34,19 +38,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.loginOptionNfcButton.setOnClickListener { launchAuth() }
-        //binding.loginOptionNfcButton.setOnClickListener { getData() }
+        showLogin()
+
+        binding.loginOptionNfcButton.setOnClickListener { getData() }
 
     }
 
     /**
      * Method that creates an intent to launch the MobileAuthApp
      */
-    private fun launchAuth(challenge: String = "challenge", authUrl: String = "authUrl") {
+    private fun launchAuth(challenge: String = "challenge", originUrl: String = "baseUrl", authUrl: String = "authUrl") {
         val launchIntent = Intent()
         launchIntent.setClassName("com.tarkvaraprojekt.mobileauthapp", "com.tarkvaraprojekt.mobileauthapp.MainActivity")
         launchIntent.putExtra("action", "auth")
         launchIntent.putExtra("challenge", challenge)
+        launchIntent.putExtra("originUrl", originUrl)
         launchIntent.putExtra("authUrl", authUrl)
         launchIntent.putExtra("mobile", true)
         authLauncher.launch(launchIntent)
@@ -58,8 +64,10 @@ class MainActivity : AppCompatActivity() {
      */
     private fun getData() {
         // Enter the server endpoint address to here
-        val baseUrl = "enter-base-url-here"
-        val url = "$baseUrl/auth/challenge"
+        //val originUrl = "enter-base-url-here"
+        val originUrl = "https-origin-url-here"
+        val url = "$originUrl/auth/challenge"
+        Ion.getDefault(this).conscryptMiddleware.enable(false)
         Ion.with(applicationContext)
             .load(url)
             .asJsonObject()
@@ -67,10 +75,27 @@ class MainActivity : AppCompatActivity() {
                 try {
                     // Get data from the result and call launchAuth method
                     val challenge = result.asJsonObject["nonce"].toString()
-                    launchAuth(challenge, baseUrl)
+                    launchAuth(challenge, originUrl, "/auth/authentication")
                 } catch (e: Exception) {
                     Log.i("GETrequest", "was unsuccessful")
                 }
             }
+    }
+
+    private fun showLogin() {
+        binding.loginOptions.visibility = View.VISIBLE
+    }
+
+    private fun showResult(resultObject: String, token: String) {
+        binding.loginOptions.visibility = View.GONE
+        binding.resultLayout.visibility = View.VISIBLE
+        binding.resultObject.text = resultObject
+        binding.resultToken.text = token
+        binding.buttonForget.setOnClickListener {
+            binding.resultObject.text = ""
+            binding.resultToken.text = ""
+            binding.resultLayout.visibility = View.GONE
+            binding.loginOptions.visibility = View.VISIBLE
+        }
     }
 }

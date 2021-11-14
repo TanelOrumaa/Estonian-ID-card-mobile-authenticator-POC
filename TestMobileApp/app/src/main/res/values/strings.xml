@@ -5,4 +5,5 @@
     <string name="method_nfc">NFC auth</string>
     <string name="auth_success">Successful response</string>
     <string name="auth_failure">Response failed</string>
+    <string name="forget_button">Forget</string>
 </resources>

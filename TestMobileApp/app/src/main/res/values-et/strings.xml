@@ -6,4 +6,5 @@
     <string name="method_nfc">NFC auth</string>
     <string name="auth_success">Vastus kätte saadud</string>
     <string name="auth_failure">Vastust ei õnnestunud kätte saada</string>
+    <string name="forget_button">Unusta</string>
 </resources>
