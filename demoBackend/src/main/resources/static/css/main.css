@@ -1,5 +1,10 @@
 html {
-    font-size: 4vw;
+    font-size: 2vh;
+}
+
+.navbar {
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .cont {

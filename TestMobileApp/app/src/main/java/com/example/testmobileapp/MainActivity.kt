@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun getData() {
         // Enter the server endpoint address to here
         //val originUrl = "enter-base-url-here"
-        val originUrl = "https-origin-url-here"
+        val originUrl = "https://5d0c-85-253-195-195.ngrok.io"
         val url = "$originUrl/auth/challenge"
         Ion.getDefault(this).conscryptMiddleware.enable(false)
         Ion.with(applicationContext)
@@ -74,7 +74,8 @@ class MainActivity : AppCompatActivity() {
             .setCallback { _, result ->
                 try {
                     // Get data from the result and call launchAuth method
-                    val challenge = result.asJsonObject["nonce"].toString()
+                    val challenge = result.asJsonObject["nonce"].toString().replace("\"", "")
+                    Log.v("Challenge", challenge)
                     launchAuth(challenge, originUrl, "/auth/authentication")
                 } catch (e: Exception) {
                     Log.i("GETrequest", "was unsuccessful")

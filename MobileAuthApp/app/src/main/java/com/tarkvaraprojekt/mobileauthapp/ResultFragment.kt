@@ -67,7 +67,7 @@ class ResultFragment : Fragment() {
                             requireActivity().finishAndRemoveTask()
                         }
                     } else {
-                        Log.i("Log thingy success", result.toString())
+                        Log.i("POST request response", result.toString())
                         if (args.mobile) {
                             createResponse(true, result.toString(), paramsModel.token)
                         } else {
