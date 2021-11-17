@@ -11,6 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.testmobileapp.databinding.ActivityMainBinding
 import com.google.gson.JsonObject
 import com.koushikdutta.ion.Ion
+import org.json.JSONObject
+
+/**
+ * Base url where the requests should be made. Add yours here. It must use https.
+ */
+private const val BASE_URL = "https-base-url-here"
 
 /**
  * Test mobile app to demonstrate how other applications can use MobileAuthApp.
@@ -32,6 +38,24 @@ class MainActivity : AppCompatActivity() {
                 // Currently we are not actually checking whether we get a valid token.
                 // For testing purposes only, to make sure that we are able to get a response at all.
                 binding.loginTextView.text = getString(R.string.auth_success)
+                Log.i("getResult", response.data?.getStringExtra("token").toString())
+                Log.i("getResult", response.data?.getStringExtra("result").toString())
+                var user = ""
+                try {
+                    val resultObject = JSONObject(response.data?.getStringExtra("result").toString())
+                    user = resultObject.getString("principal")
+                } catch (e: Exception) {
+                    Log.i("getResult", "unable to retrieve name from principal")
+                }
+                showResult(user)
+                /*
+                binding.loginOptionNfcButton.text = "Log Out"
+                binding.loginOptionNfcButton.setOnClickListener {
+                    binding.loginOptionNfcButton.text = "NFC auth"
+                    binding.loginOptionNfcButton.setOnClickListener { getData() }
+                }
+
+                 */
             }
             if (response.resultCode == Activity.RESULT_CANCELED) {
                 binding.loginTextView.text = getString(R.string.auth_failure)
@@ -64,9 +88,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun getData() {
         // Enter the server endpoint address to here
-        //val originUrl = "enter-base-url-here"
-        val originUrl = "https://5d0c-85-253-195-195.ngrok.io"
-        val url = "$originUrl/auth/challenge"
+        val url = "$BASE_URL/auth/challenge"
         Ion.getDefault(this).conscryptMiddleware.enable(false)
         Ion.with(applicationContext)
             .load(url)
@@ -76,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                     // Get data from the result and call launchAuth method
                     val challenge = result.asJsonObject["nonce"].toString().replace("\"", "")
                     Log.v("Challenge", challenge)
-                    launchAuth(challenge, originUrl, "/auth/authentication")
+                    launchAuth(challenge, BASE_URL, "/auth/authentication")
                 } catch (e: Exception) {
                     Log.i("GETrequest", "was unsuccessful")
                 }
@@ -87,14 +109,12 @@ class MainActivity : AppCompatActivity() {
         binding.loginOptions.visibility = View.VISIBLE
     }
 
-    private fun showResult(resultObject: String, token: String) {
+    private fun showResult(user: String) {
         binding.loginOptions.visibility = View.GONE
         binding.resultLayout.visibility = View.VISIBLE
-        binding.resultObject.text = resultObject
-        binding.resultToken.text = token
+        binding.resultObject.text = getString(R.string.hello, user)
         binding.buttonForget.setOnClickListener {
             binding.resultObject.text = ""
-            binding.resultToken.text = ""
             binding.resultLayout.visibility = View.GONE
             binding.loginOptions.visibility = View.VISIBLE
         }

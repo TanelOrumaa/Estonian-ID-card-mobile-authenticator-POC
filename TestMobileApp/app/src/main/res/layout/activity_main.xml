@@ -52,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone">
@@ -64,14 +64,7 @@
             android:layout_margin="6dp"
             android:textSize="18sp"/>
 
-        <TextView
-            android:id="@+id/result_token"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:textSize="18sp"/>
-
-        <TextView
+        <Button
             android:id="@+id/button_forget"
             android:text="@string/forget_button"
             android:layout_width="wrap_content"
