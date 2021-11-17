@@ -20,6 +20,9 @@ More info about installing third party applications on the Android phones: https
 
 **NB! Before using the application make sure that the NFC is enabled on the phone, otherwise information can not be read from the ID card.**
 
+### Testing the application
+The project comes with a test mobile application and a test web application that can be used to try the MobileAuthApp authentication feature even if you don't have any web applications or mobile applications that require user authentication. Both projects come with a README file that help with a setup.
+
 ### Wiki pages relevant for the "Software project" subject
 * [Project Vision](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-Vision) *last updated on 10.10*
 * [Release Notes](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Release-notes) *last updated for iteration3 on 08.11*
