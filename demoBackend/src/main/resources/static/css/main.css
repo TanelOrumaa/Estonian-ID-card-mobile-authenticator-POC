@@ -1,0 +1,29 @@
+html {
+    font-size: 2vh;
+}
+
+.navbar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.cont {
+    display: grid;
+    width: 80%;
+    padding-top: 10%;
+    margin-left: auto;
+    margin-right: auto;
+    justify-items: center;
+}
+
+h4 {
+    margin: 10%;
+}
+
+#loginButton {
+    width: 40%;
+}
+
+.cont > * {
+    margin: 1rem;
+}

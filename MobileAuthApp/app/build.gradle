@@ -62,6 +62,13 @@ dependencies {
     //SecureDataStoring
     implementation("androidx.security:security-crypto:1.0.0")
 
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+            'org.bouncycastle:bcprov-jdk15on:1.60',
+            'io.jsonwebtoken:jjwt-gson:0.11.2'
+
+    implementation 'com.koushikdutta.ion:ion:3.1.0'
+
     // Retrofit + Moshi Converter
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.moshi:moshi-kotlin:1.9.3'
