@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         R.id.menu_settings_option -> {
             if (menuAvailable) {
                 navigationController.navigate(R.id.action_homeFragment_to_settingsFragment)
+                menuAvailable = false
                 true
             } else {
                 Toast.makeText(this, getString(R.string.unavailable), Toast.LENGTH_SHORT).show()

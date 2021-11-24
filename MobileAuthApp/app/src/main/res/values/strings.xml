@@ -73,4 +73,20 @@
     <string name="hide">HIDE</string>
     <string name="hidden_pin">****</string>
     <string name="unavailable">Settings currently unavailable</string>
+
+    <!-- TEMPORARY SOLUTION -->
+    <string name="can_view">Please enter CAN</string>
+    <string name="hint">CAN</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="helper">CAN must be 6 digits long</string>
+    <string name="can_saved">CAN saved</string>
+    <string name="action_undo">UNDO</string>
+    <string name="pin_view">Please enter PIN 1</string>
+    <string name="hint_pin">PIN 1</string>
+    <string name="helper_pin">PIN 1 must be 4–12 digits long</string>
+    <string name="save_pin">Save PIN 1</string>
+    <string name="pin_saved">PIN saved</string>
+    <string name="pin_save_on">On</string>
+    <string name="pin_save_off">Off</string>
+    <string name="continue_button">CONTINUE</string>
 </resources>

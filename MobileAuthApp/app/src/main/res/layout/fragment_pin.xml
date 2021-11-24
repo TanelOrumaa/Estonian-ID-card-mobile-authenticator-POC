@@ -4,81 +4,116 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    tools:context=".PinFragment">
+    android:padding="@dimen/padding"
+    tools:context=".MainActivity">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_view"
+    <TextView
+        android:id="@+id/title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/margin_big"
+        android:fontFamily="sans-serif"
+        android:text="@string/pin_view"
+        android:textSize="@dimen/headline_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/stroke_color"
-        app:cardElevation="0dp">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pinTextField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big"
+        android:hint="@string/hint_pin"
+        app:counterEnabled="true"
+        app:counterMaxLength="12"
+        app:counterOverflowTextAppearance="@style/helper"
+        app:counterTextAppearance="@style/helper"
+        app:endIconMode="password_toggle"
+        app:helperText="@string/helper_pin"
+        app:helperTextEnabled="true"
+        app:helperTextTextAppearance="@style/helper"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_text">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:fontFamily="sans-serif"
+            android:inputType="numberPassword"
+            android:singleLine="true"
+            android:textSize="@dimen/regular_text" />
 
-            <TextView
-                android:id="@+id/pin_fragment_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:text="@string/pin_fragment" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/pin_edit_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:hint="@string/enter_pin"
-                app:counterEnabled="true"
-                app:counterMaxLength="12"
-                app:endIconMode="password_toggle"
-                app:errorEnabled="true"
-                app:helperText="@string/example_pin"
-                app:helperTextEnabled="true"
-                app:startIconDrawable="@drawable/can_logo">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberPassword"
-                    android:textSize="14sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <Button
-        android:id="@+id/next_button"
+    <TextView
+        android:id="@+id/save_pin_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/next_text"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cancel_button"
-        app:layout_constraintTop_toBottomOf="@id/card_view" />
-
-    <Button
-        android:id="@+id/cancel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/cancel_text"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@id/next_button"
+        android:layout_margin="@dimen/margin_big"
+        android:paddingTop="@dimen/padding"
+        android:fontFamily="sans-serif"
+        android:text="@string/save_pin"
+        android:textSize="@dimen/regular_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_view" />
+        app:layout_constraintTop_toBottomOf="@id/pinTextField" />
+
+    <LinearLayout
+        android:id="@+id/save_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/save_pin_question">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/save_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_big"
+            android:checked="true"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/save_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_big"
+            android:fontFamily="sans-serif"
+            android:text="@string/pin_save_on"
+            android:textSize="@dimen/regular_text"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big"
+        android:fontFamily="sans-serif"
+        android:text="@string/button_cancel"
+        android:textSize="@dimen/regular_text"
+        app:layout_constraintEnd_toStartOf="@+id/button_continue"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/save_layout" />
+
+    <Button
+        android:id="@+id/button_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big"
+        android:fontFamily="sans-serif"
+        android:text="@string/continue_button"
+        android:textSize="@dimen/regular_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_cancel"
+        app:layout_constraintTop_toBottomOf="@id/save_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

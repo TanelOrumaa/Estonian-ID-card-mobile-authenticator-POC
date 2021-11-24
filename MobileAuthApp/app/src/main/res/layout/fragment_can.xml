@@ -4,82 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    tools:context=".CanFragment">
+    android:padding="@dimen/padding"
+    tools:context=".MainActivity">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_view"
+    <TextView
+        android:id="@+id/title_text"
+        android:text="@string/can_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/headline_text"
+        android:layout_margin="@dimen/margin_big"
+        android:fontFamily="sans-serif"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/stroke_color"
-        app:cardElevation="0dp">
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/canTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big"
+        android:hint="@string/hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_text"
+        app:helperTextEnabled="true"
+        app:helperText="@string/helper"
+        app:helperTextTextAppearance="@style/helper"
+        app:counterEnabled="true"
+        app:counterMaxLength="6"
+        app:counterTextAppearance="@style/helper"
+        app:counterOverflowTextAppearance="@style/helper"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20sp">
+            android:textSize="@dimen/regular_text"
+            android:fontFamily="sans-serif"
+            android:inputType="number"
+            android:singleLine="true"
+            />
 
-            <TextView
-                android:id="@+id/enter_can"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:text="@string/enter_can"
-                android:textSize="20sp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/can_edit_text"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:hint="@string/text_can"
-                app:counterEnabled="true"
-                app:counterMaxLength="6"
-                app:endIconMode="password_toggle"
-                app:errorEnabled="true"
-                app:helperText="@string/example_can"
-                app:helperTextEnabled="true"
-                app:startIconDrawable="@drawable/can_logo">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberPassword"
-                    android:textSize="14sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/next_button"
+        android:id="@+id/button_cancel"
+        android:text="@string/button_cancel"
+        android:textSize="@dimen/regular_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/next_text"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cancel_button"
-        app:layout_constraintTop_toBottomOf="@id/card_view" />
-
-    <Button
-        android:id="@+id/cancel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/cancel_text"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@id/next_button"
+        android:layout_margin="@dimen/margin_big"
+        android:fontFamily="sans-serif"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_view" />
+        app:layout_constraintTop_toBottomOf="@id/canTextField" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

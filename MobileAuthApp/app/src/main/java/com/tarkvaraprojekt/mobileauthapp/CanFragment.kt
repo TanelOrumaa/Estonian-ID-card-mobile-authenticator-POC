@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -44,13 +45,10 @@ class CanFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkIfSkip()
-        // If the user arrives from the settings menu then the button should say
-        // save instead of continue.
-        if (args.saving) {
-            binding!!.nextButton.text = getString(R.string.save_text)
+        binding!!.canTextField.editText?.addTextChangedListener {
+            checkEnteredCan()
         }
-        binding!!.nextButton.setOnClickListener { checkEnteredCan() }
-        binding!!.cancelButton.setOnClickListener { goToTheStart() }
+        binding!!.buttonCancel.setOnClickListener { goToTheStart() }
     }
 
     /**
@@ -72,59 +70,11 @@ class CanFragment : Fragment() {
     }
 
     /**
-     * Checks whether the user has entered a 6 digit can to the input field.
-     * If yes then the user is allowed to continue otherwise the user is
-     * allowed to modify the entered can.
-     */
-    private fun checkEnteredCan() {
-        val enteredCan = binding!!.canEditText.editText?.text.toString()
-        if (enteredCan.length == 6) {
-            viewModel.setUserCan(enteredCan)
-            if (args.saving) {
-                viewModel.storeCan(requireContext())
-                goToTheStart()
-            } else {
-                val storeCanQuestion = getDialog()
-                storeCanQuestion?.show()
-            }
-        } else {
-            Toast.makeText(requireContext(), getString(R.string.length_can), Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    /**
-     * Builds a dialog that asks the user whether the entered CAN should be saved
-     * on the device or not.
-     */
-    private fun getDialog(): AlertDialog? {
-        return activity?.let { frag ->
-            val builder = AlertDialog.Builder(frag)
-            builder.apply {
-                // If response is positive then save the CAN on the device.
-                setPositiveButton(R.string.save_text) { _, _ ->
-                    viewModel.storeCan(
-                        requireContext()
-                    )
-                    goToTheNextFragment()
-                }
-                setNegativeButton(R.string.deny_text) { _, _ ->
-                    goToTheNextFragment()
-                }
-            }
-            builder.setMessage(R.string.can_save_request)
-            builder.setTitle(R.string.save_can_title)
-            builder.create()
-        }
-    }
-
-    /**
      * Navigates the user back to the start depending on where the user arrived.
      * If the user arrived from the settings menu then the start is the settings menu
      * not the HomeFragment.
      */
     private fun goToTheStart() {
-        // TODO: Needs special handling when the app is launched with intent. Temporary solution at the moment.
         if (args.saving) {
             findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
         } else if (args.auth || args.mobile) {
@@ -137,6 +87,24 @@ class CanFragment : Fragment() {
             }
         } else {
             findNavController().navigate(R.id.action_canFragment_to_homeFragment)
+        }
+    }
+
+    /**
+     * Checks whether the user has entered a 6 digit can to the input field.
+     * If yes then the user is allowed to continue otherwise the user is
+     * allowed to modify the entered can.
+     */
+    private fun checkEnteredCan() {
+        val enteredCan = binding!!.canTextField.editText?.text.toString()
+        if (enteredCan.length == 6) {
+            viewModel.setUserCan(enteredCan)
+            viewModel.storeCan(requireContext()) //Maybe storeCan should always automatically call setUserCan method as well because these methods usually are used together
+            if (args.saving) {
+                goToTheStart()
+            } else {
+                goToTheNextFragment()
+            }
         }
     }
 

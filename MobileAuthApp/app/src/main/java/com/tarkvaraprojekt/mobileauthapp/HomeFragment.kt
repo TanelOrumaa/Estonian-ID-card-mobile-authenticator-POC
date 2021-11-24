@@ -53,6 +53,7 @@ class HomeFragment : Fragment() {
         }
         val mobile = requireActivity().intent.getBooleanExtra("mobile", false)
         if (auth || mobile){
+
             try {
                 if (mobile) {
                     // We use !! because we want an exception when something is not right.
@@ -73,6 +74,7 @@ class HomeFragment : Fragment() {
                 requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
                 requireActivity().finish()
             }
+
             goToTheNextFragment(true, mobile)
         }
         binding!!.beginButton.setOnClickListener { goToTheNextFragment() }
