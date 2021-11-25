@@ -38,6 +38,8 @@ class HomeFragment : Fragment() {
     // The ID card reader mode is enabled on the home fragment when can is saved.
     private var canSaved: Boolean = false
 
+    // Is the app used for authentication
+    private var auth: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,57 +52,57 @@ class HomeFragment : Fragment() {
         return binding!!.root
     }
 
-    // TODO: Split the contents of onViewCreated methods into smaller separate methods
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialChecks()
-        updateAction(canSaved) // Should be called later
-        var auth = false
         if (requireActivity().intent.data?.getQueryParameter("action") != null) {
             // Currently we only support authentication not signing.
             auth = true
         }
         val mobile = requireActivity().intent.getBooleanExtra("mobile", false)
-        if (auth || mobile){
-            try {
-                if (mobile) {
-                    // We use !! because we want an exception when something is not right.
-                    intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
-                    intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
-                    intentParams.setOrigin(requireActivity().intent.getStringExtra("originUrl")!!)
-                } else { //Website
-                    var challenge = requireActivity().intent.data!!.getQueryParameter("challenge")!!
-                    // TODO: Since due to encoding plus gets converted to space, temporary solution is to replace it back.
-                    challenge = challenge.replace(" ", "+")
-                    intentParams.setChallenge(challenge)
-                    intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
-                    intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
-                }
-            } catch (e: Exception) {
-                // There was a problem with parameters, which means that authentication is not possible.
-                val resultIntent = Intent()
-                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
-                requireActivity().finish()
-            }
-
-            goToTheNextFragment(true, mobile)
+        if (auth || mobile) {
+            startAuthentication(mobile)
+        } else {
+            updateAction(canSaved)
         }
     }
 
     /**
      * Starts the process of interacting with the ID card by sending user to the CAN fragment.
-     *
-     * NOTE: This method should only be used for authentication flow in the future.
      */
-    private fun goToTheNextFragment(auth: Boolean = false, mobile: Boolean = false) {
+    private fun goToTheNextFragment(mobile: Boolean = false) {
         (activity as MainActivity).menuAvailable = false
-        if (auth) {
-            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = false, auth = true, mobile = mobile)
-            findNavController().navigate(action)
-        } else {
-            val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(reading = true, auth = false, mobile = mobile)
-            findNavController().navigate(action)
+        val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(auth = true, mobile = mobile)
+        findNavController().navigate(action)
+    }
+
+    /**
+     * Method that starts the authentication use case.
+     */
+    private fun startAuthentication(mobile: Boolean) {
+        try {
+            if (mobile) {
+                // We use !! to get extras because we want an exception to be thrown when something is missing.
+                intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
+                intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
+                intentParams.setOrigin(requireActivity().intent.getStringExtra("originUrl")!!)
+            } else { //Website
+                var challenge = requireActivity().intent.data!!.getQueryParameter("challenge")!!
+                // TODO: Since due to encoding plus gets converted to space, temporary solution is to replace it back.
+                challenge = challenge.replace(" ", "+")
+                intentParams.setChallenge(challenge)
+                intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
+                intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
+            }
+        } catch (e: Exception) {
+            // There was a problem with parameters, which means that authentication is not possible.
+            // In that case we will cancel the authentication immediately as it would be waste of the user's time to carry on
+            // before eventual error.
+            val resultIntent = Intent()
+            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+            requireActivity().finish()
         }
+        goToTheNextFragment(mobile)
     }
 
     /**
@@ -160,11 +162,22 @@ class HomeFragment : Fragment() {
         } else {
             binding!!.detectionActionText.text = getString(R.string.action_detect_unavailable)
         }
-
     }
 
-    // TODO: When error occurs it should be cleared within a reasonable timeframe and it should be possible to detect cards again
-    // TODO: Listen to system broadcasts to detect if NFC is turned on/off during when the app is working
+    /**
+     * Resets the error message and allows the user to try again
+     */
+    private fun reset() {
+        binding!!.buttonAgain.setOnClickListener {
+            updateAction(canSaved)
+            binding!!.buttonAgain.visibility = View.GONE
+        }
+        binding!!.buttonAgain.visibility = View.VISIBLE
+    }
+
+    /**
+     * Method that enables the NFC reader mode, which allows the app to communicate with the ID card and retrieve information.
+     */
     private fun enableReaderMode() {
         val adapter = NfcAdapter.getDefaultAdapter(activity)
         if (adapter == null) {
@@ -192,8 +205,16 @@ class HomeFragment : Fragment() {
                         }
                     } catch (e: Exception) {
                         when(e) {
-                            is TagLostException -> requireActivity().runOnUiThread { binding!!.detectionActionText.text = getString(R.string.id_card_removed_early)}
-                            else -> requireActivity().runOnUiThread { binding!!.detectionActionText.text = getString(R.string.nfc_reading_error) }
+                            is TagLostException -> requireActivity().runOnUiThread {
+                                binding!!.detectionActionText.text = getString(R.string.id_card_removed_early)
+                                reset()
+                            }
+                            else -> requireActivity().runOnUiThread {
+                                binding!!.detectionActionText.text = getString(R.string.nfc_reading_error)
+                                viewModel.deleteCan(requireContext())
+                                canState()
+                                reset()
+                            }
                         }
                     } finally {
                         adapter.disableReaderMode(activity)

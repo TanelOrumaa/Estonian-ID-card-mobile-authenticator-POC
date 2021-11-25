@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.tarkvaraprojekt.mobileauthapp.MainActivity
 import com.tarkvaraprojekt.mobileauthapp.R
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentSettingsBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
@@ -67,6 +68,7 @@ class SettingsFragment : Fragment() {
             viewModel.deleteCan(requireContext())
             showCanField()
         } else {
+            (activity as MainActivity).inMenu = false
             val action = SettingsFragmentDirections.actionSettingsFragmentToCanFragment(saving = true)
             findNavController().navigate(action)
         }
@@ -101,6 +103,7 @@ class SettingsFragment : Fragment() {
             viewModel.deletePin(requireContext())
             showPinField()
         } else {
+            (activity as MainActivity).inMenu = false
             val action = SettingsFragmentDirections.actionSettingsFragmentToPinFragment(saving = true)
             findNavController().navigate(action)
         }
@@ -130,6 +133,7 @@ class SettingsFragment : Fragment() {
      * Navigates back to home fragment.
      */
     private fun backToHome() {
+        (activity as MainActivity).inMenu = false
         findNavController().navigate(R.id.action_settingsFragment_to_homeFragment)
     }
 

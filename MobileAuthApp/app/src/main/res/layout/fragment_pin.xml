@@ -90,20 +90,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_big"
-        android:fontFamily="sans-serif"
-        android:text="@string/button_cancel"
-        android:textSize="@dimen/regular_text"
-        app:layout_constraintEnd_toStartOf="@+id/button_continue"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/save_layout" />
-
-    <Button
         android:id="@+id/button_continue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -111,9 +97,18 @@
         android:fontFamily="sans-serif"
         android:text="@string/continue_button"
         android:textSize="@dimen/regular_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_cancel"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/save_layout" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big"
+        android:fontFamily="sans-serif"
+        android:text="@string/button_cancel"
+        android:textSize="@dimen/regular_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_continue" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
