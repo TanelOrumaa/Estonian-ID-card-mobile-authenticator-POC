@@ -18,6 +18,9 @@
             android:id="@+id/action_homeFragment_to_canFragment"
             app:destination="@id/canFragment"
             app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_userFragment"
+            app:destination="@id/userFragment" />
     </fragment>
     <fragment
         android:id="@+id/pinFragment"

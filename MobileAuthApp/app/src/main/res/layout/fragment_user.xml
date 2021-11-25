@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
+    android:padding="@dimen/padding"
     tools:context=".UserFragment">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,86 +23,86 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20sp">
+            android:padding="@dimen/padding_tiny">
 
             <TextView
                 android:id="@+id/user_name_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/user_name_label"
-                android:textSize="14sp" />
+                android:textSize="@dimen/regular_text" />
 
             <TextView
                 android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/user_name"
-                android:textSize="20sp"
+                android:textSize="@dimen/regular_text"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/identification_number_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/margin_big"
                 android:text="@string/identification_number_label"
-                android:textSize="14sp" />
+                android:textSize="@dimen/regular_text" />
 
             <TextView
                 android:id="@+id/identification_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="20sp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textSize="@dimen/regular_text"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/gender_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/margin_big"
                 android:text="@string/gender_label"
-                android:textSize="14sp" />
+                android:textSize="@dimen/regular_text" />
 
             <TextView
                 android:id="@+id/gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="20sp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textSize="@dimen/regular_text"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/expiration_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/margin_big"
                 android:text="@string/expiration_label"
-                android:textSize="14sp" />
+                android:textSize="@dimen/regular_text" />
 
             <TextView
                 android:id="@+id/expiration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="20sp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textSize="@dimen/regular_text"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/citizenship_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/margin_big"
                 android:text="@string/citizenship_label"
-                android:textSize="14sp" />
+                android:textSize="@dimen/regular_text" />
 
             <TextView
                 android:id="@+id/citizenship"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="20sp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:textSize="@dimen/regular_text"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -113,9 +113,9 @@
         android:id="@+id/clear_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/margin_big"
         android:text="@string/clear_button"
-        android:textSize="18sp"
+        android:textSize="@dimen/regular_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_view" />

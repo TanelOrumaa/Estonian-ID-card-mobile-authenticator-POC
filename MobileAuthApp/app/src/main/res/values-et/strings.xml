@@ -40,7 +40,7 @@
     <string name="can_save_request">Praegu ei ole rakenduses CAN salvestatud. Kas sa soovid sisestatud CANi salvestada? Sellisel juhul sisestatakse see järgmisel korral automaatselt. Salvestatud CANi saab alati menüüs muuta ja kustutada.</string>    <string name="save_can_title">Salvesta CAN</string>
 
     <!-- string resources for AuthFragment layout -->
-    <string name="auth_instruction_text">ID kaardiga ühenduse loomiseks pane kaart vastu telefoni</string>
+    <string name="auth_instruction_text">Pane ID kaart vastu telefoni</string>
     <string name="time_left">Aega on jäänud %d sek</string>
     <string name="no_time">Aeg on otsas</string>
     <string name="no_success">Vale CAN</string>
@@ -89,4 +89,11 @@
     <string name="pin_save_on">On</string>
     <string name="pin_save_off">Off</string>
     <string name="continue_button">CONTINUE</string>
+
+    <!-- TEMPORARY HOME FRAGMENT STRINGS -->
+    <string name="action_detect">Put the ID card against the phone to detect it</string>
+    <string name="action_detect_unavailable">CAN must be added before ID card can be detected</string>
+    <string name="nfc_not_available">NFC is not turned on or is not supported by the phone</string>
+    <string name="nfc_reading_error">The provided CAN does not match the ID card</string>
+    <string name="id_card_removed_early">ID card was removed too eraly</string>
 </resources>
