@@ -97,4 +97,5 @@
     <string name="nfc_reading_error">The provided CAN does not match the ID card</string>
     <string name="id_card_removed_early">ID card was removed too early</string>
     <string name="try_again">Try Again</string>
+    <string name="wrong_pin">Wrong PIN 1. Tries on the card left %s</string>
 </resources>

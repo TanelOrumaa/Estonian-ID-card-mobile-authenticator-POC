@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/padding">
+            android:padding="@dimen/padding_small">
 
             <TextView
                 android:id="@+id/auth_fragment_instruction"
@@ -36,10 +36,11 @@
 
             <ImageView
                 android:id="@+id/nfc_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/logo_big"
+                android:layout_height="@dimen/logo_big"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/margin"
+                android:padding="@dimen/margin_huge"
                 android:src="@drawable/nfc_logo" />
 
             <TextView
@@ -47,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin"
-                android:textSize="@dimen/helper_text"
+                android:textSize="@dimen/regular_text"
                 app:layout_constraintTop_toBottomOf="@id/auth_fragment_instruction"
                 tools:text="@string/time_left" />
 
@@ -72,9 +73,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_big"
+        android:layout_marginStart="@dimen/padding_tiny"
         android:text="@string/cancel_text"
         android:textSize="@dimen/regular_text"
-        app:layout_constraintEnd_toStartOf="@id/next_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_view" />
 

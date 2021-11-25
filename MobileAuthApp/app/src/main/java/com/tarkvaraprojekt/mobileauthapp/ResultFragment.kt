@@ -39,8 +39,19 @@ class ResultFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.resultBackButton.visibility = View.GONE
         postToken()
+    }
+
+    /**
+     * Only used when the MobileAuthApp was launched by an app. Not for website use.
+     */
+    private fun createResponse(success: Boolean = true, result: String = "noResult", token: String = "noToken") {
+        val responseCode = if (success) AppCompatActivity.RESULT_OK else AppCompatActivity.RESULT_CANCELED
+        val resultIntent = Intent()
+        resultIntent.putExtra("result", result)
+        resultIntent.putExtra("token", token)
+        requireActivity().setResult(responseCode, resultIntent)
+        requireActivity().finish()
     }
 
     /**
@@ -75,18 +86,6 @@ class ResultFragment : Fragment() {
                         }
                     }
                 }
-    }
-
-    /**
-     * Only used when the MobileAuthApp was launched by an app. Not for website use.
-     */
-    private fun createResponse(success: Boolean = true, result: String = "noResult", token: String = "noToken") {
-        val responseCode = if (success) AppCompatActivity.RESULT_OK else AppCompatActivity.RESULT_CANCELED
-        val resultIntent = Intent()
-        resultIntent.putExtra("result", result)
-        resultIntent.putExtra("token", token)
-        requireActivity().setResult(responseCode, resultIntent)
-        requireActivity().finish()
     }
 
     override fun onDestroy() {

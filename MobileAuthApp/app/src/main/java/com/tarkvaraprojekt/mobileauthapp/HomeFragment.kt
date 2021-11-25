@@ -78,6 +78,8 @@ class HomeFragment : Fragment() {
 
     /**
      * Method that starts the authentication use case.
+     *
+     * NOTE: Comment out try-catch block when testing without backend
      */
     private fun startAuthentication(mobile: Boolean) {
         try {
