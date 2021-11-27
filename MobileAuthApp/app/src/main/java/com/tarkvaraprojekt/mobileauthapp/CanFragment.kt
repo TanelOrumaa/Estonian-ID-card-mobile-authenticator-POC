@@ -29,8 +29,6 @@ class CanFragment : Fragment() {
 
     // Navigation arguments:
     // saving = true means that we are navigating here from the settings menu and must return to the settings menu.
-    // reading = true means that we are only reading the information from the ID card that does not need PIN 1,
-    //                this information is passed on to the next PinFragment.
     private val args: CanFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -65,7 +63,7 @@ class CanFragment : Fragment() {
      * Takes user to the next fragment, which is PinFragment.
      */
     private fun goToTheNextFragment() {
-        val action = CanFragmentDirections.actionCanFragmentToPinFragment(reading = args.reading, auth = args.auth, mobile = args.mobile)
+        val action = CanFragmentDirections.actionCanFragmentToPinFragment(auth = args.auth, mobile = args.mobile)
         findNavController().navigate(action)
     }
 
@@ -76,7 +74,11 @@ class CanFragment : Fragment() {
      */
     private fun goToTheStart() {
         if (args.saving) {
-            findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
+            if (args.fromhome) {
+                findNavController().navigate(R.id.action_canFragment_to_homeFragment)
+            } else {
+                findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
+            }
         } else if (args.auth || args.mobile) {
             if (args.mobile) {
                 val resultIntent = Intent()

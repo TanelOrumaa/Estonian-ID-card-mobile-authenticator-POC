@@ -34,7 +34,7 @@ class AuthFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
-    private val intentParameters: ParametersViewModel by activityViewModels()
+    private val paramsModel: ParametersViewModel by activityViewModels()
 
     private var binding: FragmentAuthBinding? = null
 
@@ -67,17 +67,18 @@ class AuthFragment : Fragment() {
 
             override fun onFinish() {
                 Thread.sleep(750)
-                goToTheStart()
+                cancelAuth()
             }
         }.start()
+        // The button exists in code for testing reasons, but not visible to the user anymore unless visibility is changed in the code.
         binding!!.nextButton.visibility = View.GONE
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
-        binding!!.cancelButton.setOnClickListener { goToTheStart() }
+        binding!!.cancelButton.setOnClickListener { cancelAuth() }
         val adapter = NfcAdapter.getDefaultAdapter(activity)
         if (adapter != null)
             getInfoFromIdCard(adapter)
-        else { // If we don't have access to an NFC adapter then we can't detect an ID card, maybe should tell the user reason as well
-            goToTheStart()
+        else { // If NFC adapter can not be detected then end the auth process as it is not possible to read an ID card
+            cancelAuth()
         }
     }
 
@@ -87,7 +88,7 @@ class AuthFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun goToTheStart() {
+    private fun cancelAuth() {
         viewModel.clearUserInfo()
         timer.cancel()
         if (args.mobile) {
@@ -111,11 +112,11 @@ class AuthFragment : Fragment() {
                 try {
                     val comms = Comms(it, viewModel.userCan)
                     val jws = Authenticator(comms).authenticate(
-                        intentParameters.challenge,
-                        intentParameters.origin,
+                        paramsModel.challenge,
+                        paramsModel.origin,
                         viewModel.userPin
                     )
-                    intentParameters.setToken(jws)
+                    paramsModel.setToken(jws)
                     requireActivity().runOnUiThread {
                         goToNextFragment()
                     }
@@ -129,8 +130,8 @@ class AuthFragment : Fragment() {
                                     binding!!.timeCounter.text = getString(R.string.wrong_pin, messagePieces[messagePieces.size - 1])
                                     viewModel.deletePin(requireContext())
                                 }
-                                else -> {
-                                    binding!!.timeCounter.text = getString(R.string.no_success)
+                                else -> requireActivity().runOnUiThread {
+                                    binding!!.timeCounter.text = getString(R.string.wrong_can_text)
                                     viewModel.deleteCan(requireContext())
                                 }
                             }
@@ -138,7 +139,7 @@ class AuthFragment : Fragment() {
                     }
                     // Give user some time to read the error message
                     Thread.sleep(2000)
-                    goToTheStart()
+                    cancelAuth()
                 } finally {
                     adapter.disableReaderMode(activity)
                 }

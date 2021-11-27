@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                 true
             } else {
                 if (!inMenu) {
-                    Toast.makeText(this, getString(R.string.unavailable), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.menu_unavailable_message), Toast.LENGTH_SHORT).show()
                 }
                 false
             }

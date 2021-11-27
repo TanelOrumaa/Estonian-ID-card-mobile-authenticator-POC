@@ -30,7 +30,7 @@
         app:counterOverflowTextAppearance="@style/helper"
         app:counterTextAppearance="@style/helper"
         app:endIconMode="password_toggle"
-        app:helperText="@string/helper_pin"
+        app:helperText="@string/pin_helper_text"
         app:helperTextEnabled="true"
         app:helperTextTextAppearance="@style/helper"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_big"
         android:fontFamily="sans-serif"
-        android:text="@string/button_cancel"
+        android:text="@string/cancel_text"
         android:textSize="@dimen/regular_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_continue" />

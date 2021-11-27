@@ -68,17 +68,13 @@ class ResultFragment : Fragment() {
                 .setJsonObjectBody(json)
                 .asJsonObject()
                 .setCallback { e, result ->
-                    // do stuff with the result or error
                     if (result == null) {
-                        // TODO: Set auth message failed and close the app
-                        Log.i("Log thingy fail", "result was null")
                         if (args.mobile) {
                             createResponse(false)
                         } else {
                             requireActivity().finishAndRemoveTask()
                         }
                     } else {
-                        Log.i("POST request response", result.toString())
                         if (args.mobile) {
                             createResponse(true, result.toString(), paramsModel.token)
                         } else {

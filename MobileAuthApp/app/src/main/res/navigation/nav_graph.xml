@@ -46,10 +46,6 @@
             app:destination="@id/authFragment"
             app:popUpTo="@id/homeFragment" />
         <argument
-            android:name="reading"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
             android:name="auth"
             app:argType="boolean"
             android:defaultValue="false" />
@@ -82,15 +78,15 @@
             app:destination="@id/pinFragment"
             app:popUpTo="@id/homeFragment" />
         <argument
-            android:name="reading"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
             android:name="auth"
             app:argType="boolean"
             android:defaultValue="false" />
         <argument
             android:name="mobile"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="fromhome"
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>
@@ -114,10 +110,6 @@
             app:popUpTo="@id/homeFragment" />
         <argument
             android:name="auth"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
-            android:name="reading"
             app:argType="boolean"
             android:defaultValue="false" />
         <argument

@@ -28,8 +28,6 @@ class PinFragment : Fragment() {
 
     // Navigation arguments:
     // saving = true means that the user must be returned to the settings menu
-    // reading = true means that we are reading information from the ID card that does
-    //                not require PIN 1 so it is not necessary to ask it.
     private val args: PinFragmentArgs by navArgs()
 
     // TODO: Should be persistent and read when launching the app
@@ -69,7 +67,7 @@ class PinFragment : Fragment() {
      * Takes user to the next fragment, which is AuthFragment.
      */
     private fun goToTheNextFragment() {
-        val action = PinFragmentDirections.actionPinFragmentToAuthFragment(reading = args.reading, auth = args.auth, mobile = args.mobile)
+        val action = PinFragmentDirections.actionPinFragmentToAuthFragment(auth = args.auth, mobile = args.mobile)
         findNavController().navigate(action)
     }
 
@@ -97,13 +95,9 @@ class PinFragment : Fragment() {
      * Checks if the current fragment can be skipped or not.
      * If the user has PIN 1 saved on the device or PIN 1 is not required
      * then the PIN 1 won't be asked.
-     *
-     * NOTE: maybe args.reading can be removed after changing the nav_graph
      */
     private fun checkIfSkip() {
-        if (args.reading) {
-            goToTheNextFragment()
-        } else if (viewModel.userPin.length in 4..12) {
+        if (viewModel.userPin.length in 4..12) {
             goToTheNextFragment()
         }
     }
@@ -127,7 +121,7 @@ class PinFragment : Fragment() {
                 goToTheNextFragment()
             }
         } else {
-            Toast.makeText(requireContext(), getString(R.string.length_pin), Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(), getString(R.string.pin_helper_text), Toast.LENGTH_SHORT)
                 .show()
         }
     }

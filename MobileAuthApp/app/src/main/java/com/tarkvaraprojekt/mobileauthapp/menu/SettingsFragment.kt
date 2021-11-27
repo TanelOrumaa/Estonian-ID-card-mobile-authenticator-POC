@@ -55,7 +55,7 @@ class SettingsFragment : Fragment() {
             binding!!.canMenuAction.text = getString(R.string.can_delete)
         } else {
             binding!!.canSaved.text = getString(R.string.saved_can, getString(R.string.missing))
-            binding!!.canMenuAction.text = getString(R.string.can_add)
+            binding!!.canMenuAction.text = getString(R.string.add_can_text)
         }
     }
 

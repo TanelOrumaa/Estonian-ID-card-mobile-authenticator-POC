@@ -1,11 +1,12 @@
 package com.tarkvaraprojekt.mobileauthapp
 
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import android.nfc.NfcAdapter
 import android.nfc.TagLostException
 import android.nfc.tech.IsoDep
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,6 @@ import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentHomeBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
-import java.net.URLDecoder
 
 /**
  * HomeFragment is only shown to the user when then the user launches the application. When the application
@@ -99,7 +99,7 @@ class HomeFragment : Fragment() {
         } catch (e: Exception) {
             // There was a problem with parameters, which means that authentication is not possible.
             // In that case we will cancel the authentication immediately as it would be waste of the user's time to carry on
-            // before eventual error.
+            // before getting an inevitable error.
             val resultIntent = Intent()
             requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
             requireActivity().finish()
@@ -161,8 +161,15 @@ class HomeFragment : Fragment() {
         if (canIsSaved) {
             binding!!.detectionActionText.text = getString(R.string.action_detect)
             enableReaderMode()
+            binding!!.homeActionButton.visibility = View.GONE
         } else {
             binding!!.detectionActionText.text = getString(R.string.action_detect_unavailable)
+            binding!!.homeActionButton.text = getString(R.string.add_can_text)
+            binding!!.homeActionButton.setOnClickListener {
+                val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(saving = true, fromhome = true)
+                findNavController().navigate(action)
+            }
+            binding!!.homeActionButton.visibility = View.VISIBLE
         }
     }
 
@@ -170,11 +177,11 @@ class HomeFragment : Fragment() {
      * Resets the error message and allows the user to try again
      */
     private fun reset() {
-        binding!!.buttonAgain.setOnClickListener {
+        binding!!.homeActionButton.text = getString(R.string.try_again_text)
+        binding!!.homeActionButton.setOnClickListener {
             updateAction(canSaved)
-            binding!!.buttonAgain.visibility = View.GONE
         }
-        binding!!.buttonAgain.visibility = View.VISIBLE
+        binding!!.homeActionButton.visibility = View.VISIBLE
     }
 
     /**
