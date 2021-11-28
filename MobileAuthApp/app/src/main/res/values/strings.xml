@@ -73,4 +73,6 @@
     <string name="hide">HIDE</string>
     <string name="hidden_pin">****</string>
     <string name="menu_unavailable_message">Settings are currently unavailable</string>
+    <string name="can_deleted">CAN deleted</string>
+    <string name="pin_deleted">PIN 1 deleted</string>
 </resources>

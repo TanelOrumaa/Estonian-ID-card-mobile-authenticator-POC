@@ -3,9 +3,11 @@ package com.tarkvaraprojekt.mobileauthapp
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -13,8 +15,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentCanBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import org.w3c.dom.Text
 
 /**
  * Fragment that deals with asking the user for a six digit CAN. If the CAN is already saved
@@ -93,6 +97,16 @@ class CanFragment : Fragment() {
     }
 
     /**
+     * Method that creates and shows a snackbar that tells the user that CAN has been saved
+     */
+    private fun showSnackbar() {
+        val snackbar = Snackbar.make(requireView(), R.string.can_status_saved, Snackbar.LENGTH_SHORT)
+        val snackbarText: TextView = snackbar.view.findViewById(R.id.snackbar_text)
+        snackbarText.setTextSize(TypedValue.COMPLEX_UNIT_SP, resources.getDimension(R.dimen.small_text))
+        snackbar.show()
+    }
+
+    /**
      * Checks whether the user has entered a 6 digit can to the input field.
      * If yes then the user is allowed to continue otherwise the user is
      * allowed to modify the entered can.
@@ -102,6 +116,7 @@ class CanFragment : Fragment() {
         if (enteredCan.length == 6) {
             viewModel.setUserCan(enteredCan)
             viewModel.storeCan(requireContext()) //Maybe storeCan should always automatically call setUserCan method as well because these methods usually are used together
+            showSnackbar()
             if (args.saving) {
                 goToTheStart()
             } else {

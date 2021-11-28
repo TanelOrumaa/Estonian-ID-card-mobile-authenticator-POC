@@ -1,17 +1,22 @@
 package com.tarkvaraprojekt.mobileauthapp
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentPinBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 
@@ -30,7 +35,6 @@ class PinFragment : Fragment() {
     // saving = true means that the user must be returned to the settings menu
     private val args: PinFragmentArgs by navArgs()
 
-    // TODO: Should be persistent and read when launching the app
     private var saveToggle = true
 
     override fun onCreateView(
@@ -50,11 +54,19 @@ class PinFragment : Fragment() {
             binding!!.savePinQuestion.visibility = View.GONE
             binding!!.saveLayout.visibility = View.GONE
         } else {
+            saveToggle =
+                activity?.getPreferences(Context.MODE_PRIVATE)?.getBoolean("saveToggle", true) == true //Android Studio recommendation to get rid of Boolean?.
+            Log.i("myLogging", activity?.getPreferences(Context.MODE_PRIVATE)?.getBoolean("saveToggle", true).toString())
+            if (!saveToggle) {
+                binding!!.saveSwitch.isChecked = false
+            }
             binding!!.saveSwitch.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     binding!!.saveStatus.text = getString(R.string.pin_save_on)
+                    activity?.getPreferences(Context.MODE_PRIVATE)?.edit()?.putBoolean("saveToggle", true)?.apply()
                 } else {
                     binding!!.saveStatus.text = getString(R.string.pin_save_off)
+                    activity?.getPreferences(Context.MODE_PRIVATE)?.edit()?.putBoolean("saveToggle", false)?.apply()
                 }
                 saveToggle = !saveToggle
             }
@@ -103,6 +115,16 @@ class PinFragment : Fragment() {
     }
 
     /**
+     * Method that creates and shows a snackbar that tells the user that PIN 1 has been saved
+     */
+    private fun showSnackbar() {
+        val snackbar = Snackbar.make(requireView(), R.string.pin_status_saved, Snackbar.LENGTH_SHORT)
+        val snackbarText: TextView = snackbar.view.findViewById(R.id.snackbar_text)
+        snackbarText.setTextSize(TypedValue.COMPLEX_UNIT_SP, resources.getDimension(R.dimen.small_text))
+        snackbar.show()
+    }
+
+    /**
      * Checks whether the user has entered a PIN 1 with length between [4, 12] in the
      * input field. If yes then the user is allowed to continue otherwise the user is
      * allowed to modify the entered PIN 1.
@@ -113,10 +135,12 @@ class PinFragment : Fragment() {
             viewModel.setUserPin(enteredPin)
             if (args.saving) {
                 viewModel.storePin(requireContext())
+                showSnackbar()
                 goToTheStart()
             } else {
                 if (saveToggle) {
                     viewModel.storePin(requireContext())
+                    showSnackbar()
                 }
                 goToTheNextFragment()
             }

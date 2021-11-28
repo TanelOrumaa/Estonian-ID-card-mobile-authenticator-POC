@@ -74,4 +74,6 @@
     <string name="hide">PEIDA</string>
     <string name="hidden_pin">****</string>
     <string name="menu_unavailable_message">Seaded pole hetkel saadaval</string>
+    <string name="can_deleted">CAN kustatud</string>
+    <string name="pin_deleted">PIN 1 kustatud</string>
 </resources>

@@ -78,7 +78,7 @@ class AuthFragment : Fragment() {
         if (adapter != null)
             getInfoFromIdCard(adapter)
         else { // If NFC adapter can not be detected then end the auth process as it is not possible to read an ID card
-            cancelAuth()
+            cancelAuth() // It would be a good idea to show user some notification as it might be confusing if the app suddenly closes
         }
     }
 

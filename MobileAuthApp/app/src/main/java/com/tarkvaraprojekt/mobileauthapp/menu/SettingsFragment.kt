@@ -1,13 +1,16 @@
 package com.tarkvaraprojekt.mobileauthapp.menu
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.tarkvaraprojekt.mobileauthapp.MainActivity
 import com.tarkvaraprojekt.mobileauthapp.R
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentSettingsBinding
@@ -47,6 +50,16 @@ class SettingsFragment : Fragment() {
     }
 
     /**
+     * Method for showing a snackbar with a message that is given as a parameter
+     */
+    private fun showSnackbar(message: String) {
+        val snackbar = Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT)
+        val snackbarText: TextView = snackbar.view.findViewById(R.id.snackbar_text)
+        snackbarText.setTextSize(TypedValue.COMPLEX_UNIT_SP, resources.getDimension(R.dimen.small_text))
+        snackbar.show()
+    }
+
+    /**
      * Method for showing the CAN field to the user and can be used to refresh the field as well.
      */
     private fun showCanField() {
@@ -67,6 +80,7 @@ class SettingsFragment : Fragment() {
         if (viewModel.userCan.length == 6) {
             viewModel.deleteCan(requireContext())
             showCanField()
+            showSnackbar(getString(R.string.can_deleted))
         } else {
             (activity as MainActivity).inMenu = false
             val action = SettingsFragmentDirections.actionSettingsFragmentToCanFragment(saving = true)
@@ -102,6 +116,7 @@ class SettingsFragment : Fragment() {
         if (viewModel.userPin.length in 4..12) {
             viewModel.deletePin(requireContext())
             showPinField()
+            showSnackbar(getString(R.string.pin_deleted))
         } else {
             (activity as MainActivity).inMenu = false
             val action = SettingsFragmentDirections.actionSettingsFragmentToPinFragment(saving = true)
