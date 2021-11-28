@@ -1,12 +1,15 @@
 package com.tarkvaraprojekt.mobileauthapp
 
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.nfc.NfcAdapter
 import android.nfc.TagLostException
 import android.nfc.tech.IsoDep
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +44,8 @@ class HomeFragment : Fragment() {
     // Is the app used for authentication
     private var auth: Boolean = false
 
+    private var receiver: BroadcastReceiver? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,6 +68,13 @@ class HomeFragment : Fragment() {
         if (auth || mobile) {
             startAuthentication(mobile)
         } else {
+            receiver = object : BroadcastReceiver() {
+                override fun onReceive(p0: Context?, p1: Intent?) {
+                    updateAction(canSaved)
+                }
+            }
+            val filter = IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
+            requireActivity().registerReceiver(receiver, filter)
             updateAction(canSaved)
         }
     }
@@ -189,7 +201,7 @@ class HomeFragment : Fragment() {
      */
     private fun enableReaderMode() {
         val adapter = NfcAdapter.getDefaultAdapter(activity)
-        if (adapter == null) {
+        if (adapter == null || !adapter.isEnabled) {
             binding!!.detectionActionText.text = getString(R.string.nfc_not_available)
         } else {
             adapter.enableReaderMode(activity, { tag ->
@@ -235,6 +247,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        requireActivity().unregisterReceiver(receiver)
         binding = null
     }
 }
