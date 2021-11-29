@@ -1,123 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/padding"
-    tools:context=".UserFragment">
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_view"
+    android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/stroke_color"
-        app:cardElevation="0dp">
+        android:layout_height="match_parent"
+        android:padding="@dimen/padding"
+        tools:context=".UserFragment">
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_tiny">
+            android:layout_margin="@dimen/margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/stroke_color"
+            app:cardElevation="0dp">
 
-            <TextView
-                android:id="@+id/user_name_label"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/user_name_label"
-                android:textSize="@dimen/regular_text" />
+                android:orientation="vertical"
+                android:padding="@dimen/padding_tiny">
 
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@string/user_name"
-                android:textSize="@dimen/regular_text"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/user_name_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_name_label"
+                    android:textSize="@dimen/regular_text" />
 
-            <TextView
-                android:id="@+id/identification_number_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_big"
-                android:text="@string/identification_number_label"
-                android:textSize="@dimen/regular_text" />
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@string/user_name"
+                    android:textSize="@dimen/regular_text"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/identification_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:textSize="@dimen/regular_text"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/identification_number_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_big"
+                    android:text="@string/identification_number_label"
+                    android:textSize="@dimen/regular_text" />
 
-            <TextView
-                android:id="@+id/gender_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_big"
-                android:text="@string/gender_label"
-                android:textSize="@dimen/regular_text" />
+                <TextView
+                    android:id="@+id/identification_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/regular_text"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/gender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:textSize="@dimen/regular_text"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/gender_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_big"
+                    android:text="@string/gender_label"
+                    android:textSize="@dimen/regular_text" />
 
-            <TextView
-                android:id="@+id/expiration_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_big"
-                android:text="@string/expiration_label"
-                android:textSize="@dimen/regular_text" />
+                <TextView
+                    android:id="@+id/gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/regular_text"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/expiration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:textSize="@dimen/regular_text"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/expiration_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_big"
+                    android:text="@string/expiration_label"
+                    android:textSize="@dimen/regular_text" />
 
-            <TextView
-                android:id="@+id/citizenship_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_big"
-                android:text="@string/citizenship_label"
-                android:textSize="@dimen/regular_text" />
+                <TextView
+                    android:id="@+id/expiration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/regular_text"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/citizenship"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:textSize="@dimen/regular_text"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/citizenship_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_big"
+                    android:text="@string/citizenship_label"
+                    android:textSize="@dimen/regular_text" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/citizenship"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/regular_text"
+                    android:textStyle="bold" />
 
-    </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-    <Button
-        android:id="@+id/clear_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_big"
-        android:text="@string/return_text"
-        android:textSize="@dimen/regular_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_view" />
+        </com.google.android.material.card.MaterialCardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/clear_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_big"
+            android:text="@string/return_text"
+            android:textSize="@dimen/regular_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_view" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
