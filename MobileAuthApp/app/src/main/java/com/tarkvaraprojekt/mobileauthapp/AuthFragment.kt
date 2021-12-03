@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.nfc.NfcAdapter
+import android.nfc.TagLostException
 import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -33,7 +34,7 @@ class AuthFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
-    private val intentParameters: ParametersViewModel by activityViewModels()
+    private val paramsModel: ParametersViewModel by activityViewModels()
 
     private var binding: FragmentAuthBinding? = null
 
@@ -66,15 +67,37 @@ class AuthFragment : Fragment() {
 
             override fun onFinish() {
                 Thread.sleep(750)
-                goToTheStart()
+                cancelAuth()
             }
         }.start()
-        //binding!!.nextButton.visibility = View.INVISIBLE
+        // The button exists in code for testing reasons, but not visible to the user anymore unless visibility is changed in the code.
+        binding!!.nextButton.visibility = View.GONE
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
-        binding!!.cancelButton.setOnClickListener { goToTheStart() }
+        binding!!.cancelButton.setOnClickListener { cancelAuth() }
         val adapter = NfcAdapter.getDefaultAdapter(activity)
         if (adapter != null)
             getInfoFromIdCard(adapter)
+        else { // If NFC adapter can not be detected then end the auth process as it is not possible to read an ID card
+            cancelAuth() // It would be a good idea to show user some notification as it might be confusing if the app suddenly closes
+        }
+    }
+
+    private fun goToNextFragment() {
+        timer.cancel()
+        val action = AuthFragmentDirections.actionAuthFragmentToResultFragment(mobile = args.mobile)
+        findNavController().navigate(action)
+    }
+
+    private fun cancelAuth() {
+        viewModel.clearUserInfo()
+        timer.cancel()
+        if (args.mobile) {
+            val resultIntent = Intent()
+            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+            requireActivity().finish()
+        } else {
+            requireActivity().finishAndRemoveTask()
+        }
     }
 
     private fun getInfoFromIdCard(adapter: NfcAdapter) {
@@ -88,66 +111,40 @@ class AuthFragment : Fragment() {
             card.use {
                 try {
                     val comms = Comms(it, viewModel.userCan)
-                    if (args.auth) {
-                        val jws = Authenticator(comms).authenticate(
-                            intentParameters.challenge,
-                            intentParameters.origin,
-                            viewModel.userPin
-                        )
-                        intentParameters.setToken(jws)
-                    } else {
-                        val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
-                        viewModel.setUserFirstName(response[1])
-                        viewModel.setUserLastName(response[0])
-                        viewModel.setUserIdentificationNumber(response[2])
-                        viewModel.setGender(response[3])
-                        viewModel.setCitizenship(response[4])
-                        viewModel.setExpiration(response[5])
-                    }
+                    val jws = Authenticator(comms).authenticate(
+                        paramsModel.challenge,
+                        paramsModel.origin,
+                        viewModel.userPin
+                    )
+                    paramsModel.setToken(jws)
                     requireActivity().runOnUiThread {
-                        binding!!.timeCounter.text = getString(R.string.data_read)
+                        goToNextFragment()
                     }
                 } catch (e: Exception) {
-                    requireActivity().runOnUiThread {
-                        binding!!.timeCounter.text = getString(R.string.no_success)
+                    when(e) {
+                        is TagLostException -> requireActivity().runOnUiThread { binding!!.timeCounter.text = getString(R.string.id_card_removed_early) }
+                        else -> {
+                            when ("invalid pin") {
+                                in e.message.toString().lowercase() -> requireActivity().runOnUiThread {
+                                    val messagePieces = e.message.toString().split(" ")
+                                    binding!!.timeCounter.text = getString(R.string.wrong_pin, messagePieces[messagePieces.size - 1])
+                                    viewModel.deletePin(requireContext())
+                                }
+                                else -> requireActivity().runOnUiThread {
+                                    binding!!.timeCounter.text = getString(R.string.wrong_can_text)
+                                    viewModel.deleteCan(requireContext())
+                                }
+                            }
+                        }
                     }
-                    // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
-                    viewModel.deleteCan(requireContext())
-                    // Gives user some time to read the error message
-                    Thread.sleep(1000)
-                    goToTheStart()
+                    // Give user some time to read the error message
+                    Thread.sleep(2000)
+                    cancelAuth()
                 } finally {
                     adapter.disableReaderMode(activity)
                 }
             }
         }, NfcAdapter.FLAG_READER_NFC_A, null)
-    }
-
-    private fun goToNextFragment() {
-        timer.cancel()
-        if (args.auth) {
-            val action = AuthFragmentDirections.actionAuthFragmentToResultFragment(mobile = args.mobile)
-            findNavController().navigate(action)
-        } else {
-            findNavController().navigate(R.id.action_authFragment_to_userFragment)
-        }
-    }
-
-    private fun goToTheStart() {
-        viewModel.clearUserInfo()
-        timer.cancel()
-        if (args.reading) {
-            findNavController().navigate(R.id.action_authFragment_to_homeFragment)
-        } else {
-            if (!args.mobile) {
-                //Currently for some reason the activity is not killed entirely. Must be looked into further.
-                requireActivity().finishAndRemoveTask()
-            } else {
-                val resultIntent = Intent()
-                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
-                requireActivity().finish()
-            }
-        }
     }
 
     override fun onDestroy() {

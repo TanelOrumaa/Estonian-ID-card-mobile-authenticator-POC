@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     // If true the settings menu can be accessed from the toolbar in the upper part of the screen.
     var menuAvailable: Boolean = true
 
+    var inMenu: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
@@ -40,9 +42,13 @@ class MainActivity : AppCompatActivity() {
         R.id.menu_settings_option -> {
             if (menuAvailable) {
                 navigationController.navigate(R.id.action_homeFragment_to_settingsFragment)
+                menuAvailable = false
+                inMenu = true
                 true
             } else {
-                Toast.makeText(this, getString(R.string.unavailable), Toast.LENGTH_SHORT).show()
+                if (!inMenu) {
+                    Toast.makeText(this, getString(R.string.menu_unavailable_message), Toast.LENGTH_SHORT).show()
+                }
                 false
             }
         }
