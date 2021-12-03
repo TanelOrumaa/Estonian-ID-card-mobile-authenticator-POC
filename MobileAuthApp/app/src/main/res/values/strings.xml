@@ -24,6 +24,9 @@
     <string name="pin_status_negative">PIN 1 not saved</string>
     <string name="can_status_saved">CAN saved</string>
     <string name="can_status_negative">CAN not saved</string>
+    <string name="help_text">HELP</string>
+    <string name="can_question">What is CAN?</string>
+    <string name="can_explanation">CAN is a 6 digit code that is needed to communicate with an ID card. It can be found on the ID card under the card holder\'s picture with a title KASUTAJA ALLKIRI/HOLDER\'S SIGNATURE.</string>
 
     <!-- string resources for PinFragment -->
     <string name="pin_view">Please enter PIN 1</string>

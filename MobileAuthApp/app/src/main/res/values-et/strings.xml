@@ -25,6 +25,9 @@
     <string name="pin_status_negative">PIN 1 ei ole salvestatud</string>
     <string name="can_status_saved">CAN on salvestatud</string>
     <string name="can_status_negative">CAN ei ole salvestatud</string>
+    <string name="help_text">INFO</string>
+    <string name="can_question">Mis on CAN?</string>
+    <string name="can_explanation">CAN on 6 kohaline numbritest koosnev kood, mida on vaja ID kaardiga suhtlemiseks. CAN-i leiab ID kaardilt omaniku pildi alt pealkirjaga KASUTAJA ALLKIRI/HOLDER\'S SIGNATURE.</string>
 
     <!-- string resources for PinFragment -->
     <string name="pin_view">Palun sisesta PIN 1</string>

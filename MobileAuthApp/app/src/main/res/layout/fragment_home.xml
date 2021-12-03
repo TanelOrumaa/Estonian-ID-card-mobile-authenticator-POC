@@ -112,4 +112,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/id_card_detection"/>
 
+    <Button
+        android:id="@+id/home_help_button"
+        android:textSize="@dimen/regular_text"
+        android:text="@string/help_text"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_huge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="?attr/materialButtonOutlinedStyle"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_action_button"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

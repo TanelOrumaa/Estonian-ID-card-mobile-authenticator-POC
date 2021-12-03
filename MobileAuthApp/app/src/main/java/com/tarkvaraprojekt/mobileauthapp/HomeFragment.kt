@@ -13,10 +13,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentHomeBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
@@ -167,6 +170,20 @@ class HomeFragment : Fragment() {
     }
 
     /**
+     * Displays a help message to the user explaining what the CAN is
+     */
+    private fun displayMessage() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.can_question))
+            .setMessage(getString(R.string.can_explanation))
+            .setPositiveButton(R.string.return_text){_, _ -> }
+            .show()
+        val title = dialog.findViewById<TextView>(R.id.alertTitle)
+        title?.textSize = 24F
+
+    }
+
+    /**
      * Informs user whether the ID card can be detected or not.
      */
     private fun updateAction(canIsSaved: Boolean) {
@@ -174,6 +191,7 @@ class HomeFragment : Fragment() {
             binding!!.detectionActionText.text = getString(R.string.action_detect)
             enableReaderMode()
             binding!!.homeActionButton.visibility = View.GONE
+            binding!!.homeHelpButton.visibility = View.GONE
         } else {
             binding!!.detectionActionText.text = getString(R.string.action_detect_unavailable)
             binding!!.homeActionButton.text = getString(R.string.add_can_text)
@@ -181,7 +199,11 @@ class HomeFragment : Fragment() {
                 val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(saving = true, fromhome = true)
                 findNavController().navigate(action)
             }
+            binding!!.homeHelpButton.setOnClickListener {
+                displayMessage()
+            }
             binding!!.homeActionButton.visibility = View.VISIBLE
+            binding!!.homeHelpButton.visibility = View.VISIBLE
         }
     }
 
