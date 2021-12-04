@@ -72,6 +72,14 @@ class CanFragment : Fragment() {
     }
 
     /**
+     * Saves the entered CAN and notifies the user about it
+     */
+    private fun saveCan() {
+        viewModel.storeCan(requireContext())
+        Toast.makeText(requireContext(), getString(R.string.can_status_saved), Toast.LENGTH_SHORT).show()
+    }
+
+    /**
      * Checks whether the user has entered a 6 digit can to the input field.
      * If yes then the user is allowed to continue otherwise the user is
      * allowed to modify the entered can.
@@ -81,7 +89,7 @@ class CanFragment : Fragment() {
         if (enteredCan.length == 6) {
             viewModel.setUserCan(enteredCan)
             if (args.saving) {
-                viewModel.storeCan(requireContext())
+                saveCan()
                 goToTheStart()
             } else {
                 val storeCanQuestion = getDialog()
@@ -103,9 +111,7 @@ class CanFragment : Fragment() {
             builder.apply {
                 // If response is positive then save the CAN on the device.
                 setPositiveButton(R.string.save_text) { _, _ ->
-                    viewModel.storeCan(
-                        requireContext()
-                    )
+                    saveCan()
                     goToTheNextFragment()
                 }
                 setNegativeButton(R.string.deny_text) { _, _ ->

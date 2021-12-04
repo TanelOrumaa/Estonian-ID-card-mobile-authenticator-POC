@@ -120,6 +120,9 @@ class AuthFragment : Fragment() {
                         viewModel.deleteCan(requireContext())
                     } catch (e: AuthAppException) {
                         msgCode = when (e.code) {
+                            400 -> R.string.err_parameter
+                            401 -> R.string.err_authentication
+                            446 -> R.string.err_card_locked
                             448 -> R.string.err_bad_data
                             500 -> R.string.err_internal
                             else -> R.string.err_unknown
