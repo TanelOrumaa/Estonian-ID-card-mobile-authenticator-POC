@@ -67,7 +67,8 @@ class HomeFragment : Fragment() {
             // Currently we only support authentication not signing.
             auth = true
         }
-        val mobile = requireActivity().intent.getBooleanExtra("mobile", false)
+        var mobile = requireActivity().intent.getBooleanExtra("mobile", false)
+        mobile = true
         if (auth || mobile) {
             startAuthentication(mobile)
         } else {
@@ -111,15 +112,29 @@ class HomeFragment : Fragment() {
                 intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
                 intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
             }
+            goToTheNextFragment(mobile)
         } catch (e: Exception) {
             // There was a problem with parameters, which means that authentication is not possible.
             // In that case we will cancel the authentication immediately as it would be waste of the user's time to carry on
             // before getting an inevitable error.
-            val resultIntent = Intent()
-            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
-            requireActivity().finish()
+            val message = MaterialAlertDialogBuilder(requireContext())
+            message.setTitle(getString(R.string.problem_parameters))
+            if (intentParams.challenge == "") {
+                message.setMessage(getString(R.string.problem_challenge))
+            } else if (intentParams.authUrl == "") {
+                message.setMessage(getString(R.string.problem_authurl))
+            } else if (intentParams.origin == "") {
+                message.setMessage(getString(R.string.problem_originurl))
+            } else {
+                message.setMessage(getString(R.string.problem_other))
+            }
+            message.setPositiveButton(getString(R.string.continue_button)) {_, _ ->
+                val resultIntent = Intent()
+                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+                requireActivity().finish()
+            }
+            message.show()
         }
-        goToTheNextFragment(mobile)
     }
 
     /**
@@ -172,10 +187,10 @@ class HomeFragment : Fragment() {
     /**
      * Displays a help message to the user explaining what the CAN is
      */
-    private fun displayMessage() {
+    private fun displayMessage(title: String, message: String) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.can_question))
-            .setMessage(getString(R.string.can_explanation))
+            .setTitle(title)
+            .setMessage(message)
             .setPositiveButton(R.string.return_text){_, _ -> }
             .show()
         val title = dialog.findViewById<TextView>(R.id.alertTitle)
@@ -200,7 +215,7 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(action)
             }
             binding!!.homeHelpButton.setOnClickListener {
-                displayMessage()
+                displayMessage(getString(R.string.can_question), getString(R.string.can_explanation))
             }
             binding!!.homeActionButton.visibility = View.VISIBLE
             binding!!.homeHelpButton.visibility = View.VISIBLE
@@ -269,7 +284,9 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        requireActivity().unregisterReceiver(receiver)
+        if (receiver != null) {
+            requireActivity().unregisterReceiver(receiver)
+        }
         binding = null
     }
 }
