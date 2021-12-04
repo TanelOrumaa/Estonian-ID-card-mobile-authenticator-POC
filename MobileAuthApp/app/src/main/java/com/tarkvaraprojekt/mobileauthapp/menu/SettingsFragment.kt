@@ -25,7 +25,8 @@ class SettingsFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
-    private var binding: FragmentSettingsBinding? = null
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private var showPin: Boolean = false
 
@@ -34,8 +35,8 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,10 +44,10 @@ class SettingsFragment : Fragment() {
         showCanField()
         showPinField()
         togglePinButton()
-        binding!!.canMenuAction.setOnClickListener { canAction() }
-        binding!!.pinMenuAction.setOnClickListener { pinAction() }
-        binding!!.pinMenuShow.setOnClickListener { togglePin() }
-        binding!!.returnButton.setOnClickListener { backToHome() }
+        binding.canMenuAction.setOnClickListener { canAction() }
+        binding.pinMenuAction.setOnClickListener { pinAction() }
+        binding.pinMenuShow.setOnClickListener { togglePin() }
+        binding.returnButton.setOnClickListener { backToHome() }
     }
 
     /**
@@ -64,11 +65,11 @@ class SettingsFragment : Fragment() {
      */
     private fun showCanField() {
         if (viewModel.userCan.length == 6) {
-            binding!!.canSaved.text = getString(R.string.saved_can, viewModel.userCan)
-            binding!!.canMenuAction.text = getString(R.string.can_delete)
+            binding.canSaved.text = getString(R.string.saved_can, viewModel.userCan)
+            binding.canMenuAction.text = getString(R.string.can_delete)
         } else {
-            binding!!.canSaved.text = getString(R.string.saved_can, getString(R.string.missing))
-            binding!!.canMenuAction.text = getString(R.string.add_can_text)
+            binding.canSaved.text = getString(R.string.saved_can, getString(R.string.missing))
+            binding.canMenuAction.text = getString(R.string.add_can_text)
         }
     }
 
@@ -95,16 +96,16 @@ class SettingsFragment : Fragment() {
      */
     private fun showPinField() {
         if (viewModel.userPin.length in 4..12) {
-            binding!!.pinMenuShow.visibility = Button.VISIBLE
+            binding.pinMenuShow.visibility = Button.VISIBLE
             if (showPin)
-                binding!!.pinSaved.text = getString(R.string.saved_pin, viewModel.userPin)
+                binding.pinSaved.text = getString(R.string.saved_pin, viewModel.userPin)
             else
-                binding!!.pinSaved.text = getString(R.string.saved_pin, getString(R.string.hidden_pin))
-            binding!!.pinMenuAction.text = getString(R.string.pin1_delete)
+                binding.pinSaved.text = getString(R.string.saved_pin, getString(R.string.hidden_pin))
+            binding.pinMenuAction.text = getString(R.string.pin1_delete)
         } else {
-            binding!!.pinMenuShow.visibility = Button.GONE
-            binding!!.pinSaved.text = getString(R.string.saved_pin, getString(R.string.missing))
-            binding!!.pinMenuAction.text = getString(R.string.pin1_add)
+            binding.pinMenuShow.visibility = Button.GONE
+            binding.pinSaved.text = getString(R.string.saved_pin, getString(R.string.missing))
+            binding.pinMenuAction.text = getString(R.string.pin1_add)
         }
     }
 
@@ -138,9 +139,9 @@ class SettingsFragment : Fragment() {
      */
     private fun togglePinButton() {
         if (showPin) {
-            binding!!.pinMenuShow.text = getString(R.string.hide)
+            binding.pinMenuShow.text = getString(R.string.hide)
         } else {
-            binding!!.pinMenuShow.text = getString(R.string.show)
+            binding.pinMenuShow.text = getString(R.string.show)
         }
     }
 
@@ -154,7 +155,7 @@ class SettingsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 
 }

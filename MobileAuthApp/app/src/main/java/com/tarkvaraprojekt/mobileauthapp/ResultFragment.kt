@@ -24,7 +24,8 @@ class ResultFragment : Fragment() {
 
     private val paramsModel: ParametersViewModel by activityViewModels()
 
-    private var binding: FragmentResultBinding? = null
+    private var _binding: FragmentResultBinding? = null
+    private val binding get() = _binding!!
 
     private val args: ResultFragmentArgs by navArgs()
 
@@ -33,8 +34,8 @@ class ResultFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentResultBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentResultBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,7 +87,7 @@ class ResultFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 
 }

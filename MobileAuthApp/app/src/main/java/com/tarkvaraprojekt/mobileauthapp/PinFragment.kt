@@ -29,7 +29,8 @@ class PinFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
-    private var binding: FragmentPinBinding? = null
+    private var _binding: FragmentPinBinding? = null
+    private val binding get() = _binding!!
 
     // Navigation arguments:
     // saving = true means that the user must be returned to the settings menu
@@ -42,8 +43,8 @@ class PinFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPinBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentPinBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,28 +52,27 @@ class PinFragment : Fragment() {
         checkIfSkip()
         // Switch should be not visible when user is in savings mode
         if (args.saving) {
-            binding!!.savePinQuestion.visibility = View.GONE
-            binding!!.saveLayout.visibility = View.GONE
+            binding.savePinQuestion.visibility = View.GONE
+            binding.saveLayout.visibility = View.GONE
         } else {
             saveToggle =
                 activity?.getPreferences(Context.MODE_PRIVATE)?.getBoolean("saveToggle", true) == true //Android Studio recommendation to get rid of Boolean?.
-            Log.i("myLogging", activity?.getPreferences(Context.MODE_PRIVATE)?.getBoolean("saveToggle", true).toString())
             if (!saveToggle) {
-                binding!!.saveSwitch.isChecked = false
+                binding.saveSwitch.isChecked = false
             }
-            binding!!.saveSwitch.setOnCheckedChangeListener { _, isChecked ->
+            binding.saveSwitch.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    binding!!.saveStatus.text = getString(R.string.pin_save_on)
+                    binding.saveStatus.text = getString(R.string.pin_save_on)
                     activity?.getPreferences(Context.MODE_PRIVATE)?.edit()?.putBoolean("saveToggle", true)?.apply()
                 } else {
-                    binding!!.saveStatus.text = getString(R.string.pin_save_off)
+                    binding.saveStatus.text = getString(R.string.pin_save_off)
                     activity?.getPreferences(Context.MODE_PRIVATE)?.edit()?.putBoolean("saveToggle", false)?.apply()
                 }
                 saveToggle = !saveToggle
             }
         }
-        binding!!.buttonContinue.setOnClickListener { checkEnteredPin() }
-        binding!!.buttonCancel.setOnClickListener { goToTheStart() }
+        binding.buttonContinue.setOnClickListener { checkEnteredPin() }
+        binding.buttonCancel.setOnClickListener { goToTheStart() }
     }
 
     /**
@@ -130,7 +130,7 @@ class PinFragment : Fragment() {
      * allowed to modify the entered PIN 1.
      */
     private fun checkEnteredPin() {
-        val enteredPin = binding!!.pinTextField.editText?.text.toString()
+        val enteredPin = binding.pinTextField.editText?.text.toString()
         if (enteredPin.length in 4..12) {
             viewModel.setUserPin(enteredPin)
             if (args.saving) {
@@ -152,6 +152,6 @@ class PinFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 }

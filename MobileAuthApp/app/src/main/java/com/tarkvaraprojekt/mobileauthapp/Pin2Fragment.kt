@@ -19,23 +19,24 @@ class Pin2Fragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
-    private var binding: FragmentPin2Binding? = null
+    private var _binding: FragmentPin2Binding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPin2Binding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentPin2Binding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.nextButton.setOnClickListener {
+        binding.nextButton.setOnClickListener {
             checkPin2Length()
         }
-        binding!!.cancelButton.setOnClickListener {
+        binding.cancelButton.setOnClickListener {
             cancel()
         }
     }
@@ -45,7 +46,7 @@ class Pin2Fragment : Fragment() {
      * then it is saved to the viewModel.
      */
     private fun checkPin2Length() {
-        val enteredPin2 = binding!!.pin2EditText.editText?.text.toString()
+        val enteredPin2 = binding.pin2EditText.editText?.text.toString()
         if (enteredPin2.length in 5..12) {
             viewModel.setUserPin2(enteredPin2)
         } else {
@@ -66,7 +67,7 @@ class Pin2Fragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 
 }

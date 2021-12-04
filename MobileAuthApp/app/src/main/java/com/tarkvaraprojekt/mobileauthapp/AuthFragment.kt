@@ -36,7 +36,8 @@ class AuthFragment : Fragment() {
 
     private val paramsModel: ParametersViewModel by activityViewModels()
 
-    private var binding: FragmentAuthBinding? = null
+    private var _binding: FragmentAuthBinding? = null
+    private val binding get() = _binding!!
 
     private val args: CanFragmentArgs by navArgs()
 
@@ -49,8 +50,8 @@ class AuthFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAuthBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentAuthBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,9 +60,9 @@ class AuthFragment : Fragment() {
             override fun onTick(p0: Long) {
                 timeRemaining--
                 if (timeRemaining == 0) {
-                    binding?.timeCounter?.text = getString(R.string.no_time)
+                    binding.timeCounter.text = getString(R.string.no_time)
                 } else {
-                    binding?.timeCounter?.text = getString(R.string.time_left, timeRemaining)
+                    binding.timeCounter.text = getString(R.string.time_left, timeRemaining)
                 }
             }
 
@@ -71,9 +72,9 @@ class AuthFragment : Fragment() {
             }
         }.start()
         // The button exists in code for testing reasons, but not visible to the user anymore unless visibility is changed in the code.
-        binding!!.nextButton.visibility = View.GONE
-        binding!!.nextButton.setOnClickListener { goToNextFragment() }
-        binding!!.cancelButton.setOnClickListener { cancelAuth() }
+        binding.nextButton.visibility = View.GONE
+        binding.nextButton.setOnClickListener { goToNextFragment() }
+        binding.cancelButton.setOnClickListener { cancelAuth() }
         val adapter = NfcAdapter.getDefaultAdapter(activity)
         if (adapter != null)
             getInfoFromIdCard(adapter)
@@ -104,7 +105,7 @@ class AuthFragment : Fragment() {
         adapter.enableReaderMode(activity, { tag ->
             timer.cancel()
             requireActivity().runOnUiThread {
-                binding!!.timeCounter.text = getString(R.string.card_detected)
+                binding.timeCounter.text = getString(R.string.card_detected)
             }
             val card = IsoDep.get(tag)
             card.timeout = 32768
@@ -127,11 +128,11 @@ class AuthFragment : Fragment() {
                             when ("invalid pin") {
                                 in e.message.toString().lowercase() -> requireActivity().runOnUiThread {
                                     val messagePieces = e.message.toString().split(" ")
-                                    binding!!.timeCounter.text = getString(R.string.wrong_pin, messagePieces[messagePieces.size - 1])
+                                    binding.timeCounter.text = getString(R.string.wrong_pin, messagePieces[messagePieces.size - 1])
                                     viewModel.deletePin(requireContext())
                                 }
                                 else -> requireActivity().runOnUiThread {
-                                    binding!!.timeCounter.text = getString(R.string.wrong_can_text)
+                                    binding.timeCounter.text = getString(R.string.wrong_can_text)
                                     viewModel.deleteCan(requireContext())
                                 }
                             }
@@ -149,6 +150,6 @@ class AuthFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 }
