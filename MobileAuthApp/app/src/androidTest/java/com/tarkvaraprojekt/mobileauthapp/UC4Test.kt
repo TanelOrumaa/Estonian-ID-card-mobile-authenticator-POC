@@ -1,9 +1,9 @@
 package com.tarkvaraprojekt.mobileauthapp
 
 import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingPolicies
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.*
@@ -12,7 +12,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
-import org.junit.Assert.*
 
 import org.junit.*
 import org.junit.runner.RunWith
@@ -27,8 +26,8 @@ class UC4Test {
 
     @Before
     fun setUp() {
-        IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.SECONDS)
-        IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.SECONDS)
+        IdlingPolicies.setMasterPolicyTimeout(3, TimeUnit.SECONDS)
+        IdlingPolicies.setIdlingResourceTimeout(3, TimeUnit.SECONDS)
         activityActivityTestRule.activity
             .supportFragmentManager.beginTransaction()
     }
@@ -37,14 +36,36 @@ class UC4Test {
     fun tearDown() {
     }
 
-    @Test
-    fun test() {
+    fun navigateToCANView() {
         onView(withId(R.id.menu_settings_option)).perform(click())
+        try {
+            // Delete existing CAN
+            onView(withText(R.string.can_delete)).perform(click())
+        } catch (ignore: NoMatchingViewException) {}
+
         onView(withId(R.id.can_menu_action)).perform(click())
+    }
+
+    @Test
+    fun validCAN() {
+        navigateToCANView()
         onView(supportsInputMethods()).perform(typeText("123456"))
         onView(withId(R.id.next_button)).perform(click())
+
         onView(withText(R.string.can_status_saved)).inRoot(
             withDecorView(not(`is`(activityActivityTestRule.activity.getWindow().getDecorView())))
         ).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun invalidCAN() {
+        navigateToCANView()
+        onView(supportsInputMethods()).perform(typeText("12345"))
+        onView(withId(R.id.next_button)).perform(click())
+
+        onView(withText(R.string.length_can)).inRoot(
+            withDecorView(not(`is`(activityActivityTestRule.activity.getWindow().getDecorView())))
+        ).check(matches(isDisplayed()))
+        onView(withId(R.id.next_button)).check(matches(isDisplayed()))
     }
 }
