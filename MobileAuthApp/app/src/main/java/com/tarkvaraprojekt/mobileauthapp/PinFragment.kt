@@ -128,10 +128,14 @@ class PinFragment : Fragment() {
     private fun goToTheStart() {
         if (args.saving) {
             findNavController().navigate(R.id.action_canFragment_to_settingsFragment)
-        } else if (args.auth) {
-            val resultIntent = Intent()
-            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
-            requireActivity().finish()
+        } else if (args.auth || args.mobile) {
+            if (args.mobile) {
+                val resultIntent = Intent()
+                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+                requireActivity().finish()
+            } else {
+                requireActivity().finishAndRemoveTask()
+            }
         } else {
             findNavController().navigate(R.id.action_canFragment_to_homeFragment)
         }

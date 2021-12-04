@@ -13,6 +13,9 @@ class ParametersViewModel: ViewModel() {
     private var _token: String = ""
     val token get() = _token
 
+    private var _origin: String = ""
+    val origin get() = _origin
+
     fun setChallenge(newChallenge: String) {
         _challenge = newChallenge
     }
@@ -23,5 +26,9 @@ class ParametersViewModel: ViewModel() {
 
     fun setToken(newToken: String) {
         _token = newToken
+    }
+
+    fun setOrigin(newOrigin: String) {
+        _origin = newOrigin
     }
 }

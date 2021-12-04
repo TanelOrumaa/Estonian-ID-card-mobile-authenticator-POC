@@ -16,6 +16,7 @@ import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.auth.AuthAppException
 import com.tarkvaraprojekt.mobileauthapp.auth.InvalidCANException
+import com.tarkvaraprojekt.mobileauthapp.auth.Authenticator
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
@@ -69,6 +70,7 @@ class AuthFragment : Fragment() {
                 goToTheStart()
             }
         }.start()
+        //binding!!.nextButton.visibility = View.INVISIBLE
         binding!!.nextButton.setOnClickListener { goToNextFragment() }
         binding!!.cancelButton.setOnClickListener { goToTheStart() }
         val adapter = NfcAdapter.getDefaultAdapter(activity)
@@ -77,19 +79,26 @@ class AuthFragment : Fragment() {
     }
 
     private fun getInfoFromIdCard(adapter: NfcAdapter) {
-        if (args.reading) {
-            adapter.enableReaderMode(activity, { tag ->
-                timer.cancel()
-                requireActivity().runOnUiThread {
-                    binding!!.timeCounter.text = getString(R.string.card_detected)
-                }
-                var msgCode = 0
+        adapter.enableReaderMode(activity, { tag ->
+            timer.cancel()
+            requireActivity().runOnUiThread {
+                binding!!.timeCounter.text = getString(R.string.card_detected)
+            }
+            var msgCode = 0
 
-                val card = IsoDep.get(tag)
-                card.timeout = 32768
-                card.use {
-                    try {
-                        val comms = Comms(it, viewModel.userCan)
+            val card = IsoDep.get(tag)
+            card.timeout = 32768
+            card.use {
+                try {
+                    val comms = Comms(it, viewModel.userCan)
+                    if (args.auth) {
+                        val jws = Authenticator(comms).authenticate(
+                            intentParameters.challenge,
+                            intentParameters.origin,
+                            viewModel.userPin
+                        )
+                        intentParameters.setToken(jws)
+                    } else {
                         val response = comms.readPersonalData(byteArrayOf(1, 2, 6, 3, 4, 8))
                         viewModel.setUserFirstName(response[1])
                         viewModel.setUserLastName(response[0])
@@ -97,9 +106,11 @@ class AuthFragment : Fragment() {
                         viewModel.setGender(response[3])
                         viewModel.setCitizenship(response[4])
                         viewModel.setExpiration(response[5])
-                        requireActivity().runOnUiThread {
-                            binding!!.timeCounter.text = getString(R.string.data_read)
-                        }
+                    }
+
+                    requireActivity().runOnUiThread {
+                        binding!!.timeCounter.text = getString(R.string.data_read)
+                    }
 
                     } catch (e: android.nfc.TagLostException) {
                         msgCode = R.string.tag_lost
@@ -131,13 +142,9 @@ class AuthFragment : Fragment() {
                         Thread.sleep(1000)
                         goToTheStart()
                     }
-                }
-            }, NfcAdapter.FLAG_READER_NFC_A, null)
-        } else { //We want to create a JWT instead of reading the info from the card.
-            goToNextFragment()
-        }
+            }
+        }, NfcAdapter.FLAG_READER_NFC_A, null)
     }
-
     private fun goToNextFragment() {
         timer.cancel()
         if (args.auth) {
@@ -156,8 +163,7 @@ class AuthFragment : Fragment() {
         } else {
             if (!args.mobile) {
                 //Currently for some reason the activity is not killed entirely. Must be looked into further.
-                requireActivity().finish()
-                exitProcess(0)
+                requireActivity().finishAndRemoveTask()
             } else {
                 val resultIntent = Intent()
                 requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
