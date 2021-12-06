@@ -29,7 +29,8 @@ class CanFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
-    private var binding: FragmentCanBinding? = null
+    private var _binding: FragmentCanBinding? = null
+    private val binding get() = _binding!!
 
     // Navigation arguments:
     // saving = true means that we are navigating here from the settings menu and must return to the settings menu.
@@ -40,17 +41,17 @@ class CanFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCanBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentCanBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkIfSkip()
-        binding!!.canTextField.editText?.addTextChangedListener {
+        binding.canTextField.editText?.addTextChangedListener {
             checkEnteredCan()
         }
-        binding!!.buttonCancel.setOnClickListener { goToTheStart() }
+        binding.buttonCancel.setOnClickListener { goToTheStart() }
     }
 
     /**
@@ -112,7 +113,7 @@ class CanFragment : Fragment() {
      * allowed to modify the entered can.
      */
     private fun checkEnteredCan() {
-        val enteredCan = binding!!.canTextField.editText?.text.toString()
+        val enteredCan = binding.canTextField.editText?.text.toString()
         if (enteredCan.length == 6) {
             viewModel.setUserCan(enteredCan)
             viewModel.storeCan(requireContext()) //Maybe storeCan should always automatically call setUserCan method as well because these methods usually are used together
@@ -127,6 +128,6 @@ class CanFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 }

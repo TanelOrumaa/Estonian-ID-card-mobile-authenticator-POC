@@ -39,7 +39,8 @@ class HomeFragment : Fragment() {
 
     private val intentParams: ParametersViewModel by activityViewModels()
 
-    private var binding: FragmentHomeBinding? = null
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
     // The ID card reader mode is enabled on the home fragment when can is saved.
     private var canSaved: Boolean = false
@@ -54,10 +55,10 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         // Making settings menu active again
         (activity as MainActivity).menuAvailable = true
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,15 +112,29 @@ class HomeFragment : Fragment() {
                 intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
                 intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
             }
+            goToTheNextFragment(mobile)
         } catch (e: Exception) {
             // There was a problem with parameters, which means that authentication is not possible.
             // In that case we will cancel the authentication immediately as it would be waste of the user's time to carry on
             // before getting an inevitable error.
-            val resultIntent = Intent()
-            requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
-            requireActivity().finish()
+            val message = MaterialAlertDialogBuilder(requireContext())
+            message.setTitle(getString(R.string.problem_parameters))
+            if (intentParams.challenge == "") {
+                message.setMessage(getString(R.string.problem_challenge))
+            } else if (intentParams.authUrl == "") {
+                message.setMessage(getString(R.string.problem_authurl))
+            } else if (intentParams.origin == "") {
+                message.setMessage(getString(R.string.problem_originurl))
+            } else {
+                message.setMessage(getString(R.string.problem_other))
+            }
+            message.setPositiveButton(getString(R.string.continue_button)) {_, _ ->
+                val resultIntent = Intent()
+                requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
+                requireActivity().finish()
+            }
+            message.show()
         }
-        goToTheNextFragment(mobile)
     }
 
     /**
@@ -127,12 +142,12 @@ class HomeFragment : Fragment() {
      */
     private fun canState() {
         if (viewModel.userCan.length == 6) {
-            binding!!.canStatusText.text = getString(R.string.can_status_saved)
-            binding!!.canStatusLogo.setImageResource(R.drawable.ic_check_logo)
+            binding.canStatusText.text = getString(R.string.can_status_saved)
+            binding.canStatusLogo.setImageResource(R.drawable.ic_check_logo)
             canSaved = true
         } else {
-            binding!!.canStatusText.text = getString(R.string.can_status_negative)
-            binding!!.canStatusLogo.setImageResource(R.drawable.ic_info_logo)
+            binding.canStatusText.text = getString(R.string.can_status_negative)
+            binding.canStatusLogo.setImageResource(R.drawable.ic_info_logo)
             canSaved = false
         }
     }
@@ -142,11 +157,11 @@ class HomeFragment : Fragment() {
      */
     private fun pinState() {
         if (viewModel.userPin.length in 4..12) {
-            binding!!.pinStatusText.text = getString(R.string.pin_status_saved)
-            binding!!.pinStatusLogo.setImageResource(R.drawable.ic_check_logo)
+            binding.pinStatusText.text = getString(R.string.pin_status_saved)
+            binding.pinStatusLogo.setImageResource(R.drawable.ic_check_logo)
         } else {
-            binding!!.pinStatusText.text = getString(R.string.pin_status_negative)
-            binding!!.pinStatusLogo.setImageResource(R.drawable.ic_info_logo)
+            binding.pinStatusText.text = getString(R.string.pin_status_negative)
+            binding.pinStatusLogo.setImageResource(R.drawable.ic_info_logo)
         }
     }
 
@@ -172,10 +187,10 @@ class HomeFragment : Fragment() {
     /**
      * Displays a help message to the user explaining what the CAN is
      */
-    private fun displayMessage() {
+    private fun displayMessage(title: String, message: String) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.can_question))
-            .setMessage(getString(R.string.can_explanation))
+            .setTitle(title)
+            .setMessage(message)
             .setPositiveButton(R.string.return_text){_, _ -> }
             .show()
         val title = dialog.findViewById<TextView>(R.id.alertTitle)
@@ -188,22 +203,22 @@ class HomeFragment : Fragment() {
      */
     private fun updateAction(canIsSaved: Boolean) {
         if (canIsSaved) {
-            binding!!.detectionActionText.text = getString(R.string.action_detect)
+            binding.detectionActionText.text = getString(R.string.action_detect)
             enableReaderMode()
-            binding!!.homeActionButton.visibility = View.GONE
-            binding!!.homeHelpButton.visibility = View.GONE
+            binding.homeActionButton.visibility = View.GONE
+            binding.homeHelpButton.visibility = View.GONE
         } else {
-            binding!!.detectionActionText.text = getString(R.string.action_detect_unavailable)
-            binding!!.homeActionButton.text = getString(R.string.add_can_text)
-            binding!!.homeActionButton.setOnClickListener {
+            binding.detectionActionText.text = getString(R.string.action_detect_unavailable)
+            binding.homeActionButton.text = getString(R.string.add_can_text)
+            binding.homeActionButton.setOnClickListener {
                 val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(saving = true, fromhome = true)
                 findNavController().navigate(action)
             }
-            binding!!.homeHelpButton.setOnClickListener {
-                displayMessage()
+            binding.homeHelpButton.setOnClickListener {
+                displayMessage(getString(R.string.can_question), getString(R.string.can_explanation))
             }
-            binding!!.homeActionButton.visibility = View.VISIBLE
-            binding!!.homeHelpButton.visibility = View.VISIBLE
+            binding.homeActionButton.visibility = View.VISIBLE
+            binding.homeHelpButton.visibility = View.VISIBLE
         }
     }
 
@@ -211,11 +226,11 @@ class HomeFragment : Fragment() {
      * Resets the error message and allows the user to try again
      */
     private fun reset() {
-        binding!!.homeActionButton.text = getString(R.string.try_again_text)
-        binding!!.homeActionButton.setOnClickListener {
+        binding.homeActionButton.text = getString(R.string.try_again_text)
+        binding.homeActionButton.setOnClickListener {
             updateAction(canSaved)
         }
-        binding!!.homeActionButton.visibility = View.VISIBLE
+        binding.homeActionButton.visibility = View.VISIBLE
     }
 
     /**
@@ -224,11 +239,11 @@ class HomeFragment : Fragment() {
     private fun enableReaderMode() {
         val adapter = NfcAdapter.getDefaultAdapter(activity)
         if (adapter == null || !adapter.isEnabled) {
-            binding!!.detectionActionText.text = getString(R.string.nfc_not_available)
+            binding.detectionActionText.text = getString(R.string.nfc_not_available)
         } else {
             adapter.enableReaderMode(activity, { tag ->
                 requireActivity().runOnUiThread {
-                    binding!!.detectionActionText.text = getString(R.string.card_detected)
+                    binding.detectionActionText.text = getString(R.string.card_detected)
                 }
                 val card = IsoDep.get(tag)
                 card.timeout = 32768
@@ -249,11 +264,11 @@ class HomeFragment : Fragment() {
                     } catch (e: Exception) {
                         when(e) {
                             is TagLostException -> requireActivity().runOnUiThread {
-                                binding!!.detectionActionText.text = getString(R.string.id_card_removed_early)
+                                binding.detectionActionText.text = getString(R.string.id_card_removed_early)
                                 reset()
                             }
                             else -> requireActivity().runOnUiThread {
-                                binding!!.detectionActionText.text = getString(R.string.nfc_reading_error)
+                                binding.detectionActionText.text = getString(R.string.nfc_reading_error)
                                 viewModel.deleteCan(requireContext())
                                 canState()
                                 reset()
@@ -269,7 +284,9 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        requireActivity().unregisterReceiver(receiver)
-        binding = null
+        if (receiver != null) {
+            requireActivity().unregisterReceiver(receiver)
+        }
+        _binding = null
     }
 }
