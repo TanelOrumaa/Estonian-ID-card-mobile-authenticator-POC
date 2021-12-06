@@ -22,8 +22,19 @@ export default {
   },
   methods: {
     logOut: function () {
-      this.$store.commit("setLoggedIn", false);
-      router.push("/");
+
+      const requestOptions = {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({"sessionId": this.$store.getters.getSessionId})
+      };
+      fetch("/auth/logout", requestOptions)
+          .then((response) => {
+                console.log(response);
+                this.$store.commit("setLoggedIn", false);
+                router.push("/");
+              }
+          )
     }
   },
   mounted() {
@@ -36,7 +47,7 @@ export default {
 </script>
 
 <style scoped>
-  nav {
-    height: 5vh;
-  }
+nav {
+  height: 5vh;
+}
 </style>

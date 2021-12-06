@@ -38,4 +38,12 @@ class AuthenticationController {
         }
         return auth
     }
+
+    @PostMapping("logout", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun logOut(@RequestBody body: String) : HttpStatus? {
+        LOG.warn("I WAS HERE")
+        LOG.warn(body)
+        return HttpStatus.ACCEPTED
+
+    }
 }

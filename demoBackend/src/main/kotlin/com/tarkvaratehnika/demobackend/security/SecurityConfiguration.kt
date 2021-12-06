@@ -14,8 +14,10 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
             ?.roles("USER")
     }
 
-    override fun configure(http: HttpSecurity?) {
-        http?.sessionManagement()?.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
-        http?.authorizeRequests()?.antMatchers("/**")?.permitAll()
+    override fun configure(http: HttpSecurity) {
+        http.authorizeRequests()?.antMatchers("/**")?.permitAll()
+            ?.antMatchers("/auth/**")?.permitAll()
+        http.sessionManagement()?.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+        http.csrf().disable()
     }
 }

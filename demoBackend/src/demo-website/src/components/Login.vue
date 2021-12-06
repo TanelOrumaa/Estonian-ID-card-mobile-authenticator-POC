@@ -7,8 +7,9 @@
 
       <p class="text-center">Read more from <a href="https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC">here.</a></p>
     </div>
+    <div id="canvas"></div>
     <div class="justify-content-center d-flex">
-      <div id="canvas"></div>
+
       <button type="button" class="btn loginButton btn-dark" v-on:click="authenticate">
         <div v-if="loading" class="d-flex justify-content-center">
           <div class="spinner-border text-light spinner-border-sm" role="status">
@@ -115,7 +116,7 @@ export default {
 }
 
 #canvas {
-  height: 5vh;
-  width: 5vh;
+  height: 30vh;
+  width: 30vh;
 }
 </style>

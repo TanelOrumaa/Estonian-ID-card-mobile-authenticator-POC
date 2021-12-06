@@ -857,7 +857,7 @@ class IntentUrl {
         url += this.postFinalizeSigningUrl ? "&postFinalizeSigningUrl=\"" + encodeURIComponent(this.postFinalizeSigningUrl) + "\"" : "";
         url += this.applicationName ? "&applicationName=\"" + encodeURIComponent(this.applicationName) + "\"" : "";
         url += this.actionDescription ? "&actionDescription=\"" + encodeURIComponent(this.actionDescription) + "\"" : "";
-        url += this.headers ? "&headers=\"" + this.headers + "\"" : "";
+        url += this.headers ? "&headers=\"" + JSON.stringify(this.headers) + "\"" : "";
         url += this.userInteractionTimeout ? "&userInteractionTimeout=\"" + this.userInteractionTimeout + "\"" : "";
         url += this.serverRequestTimeout ? "&serverRequestTimeout=\"" + this.serverRequestTimeout + "\"" : "";
         url += this.lang ? "&lang=\"" + this.lang + "\"" : "";
