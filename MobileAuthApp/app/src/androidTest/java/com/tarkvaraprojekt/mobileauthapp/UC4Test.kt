@@ -6,12 +6,9 @@ import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.not
 
 import org.junit.*
 import org.junit.runner.RunWith
@@ -49,11 +46,11 @@ class UC4Test {
     @Test
     fun validCAN() {
         navigateToCANView()
+        onView(withText(R.string.can_helper_text)).check(matches(isDisplayed()))
         onView(supportsInputMethods()).perform(typeText("123456"))
+        onView(withText(R.string.can_delete)).perform(closeSoftKeyboard())
 
-        onView(withText(R.string.can_status_saved)).inRoot(
-            withDecorView(not(`is`(activityActivityTestRule.activity.getWindow().getDecorView())))
-        ).check(matches(isDisplayed()))
+        onView(withText(R.string.can_status_saved)).check(matches(isDisplayed()))
     }
 
     @Test
