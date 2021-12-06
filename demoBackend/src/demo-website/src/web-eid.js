@@ -8776,7 +8776,9 @@ class WebExtensionService {
     onAckTimeout(pending) {
         var _a, _b;
         console.log("onAckTimeout", pending.message.action);
-        if (pending.message.authApp && pending.message.authApp == true) {
+        console.log("Pending message");
+        console.log(pending.message.authApp);
+        if (pending.message.useAuthApp && pending.message.useAuthApp == true) {
             (_a = pending.reject) === null || _a === void 0 ? void 0 : _a.call(pending, new AuthAppNotInstalledError());
         }
         else {

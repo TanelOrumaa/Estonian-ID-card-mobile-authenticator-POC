@@ -17,20 +17,4 @@ module.exports = {
             }
         }
     },
-    pages: {
-        index: {
-            entry: "./src/pages/home/main.js",
-            template: "public/index.html",
-            filename: "index.html",
-            title: "Home",
-            chunks: [],
-        },
-        legal: {
-            entry: "./src/pages/legal/main.js",
-            template: "public/index.html",
-            filename: "legal.html",
-            title: "Legal",
-            chunks:,
-        }
-    }
 }

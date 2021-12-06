@@ -13,6 +13,7 @@ import org.webeid.security.validator.AuthTokenValidator
 import org.webeid.security.validator.AuthTokenValidatorBuilder
 import java.io.IOException
 import java.net.URI
+import java.net.URL
 import java.security.KeyStore
 import java.security.KeyStoreException
 import java.security.NoSuchAlgorithmException
@@ -39,7 +40,7 @@ class ValidationConfiguration {
 
     private val NONCE_TTL_MINUTES: Long = 5
     private val CACHE_NAME = "nonceCache"
-    private val CERTS_RESOURCE_PATH = "/certs/"
+    private val CERTS_RESOURCE_PATH = "/certs"
     private val TRUSTED_CERTIFICATES_JKS = "trusted_certificates.jks"
     private val TRUSTSTORE_PASSWORD = "changeit"
     companion object {
@@ -65,6 +66,7 @@ class ValidationConfiguration {
             LOG.warn("Creating new cache.")
             cache = createNonceCache(cacheManager)
         }
+
         return cache
     }
 

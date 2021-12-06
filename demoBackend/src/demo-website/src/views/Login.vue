@@ -1,16 +1,16 @@
 <template>
   <Navbar/>
-  <hello-world v-bind:csrftoken="csrf_token()"/>
+  <LoginComponent/>
 </template>
 
 <script>
-import HelloWorld from '../../components/Login.vue'
+import LoginComponent from '@/components/Login'
 import Navbar from "@/components/Navbar";
 
 export default {
-  name: 'App',
+  name: 'Login',
   components: {
-    HelloWorld,
+    LoginComponent,
     Navbar
   },
   methods: {

@@ -30,7 +30,7 @@ class AuthenticationController {
     }
 
     @GetMapping("authentication", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getAuthenticated(@RequestParam challenge: String) : Authentication? {
+    fun getAuthenticated(headers: String) : Authentication? {
         val auth = WebEidAuthentication.fromChallenge(challenge)
         if (auth == null) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed.")
