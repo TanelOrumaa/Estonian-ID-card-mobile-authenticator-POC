@@ -1,13 +1,17 @@
 package com.tarkvaraprojekt.mobileauthapp.menu
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import com.tarkvaraprojekt.mobileauthapp.MainActivity
 import com.tarkvaraprojekt.mobileauthapp.R
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentSettingsBinding
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
@@ -21,7 +25,8 @@ class SettingsFragment : Fragment() {
 
     private val viewModel: SmartCardViewModel by activityViewModels()
 
-    private var binding: FragmentSettingsBinding? = null
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private var showPin: Boolean = false
 
@@ -30,8 +35,8 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding!!.root
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,10 +44,20 @@ class SettingsFragment : Fragment() {
         showCanField()
         showPinField()
         togglePinButton()
-        binding!!.canMenuAction.setOnClickListener { canAction() }
-        binding!!.pinMenuAction.setOnClickListener { pinAction() }
-        binding!!.pinMenuShow.setOnClickListener { togglePin() }
-        binding!!.returnButton.setOnClickListener { backToHome() }
+        binding.canMenuAction.setOnClickListener { canAction() }
+        binding.pinMenuAction.setOnClickListener { pinAction() }
+        binding.pinMenuShow.setOnClickListener { togglePin() }
+        binding.returnButton.setOnClickListener { backToHome() }
+    }
+
+    /**
+     * Method for showing a snackbar with a message that is given as a parameter
+     */
+    private fun showSnackbar(message: String) {
+        val snackbar = Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT)
+        val snackbarText: TextView = snackbar.view.findViewById(R.id.snackbar_text)
+        snackbarText.setTextSize(TypedValue.COMPLEX_UNIT_SP, resources.getDimension(R.dimen.small_text))
+        snackbar.show()
     }
 
     /**
@@ -50,11 +65,11 @@ class SettingsFragment : Fragment() {
      */
     private fun showCanField() {
         if (viewModel.userCan.length == 6) {
-            binding!!.canSaved.text = getString(R.string.saved_can, viewModel.userCan)
-            binding!!.canMenuAction.text = getString(R.string.can_delete)
+            binding.canSaved.text = getString(R.string.saved_can, viewModel.userCan)
+            binding.canMenuAction.text = getString(R.string.can_delete)
         } else {
-            binding!!.canSaved.text = getString(R.string.saved_can, getString(R.string.missing))
-            binding!!.canMenuAction.text = getString(R.string.can_add)
+            binding.canSaved.text = getString(R.string.saved_can, getString(R.string.missing))
+            binding.canMenuAction.text = getString(R.string.add_can_text)
         }
     }
 
@@ -66,7 +81,9 @@ class SettingsFragment : Fragment() {
         if (viewModel.userCan.length == 6) {
             viewModel.deleteCan(requireContext())
             showCanField()
+            showSnackbar(getString(R.string.can_deleted))
         } else {
+            (activity as MainActivity).inMenu = false
             val action = SettingsFragmentDirections.actionSettingsFragmentToCanFragment(saving = true)
             findNavController().navigate(action)
         }
@@ -79,16 +96,16 @@ class SettingsFragment : Fragment() {
      */
     private fun showPinField() {
         if (viewModel.userPin.length in 4..12) {
-            binding!!.pinMenuShow.visibility = Button.VISIBLE
+            binding.pinMenuShow.visibility = Button.VISIBLE
             if (showPin)
-                binding!!.pinSaved.text = getString(R.string.saved_pin, viewModel.userPin)
+                binding.pinSaved.text = getString(R.string.saved_pin, viewModel.userPin)
             else
-                binding!!.pinSaved.text = getString(R.string.saved_pin, getString(R.string.hidden_pin))
-            binding!!.pinMenuAction.text = getString(R.string.pin1_delete)
+                binding.pinSaved.text = getString(R.string.saved_pin, getString(R.string.hidden_pin))
+            binding.pinMenuAction.text = getString(R.string.pin1_delete)
         } else {
-            binding!!.pinMenuShow.visibility = Button.GONE
-            binding!!.pinSaved.text = getString(R.string.saved_pin, getString(R.string.missing))
-            binding!!.pinMenuAction.text = getString(R.string.pin1_add)
+            binding.pinMenuShow.visibility = Button.GONE
+            binding.pinSaved.text = getString(R.string.saved_pin, getString(R.string.missing))
+            binding.pinMenuAction.text = getString(R.string.pin1_add)
         }
     }
 
@@ -100,7 +117,9 @@ class SettingsFragment : Fragment() {
         if (viewModel.userPin.length in 4..12) {
             viewModel.deletePin(requireContext())
             showPinField()
+            showSnackbar(getString(R.string.pin_deleted))
         } else {
+            (activity as MainActivity).inMenu = false
             val action = SettingsFragmentDirections.actionSettingsFragmentToPinFragment(saving = true)
             findNavController().navigate(action)
         }
@@ -120,9 +139,9 @@ class SettingsFragment : Fragment() {
      */
     private fun togglePinButton() {
         if (showPin) {
-            binding!!.pinMenuShow.text = getString(R.string.hide)
+            binding.pinMenuShow.text = getString(R.string.hide)
         } else {
-            binding!!.pinMenuShow.text = getString(R.string.show)
+            binding.pinMenuShow.text = getString(R.string.show)
         }
     }
 
@@ -130,12 +149,13 @@ class SettingsFragment : Fragment() {
      * Navigates back to home fragment.
      */
     private fun backToHome() {
+        (activity as MainActivity).inMenu = false
         findNavController().navigate(R.id.action_settingsFragment_to_homeFragment)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 
 }

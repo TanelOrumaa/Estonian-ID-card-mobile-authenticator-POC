@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
+    android:padding="@dimen/padding"
     tools:context=".HomeFragment">
 
     <LinearLayout
@@ -20,7 +20,7 @@
             android:id="@+id/can_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_margin="@dimen/margin_big"
             app:strokeWidth="1dp"
             app:strokeColor="@color/stroke_color"
             app:cardElevation="0dp">
@@ -32,14 +32,14 @@
 
                 <ImageView
                     android:id="@+id/can_status_logo"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="@dimen/margin"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
 
                 <TextView
                     android:id="@+id/can_status_text"
-                    android:textSize="20sp"
-                    android:padding="12dp"
+                    android:textSize="@dimen/regular_text"
+                    android:padding="@dimen/margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -51,7 +51,7 @@
             android:id="@+id/pin_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_margin="@dimen/margin_big"
             app:strokeWidth="1dp"
             app:strokeColor="@color/stroke_color"
             app:cardElevation="0dp">
@@ -63,14 +63,14 @@
 
                 <ImageView
                     android:id="@+id/pin_status_logo"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="@dimen/margin"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
 
                 <TextView
                     android:id="@+id/pin_status_text"
-                    android:textSize="20sp"
-                    android:padding="12dp"
+                    android:textSize="@dimen/regular_text"
+                    android:padding="@dimen/margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -80,15 +80,49 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/id_card_detection"
+        android:layout_margin="@dimen/margin_big"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/saved_states"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/detection_action_text"
+            android:layout_margin="@dimen/margin_big"
+            android:textSize="@dimen/regular_text"
+            android:text="@string/action_detect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <Button
-        android:id="@+id/begin_button"
+        android:id="@+id/home_action_button"
+        android:textSize="@dimen/regular_text"
+        android:text="@string/try_again_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/begin_text"
-        android:layout_marginTop="24dp"
-        android:textSize="15sp"
-        app:layout_constraintTop_toBottomOf="@id/saved_states"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_huge"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/id_card_detection"/>
+
+    <Button
+        android:id="@+id/home_help_button"
+        android:textSize="@dimen/regular_text"
+        android:text="@string/help_text"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_huge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="?attr/materialButtonOutlinedStyle"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_action_button"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

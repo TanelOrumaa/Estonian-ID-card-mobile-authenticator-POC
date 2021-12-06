@@ -9,7 +9,6 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.testmobileapp.databinding.ActivityMainBinding
-import com.google.gson.JsonObject
 import com.koushikdutta.ion.Ion
 import org.json.JSONObject
 
@@ -35,9 +34,8 @@ class MainActivity : AppCompatActivity() {
 
         authLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { response ->
             if (response.resultCode == Activity.RESULT_OK) {
-                // Currently we are not actually checking whether we get a valid token.
-                // For testing purposes only, to make sure that we are able to get a response at all.
                 binding.loginTextView.text = getString(R.string.auth_success)
+                // Logs are used to show what information can be retrieved from the mobileauthapp.
                 Log.i("getResult", response.data?.getStringExtra("token").toString())
                 Log.i("getResult", response.data?.getStringExtra("result").toString())
                 var user = ""
@@ -48,14 +46,6 @@ class MainActivity : AppCompatActivity() {
                     Log.i("getResult", "unable to retrieve name from principal")
                 }
                 showResult(user)
-                /*
-                binding.loginOptionNfcButton.text = "Log Out"
-                binding.loginOptionNfcButton.setOnClickListener {
-                    binding.loginOptionNfcButton.text = "NFC auth"
-                    binding.loginOptionNfcButton.setOnClickListener { getData() }
-                }
-
-                 */
             }
             if (response.resultCode == Activity.RESULT_CANCELED) {
                 binding.loginTextView.text = getString(R.string.auth_failure)
@@ -114,6 +104,7 @@ class MainActivity : AppCompatActivity() {
         binding.resultLayout.visibility = View.VISIBLE
         binding.resultObject.text = getString(R.string.hello, user)
         binding.buttonForget.setOnClickListener {
+            binding.loginTextView.text = getString(R.string.login_text)
             binding.resultObject.text = ""
             binding.resultLayout.visibility = View.GONE
             binding.loginOptions.visibility = View.VISIBLE

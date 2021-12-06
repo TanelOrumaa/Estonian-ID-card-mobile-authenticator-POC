@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin">8dp</dimen>
+    <dimen name="margin_big">16dp</dimen>
+    <dimen name="margin_huge">32dp</dimen>
+    <dimen name="padding_tiny">8dp</dimen>
+    <dimen name="padding_small">16dp</dimen>
+    <dimen name="padding">24dp</dimen>
+    <dimen name="regular_text">24sp</dimen>
+    <dimen name="headline_text">32sp</dimen>
+    <dimen name="helper_text">16sp</dimen>
+    <dimen name="small_text">8sp</dimen>
+    <dimen name="logo_big">128dp</dimen>
+</resources>

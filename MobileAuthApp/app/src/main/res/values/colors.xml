@@ -8,9 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="blue_200">#90caf9</color>
-    <color name="blue_500">#2196f3</color>
-    <color name="blue_700">#1976d2</color>
-    <color name="orange_200">#ffcc80</color>
+    <color name="blue_200">#d1d9ff</color>
+    <color name="blue_500">#002984</color>
+    <color name="blue_700">#001970</color>
+    <color name="orange_200">#ffab91</color>
     <color name="orange_700">#f57c00</color>
 </resources>
