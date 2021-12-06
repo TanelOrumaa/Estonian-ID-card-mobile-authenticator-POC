@@ -16,6 +16,9 @@ class ParametersViewModel: ViewModel() {
     private var _origin: String = ""
     val origin get() = _origin
 
+    private var _headers: String = ""
+    val headers get() =_headers
+
     fun setChallenge(newChallenge: String) {
         _challenge = newChallenge
     }
@@ -30,5 +33,9 @@ class ParametersViewModel: ViewModel() {
 
     fun setOrigin(newOrigin: String) {
         _origin = newOrigin
+    }
+
+    fun setHeaders(newHeaders: String) {
+        _headers = newHeaders
     }
 }

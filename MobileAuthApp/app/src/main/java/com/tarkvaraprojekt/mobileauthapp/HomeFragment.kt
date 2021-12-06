@@ -20,11 +20,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.koushikdutta.ion.Ion
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentHomeBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
 import java.lang.Exception
+import java.lang.RuntimeException
+import java.net.URL
 
 /**
  * HomeFragment is only shown to the user when then the user launches the application. When the application
@@ -104,15 +107,39 @@ class HomeFragment : Fragment() {
                 intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
                 intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
                 intentParams.setOrigin(requireActivity().intent.getStringExtra("originUrl")!!)
+                goToTheNextFragment(mobile)
             } else { //Website
+                /*
                 var challenge = requireActivity().intent.data!!.getQueryParameter("challenge")!!
                 // TODO: Since due to encoding plus gets converted to space, temporary solution is to replace it back.
                 challenge = challenge.replace(" ", "+")
                 intentParams.setChallenge(challenge)
                 intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
                 intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
+                */
+                val getAuthChallengeUrl = requireActivity().intent.data!!.getQueryParameter("getAuthChallengeUrl")!!
+                val postAuthTokenUrl = requireActivity().intent.data!!.getQueryParameter("postAuthTokenUrl")!!
+                val headers = requireActivity().intent.data!!.getQueryParameter("headers")!!
+                intentParams.setAuthUrl(postAuthTokenUrl)
+                intentParams.setOrigin("https://" + URL(getAuthChallengeUrl).host)
+                intentParams.setHeaders(headers)
+                Ion.getDefault(activity).conscryptMiddleware.enable(false)
+                Ion.with(activity)
+                    .load(getAuthChallengeUrl)
+                    .asJsonObject()
+                    .setCallback { _, result ->
+                        try {
+                            // Get data from the result and call launchAuth method
+                            val challenge = result.asJsonObject["nonce"].toString().replace("\"", "")
+                            intentParams.setChallenge(challenge)
+                            goToTheNextFragment(mobile)
+                        } catch (e: Exception) {
+                            Log.i("GETrequest", "was unsuccessful")
+                            throw RuntimeException()
+                        }
+                    }
+
             }
-            goToTheNextFragment(mobile)
         } catch (e: Exception) {
             // There was a problem with parameters, which means that authentication is not possible.
             // In that case we will cancel the authentication immediately as it would be waste of the user's time to carry on
