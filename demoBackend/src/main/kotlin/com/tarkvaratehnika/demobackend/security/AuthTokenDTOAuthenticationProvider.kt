@@ -54,13 +54,13 @@ object AuthTokenDTOAuthenticationProvider {
     fun authenticate(auth : Authentication) : Authentication {
         val authentication = auth as PreAuthenticatedAuthenticationToken
         val token = (authentication.credentials as AuthTokenDTO).token
-        val challenge = (authentication.credentials as AuthTokenDTO).challenge
+        val challenge = (authentication.credentials as AuthTokenDTO)
         val authorities = arrayListOf<GrantedAuthority>()
         authorities.add(USER_ROLE)
 
         try {
             val userCertificate: X509Certificate = tokenValidator.validate(token)
-            return WebEidAuthentication.fromCertificate(userCertificate, authorities, challenge)
+            return WebEidAuthentication.fromCertificate(userCertificate, authorities, "as")
         } catch (e : TokenValidationException) {
             // Validation failed.
             throw AuthenticationServiceException("Token validation failed. " + e.message)

@@ -1,8 +1,10 @@
 import {createApp} from 'vue';
 import App from './App.vue';
-import {createStore} from 'vuex'
-import BootstrapVue3 from 'bootstrap-vue-3'
+import {createStore} from 'vuex';
+import BootstrapVue3 from 'bootstrap-vue-3';
 import createPersistedState from "vuex-persistedstate";
+import { VueCookieNext } from 'vue-cookie-next'
+
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
@@ -13,18 +15,29 @@ const store = createStore({
     state() {
         return {
             authenticated: false,
+            jSessionId: null,
         }
     },
     mutations: {
         setLoggedIn(state, isLoggedIn) {
-            console.log("Setting logged in: " + isLoggedIn);
             state.authenticated = isLoggedIn;
+        },
+        setSessionId(state, sessionId) {
+            state.jSessionId = sessionId;
+        }
+    },
+    actions: {
+        fetchSessionId(context, sessionId) {
+            context.commit("setSessionId", sessionId);
         }
     },
     getters: {
-      getAuthenticated: state => {
-          return state.authenticated;
-      }
+        getAuthenticated: state => {
+            return state.authenticated;
+        },
+        getSessionId: state => {
+            return state.jSessionId;
+        }
     },
     plugins: [createPersistedState()],
 })
@@ -47,4 +60,7 @@ const app = createApp(App)
 app.use(BootstrapVue3)
 app.use(router)
 app.use(store)
+app.use(VueCookieNext);
 app.mount('#app')
+
+VueCookieNext.config({ expire: '7d' })

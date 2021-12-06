@@ -8,7 +8,7 @@
       <p class="text-center">Read more from <a href="https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC">here.</a></p>
     </div>
     <div class="justify-content-center d-flex">
-
+      <div id="canvas"></div>
       <button type="button" class="btn loginButton btn-dark" v-on:click="authenticate">
         <div v-if="loading" class="d-flex justify-content-center">
           <div class="spinner-border text-light spinner-border-sm" role="status">
@@ -26,7 +26,7 @@
       <input type="radio" class="btn-check" name="btnradio" id="btnApp" autocomplete="off" checked v-on:click="useApp">
       <label class="btn btn-outline-secondary" for="btnApp">using Android App</label>
     </div>
-    <div id="canvas"></div>
+
   </div>
 
 </template>
@@ -66,7 +66,7 @@ export default {
         getAuthSuccessUrl: window.location.origin + "/auth/login",
         useAuthApp: this.useAndroidApp,
         headers: {
-          [this.csrfHeaderName]: this.csrftoken
+          "sessionId": this.$store.getters.getSessionId
         },
 
       };
@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      return this.$store.authenticated;
+      return this.$store.getAuthenticated;
     },
     loading() {
       return this.loading;
@@ -112,6 +112,10 @@ export default {
 .loginButton > p {
   font-size: 3vh;
   text-align: center;
+}
 
+#canvas {
+  height: 5vh;
+  width: 5vh;
 }
 </style>

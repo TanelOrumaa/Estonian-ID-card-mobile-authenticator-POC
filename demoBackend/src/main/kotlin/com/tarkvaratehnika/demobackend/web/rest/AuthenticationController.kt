@@ -18,7 +18,7 @@ class AuthenticationController {
     private val LOG = LoggerFactory.getLogger(AuthenticationController::class.java)
 
 
-    @PostMapping("authentication", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("login", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun authenticate(@RequestBody body : String): Authentication {
         val parts = body.split("\"")
         val authToken = AuthTokenDTO(parts[3], parts[7])
@@ -29,9 +29,10 @@ class AuthenticationController {
         return AuthTokenDTOAuthenticationProvider.authenticate(auth)
     }
 
-    @GetMapping("authentication", produces = [MediaType.APPLICATION_JSON_VALUE])
+
+    @GetMapping("login", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getAuthenticated(headers: String) : Authentication? {
-        val auth = WebEidAuthentication.fromChallenge(challenge)
+        val auth = WebEidAuthentication.fromChallenge("as")
         if (auth == null) {
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed.")
         }

@@ -25,6 +25,12 @@ export default {
       this.$store.commit("setLoggedIn", false);
       router.push("/");
     }
+  },
+  mounted() {
+    if (this.$store.getters.getSessionId == null) {
+      const sessionId = this.$cookie.getCookie("JSESSIONID");
+      this.$store.dispatch("fetchSessionId", sessionId);
+    }
   }
 }
 </script>
