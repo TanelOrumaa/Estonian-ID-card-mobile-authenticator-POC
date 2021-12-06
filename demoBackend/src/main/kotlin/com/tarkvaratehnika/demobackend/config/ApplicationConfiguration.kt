@@ -10,7 +10,7 @@ class ApplicationConfiguration {
         // Endpoint for authentication
         val AUTHENTICATION_ENDPOINT_URL = "/auth/authentication"
         // URL for application. Use ngrok for HTTPS (or a tool of your own choice) and put the HTTPS link here.
-        val WEBSITE_ORIGIN_URL = "https://5d0c-85-253-195-195.ngrok.io"
+        val WEBSITE_ORIGIN_URL = "https://6b9f-85-253-195-195.ngrok.io"
     }
 
 }
