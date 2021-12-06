@@ -1,6 +1,6 @@
 package com.tarkvaraprojekt.mobileauthapp
 
-import androidx.fragment.app.testing.launchFragmentInContainer
+//import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.NoMatchingViewException
@@ -50,7 +50,6 @@ class UC4Test {
     fun validCAN() {
         navigateToCANView()
         onView(supportsInputMethods()).perform(typeText("123456"))
-        onView(withId(R.id.next_button)).perform(click())
 
         onView(withText(R.string.can_status_saved)).inRoot(
             withDecorView(not(`is`(activityActivityTestRule.activity.getWindow().getDecorView())))
@@ -61,11 +60,6 @@ class UC4Test {
     fun invalidCAN() {
         navigateToCANView()
         onView(supportsInputMethods()).perform(typeText("12345"))
-        onView(withId(R.id.next_button)).perform(click())
-
-        onView(withText(R.string.length_can)).inRoot(
-            withDecorView(not(`is`(activityActivityTestRule.activity.getWindow().getDecorView())))
-        ).check(matches(isDisplayed()))
-        onView(withId(R.id.next_button)).check(matches(isDisplayed()))
+        onView(withText(R.string.can_helper_text)).check(matches(isDisplayed()))
     }
 }
