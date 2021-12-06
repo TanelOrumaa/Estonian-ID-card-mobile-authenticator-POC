@@ -117,11 +117,14 @@ class HomeFragment : Fragment() {
                 intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
                 intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
                 */
-                val getAuthChallengeUrl = requireActivity().intent.data!!.getQueryParameter("getAuthChallengeUrl")!!
-                val postAuthTokenUrl = requireActivity().intent.data!!.getQueryParameter("postAuthTokenUrl")!!
+                var getAuthChallengeUrl = requireActivity().intent.data!!.getQueryParameter("getAuthChallengeUrl")!!
+                getAuthChallengeUrl = getAuthChallengeUrl.substring(1, getAuthChallengeUrl.length - 1)
+                var postAuthTokenUrl = requireActivity().intent.data!!.getQueryParameter("postAuthTokenUrl")!!
+                postAuthTokenUrl = postAuthTokenUrl.substring(1, postAuthTokenUrl.length - 1)
                 val headers = requireActivity().intent.data!!.getQueryParameter("headers")!!
                 intentParams.setAuthUrl(postAuthTokenUrl)
-                intentParams.setOrigin("https://" + URL(getAuthChallengeUrl).host)
+                val address = "https://" + URL(getAuthChallengeUrl).host
+                intentParams.setOrigin(address)
                 intentParams.setHeaders(headers)
                 Ion.getDefault(activity).conscryptMiddleware.enable(false)
                 Ion.with(activity)
