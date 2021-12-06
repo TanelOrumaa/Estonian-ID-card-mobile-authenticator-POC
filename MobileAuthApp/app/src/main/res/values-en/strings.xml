@@ -1,46 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Must translate to English, but should work now -->
-    <string name="app_name">NFC authenticator</string>
-
-    <!-- BUTTONS -->
-    <string name="cancel_text">CANCEL</string>
-    <string name="return_text">BACK</string>
-    <string name="add_can_text">ADD CAN</string>
-    <string name="try_again_text">TRY AGAIN</string>
-    <string name="continue_button">CONTINUE</string>
-
-    <!-- Card Detection related -->
-    <string name="card_detected">Card detected. Hold it against the phone.</string>
-    <string name="data_read">Data read. You can continue.</string>
-    <string name="wrong_can_text">Wrong CAN</string>
-    <string name="action_detect">Put the ID card against the phone to detect it</string>
-    <string name="action_detect_unavailable">CAN must be added before ID card can be detected</string>
-    <string name="nfc_not_available">NFC is not turned on or is not supported by the phone</string>
-    <string name="nfc_reading_error">The provided CAN does not match the ID card</string>
-    <string name="id_card_removed_early">ID card was removed too early</string>
-    <string name="wrong_pin">Wrong PIN 1. Tries on the card left %s</string>
+    <string name="app_name">NFC authentication</string>
+    <string name="home_fragment">Work in progress</string>
 
     <!-- string resources for HomeFragment -->
     <string name="pin_status_saved">PIN 1 saved</string>
     <string name="pin_status_negative">PIN 1 not saved</string>
     <string name="can_status_saved">CAN saved</string>
     <string name="can_status_negative">CAN not saved</string>
-    <string name="help_text">HELP</string>
-    <string name="can_question">What is CAN?</string>
-    <string name="can_explanation">CAN is a 6 digit code that is needed to communicate with an ID card. It can be found on the ID card under the card holder\'s picture with a title KASUTAJA ALLKIRI/HOLDER\'S SIGNATURE.</string>
-    <string name="problem_parameters">Problem with parameters</string>
-    <string name="problem_challenge">Challenge is missing</string>
-    <string name="problem_authurl">AuthUrl is missing</string>
-    <string name="problem_originurl">OriginUrl is missing</string>
-    <string name="problem_other">Unspecified problem with parameters</string>
+
+    <string name="begin_text">READ ID CARD</string>
+    <string name="next_text">NEXT</string>
+    <string name="cancel_text">CANCEL</string>
+    <string name="save_text">SAVE</string>
+    <string name="deny_text">NO</string>
+    <string name="return_text">BACK</string>
+
     <!-- string resources for PinFragment -->
-    <string name="pin_view">Please enter PIN 1</string>
-    <string name="hint_pin">PIN 1</string>
-    <string name="pin_helper_text">PIN 1 must be 4–12 digits long</string>
-    <string name="save_pin">Save PIN 1</string>
-    <string name="pin_save_on">On</string>
-    <string name="pin_save_off">Off</string>
+    <string name="pin_fragment">Please enter PIN 1</string>
+    <string name="enter_pin">PIN 1</string>
+    <string name="example_pin">Example. 1234</string>
+    <string name="length_pin">Allowed length for PIN 1 is 4..12</string>
+    <string name="pin_save_request">PIN 1 is currently not saved. Do you wish to save the entered PIN 1? Saved PIN 1 will be entered automatically in the future. Saved PIN 1 can be changed and deleted in the settings menu.</string>
+    <string name="save_pin_title">Save PIN 1</string>
 
     <!-- string resources for Pin2Fragment -->
     <string name="pin2_fragment">Please enter PIN 2</string>
@@ -49,14 +32,21 @@
     <string name="length_pin2">Allowed length for PIN 2 is 5..12</string>
 
     <!-- string resources for CanFragment -->
-    <string name="can_view">Please enter CAN</string>
-    <string name="can_text">CAN</string>
-    <string name="can_helper_text">CAN must be 6 digits long</string>
+    <string name="example_can">Example. 123456</string>
+    <string name="text_can">CAN</string>
+    <string name="enter_can">Enter ID card\'s CAN (Card Access Number)</string>
+    <string name="length_can">Length of the CAN is wrong</string>
+    <string name="card_detected">Card detected. Hold it against the phone.</string>
+    <string name="data_read">Data read. You can continue.</string>
+    <string name="save_can_title">Save CAN</string>
 
     <!-- string resources for AuthFragment layout -->
-    <string name="auth_instruction_text">Put the ID card against the phone</string>
+    <string name="auth_instruction_text">Put the ID card against the phone to establish connection</string>
     <string name="time_left">Time left %d sek</string>
     <string name="no_time">No time left</string>
+    <string name="err_unknown">Unknown error</string>
+    <string name="invalid_can">Wrong CAN</string>
+    <string name="tag_lost">Connection between device and ID-card lost</string>
 
     <!-- string resources for UserFragment layout -->
     <string name="user_name_label">NAME</string>
@@ -65,14 +55,18 @@
     <string name="expiration_label">DATE OF EXPIRY</string>
     <string name="citizenship_label">CITIZENSHIP</string>
     <string name="gender_label">SEX</string>
+    <string name="clear_button">FORGET</string>
 
     <!-- string resources for ResultFragment layout-->
     <string name="result_text">Controlling the created token</string>
-    <string name="result_info">The app will close automatically</string>
+    <string name="result_info">Wait for the app to close</string>
 
     <!-- menu -->
     <string name="menu_settings_title">Settings</string>
+    <string name="menu_language_title">Language</string>
+    <string name="menu_action_unavailable">Currently unavailable</string>
     <string name="saved_can">CAN: %s</string>
+    <string name="can_add">Add CAN</string>
     <string name="can_delete">Delete CAN</string>
     <string name="saved_pin">PIN1: %s</string>
     <string name="pin1_add">Add PIN1</string>
@@ -81,7 +75,9 @@
     <string name="show">SHOW</string>
     <string name="hide">HIDE</string>
     <string name="hidden_pin">****</string>
-    <string name="menu_unavailable_message">Settings are currently unavailable</string>
-    <string name="can_deleted">CAN deleted</string>
-    <string name="pin_deleted">PIN 1 deleted</string>
+    <string name="unavailable">Settings currently unavailabe</string>
+    <string name="can_save_request">CAN is currently not saved. Do you wish to save the CAN? Saved CAN will be entered automatically in the future. Saved CAN can be changed and deleted in the settings menu.</string>
+    <string name="err_reading_card">Failed to read data from the ID-card</string>
+    <string name="err_internal">Internal error</string>
+    <string name="err_bad_data">Read bad data from the ID-card, try using the card again</string>
 </resources>

@@ -1,45 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NFC autentija</string>
+    <string name="app_name">NFC authentication</string>
+    <string name="home_fragment">Work in progress</string>
 
-    <!-- Buttons -->
+    <string name="begin_text">LOE ID KAARTI</string>
+    <string name="next_text">EDASI</string>
     <string name="cancel_text">KATKESTA</string>
+    <string name="save_text">SALVESTA</string>
+    <string name="deny_text">EI</string>
     <string name="return_text">TAGASI</string>
-    <string name="add_can_text">LISA CAN</string>
-    <string name="try_again_text">ÜRITA UUESTI</string>
-    <string name="continue_button">JÄTKA</string>
-
-    <!-- Card Detection related -->
-    <string name="card_detected">Kaart tuvastatud. Hoia kaarti vastu telefoni.</string>
-    <string name="data_read">Andmed loetud, võid jätkata.</string>
-    <string name="wrong_can_text">Vale CAN</string>
-    <string name="action_detect">ID kaardi tuvastamiseks pane kaart vastu telefoni</string>
-    <string name="action_detect_unavailable">ID kaardi tuvastamiseks peab olema CAN lisatud</string>
-    <string name="nfc_not_available">NFC ei ole sisse lülitatud või puudub telefonil NFC võimekus</string>
-    <string name="nfc_reading_error">Sisestatud CAN ei ole vastavuses ID kaardiga</string>
-    <string name="id_card_removed_early">ID kaart eemaldati liiga vara</string>
-    <string name="wrong_pin">Vale PIN 1. ID kaardil PIN 1 sisetamise kordi alles: %s</string>
 
     <!-- string resources for HomeFragment -->
     <string name="pin_status_saved">PIN 1 on salvestatud</string>
     <string name="pin_status_negative">PIN 1 ei ole salvestatud</string>
     <string name="can_status_saved">CAN on salvestatud</string>
     <string name="can_status_negative">CAN ei ole salvestatud</string>
-    <string name="help_text">INFO</string>
-    <string name="can_question">Mis on CAN?</string>
-    <string name="can_explanation">CAN on 6 kohaline numbritest koosnev kood, mida on vaja ID kaardiga suhtlemiseks. CAN-i leiab ID kaardilt omaniku pildi alt pealkirjaga KASUTAJA ALLKIRI/HOLDER\'S SIGNATURE.</string>
-    <string name="problem_parameters">Probleem parameetritega</string>
-    <string name="problem_challenge">Puudub challenge parameeter</string>
-    <string name="problem_authurl">Puudub AuthUrl parameeter</string>
-    <string name="problem_originurl">Puudub OriginUrl parameeter</string>
-    <string name="problem_other">Täpsustamata probleem parameetritega</string>
+
     <!-- string resources for PinFragment -->
-    <string name="pin_view">Palun sisesta PIN 1</string>
-    <string name="hint_pin">PIN 1</string>
-    <string name="pin_helper_text">PIN 1 lubatud pikkus on 4..12</string>
-    <string name="save_pin">Save PIN 1</string>
-    <string name="pin_save_on">On</string>
-    <string name="pin_save_off">Off</string>
+    <string name="pin_fragment">Palun sisesta PIN 1</string>
+    <string name="enter_pin">PIN 1</string>
+    <string name="example_pin">Näide. 1234</string>
+    <string name="length_pin">PIN 1 lubatud pikkus on 4..12</string>
+    <string name="pin_save_request">Praegu ei ole rakenduses PIN 1 salvestatud. Kas sa soovid sisestatud PIN 1-te salvestada? Sellisel juhul sisestatakse see järgmisel korral automaatselt. Salvestatud PIN 1-te saab alati menüüs muuta ja kustutada.</string>
+    <string name="save_pin_title">Salvesta PIN 1</string>
 
     <!-- string resources for Pin2Fragment -->
     <string name="pin2_fragment">Palun sisesta PIN 2</string>
@@ -48,19 +31,27 @@
     <string name="length_pin2">PIN 2 lubatud pikkus on 5..12</string>
 
     <!-- string resources for CanFragment -->
-    <string name="can_view">Please enter CAN</string>
-    <string name="can_text">CAN</string>
-    <string name="can_helper_text">CAN must be 6 digits long</string>
+    <string name="example_can">Näide. 123456</string>
+    <string name="text_can">CAN</string>
+    <string name="enter_can">Sisesta ID kaardi CAN (Card Access Number)</string>
+    <string name="length_can">CANi pikkus on vale</string>
+    <string name="card_detected">Kaart on tuvastatud. Hoia kaarti vastu telefoni.</string>
+    <string name="data_read">Andmed loetud. Võid edasi minna.</string>
+    <string name="can_save_request">Praegu ei ole rakenduses CAN salvestatud. Kas sa soovid sisestatud CANi salvestada? Sellisel juhul sisestatakse see järgmisel korral automaatselt. Salvestatud CANi saab alati menüüs muuta ja kustutada.</string>    <string name="save_can_title">Salvesta CAN</string>
 
     <!-- string resources for AuthFragment layout -->
-    <string name="auth_instruction_text">Pane ID kaart vastu telefoni</string>
+    <string name="auth_instruction_text">ID kaardiga ühenduse loomiseks pane kaart vastu telefoni</string>
     <string name="time_left">Aega on jäänud %d sek</string>
     <string name="no_time">Aeg on otsas</string>
+    <string name="err_unknown">Tundmatu viga</string>
+    <string name="invalid_can">Vale CAN</string>
+    <string name="tag_lost">Ühendus seadme ja kaardi vahel katkes</string>
 
     <!-- string resources for UserFragment layout -->
     <string name="user_name_label">NIMI</string>
     <string name="user_name">%1$s %2$s</string>
     <string name="identification_number_label">ISIKUKOOD</string>
+    <string name="clear_button">UNUSTA</string>
     <string name="expiration_label">KEHTIV KUNI</string>
     <string name="citizenship_label">KODAKONDSUS</string>
     <string name="gender_label">SUGU</string>
@@ -71,7 +62,10 @@
 
     <!-- menu -->
     <string name="menu_settings_title">Seaded</string>
+    <string name="menu_language_title">Keel</string>
+    <string name="menu_action_unavailable">Toiming pole hetkel saadaval</string>
     <string name="saved_can">CAN: %s</string>
+    <string name="can_add">Lisa CAN</string>
     <string name="can_delete">Kustuta CAN</string>
     <string name="saved_pin">PIN1: %s</string>
     <string name="pin1_add">Lisa PIN1</string>
@@ -80,7 +74,8 @@
     <string name="show">NÄITA</string>
     <string name="hide">PEIDA</string>
     <string name="hidden_pin">****</string>
-    <string name="menu_unavailable_message">Seaded pole hetkel saadaval</string>
-    <string name="can_deleted">CAN kustatud</string>
-    <string name="pin_deleted">PIN 1 kustatud</string>
+    <string name="unavailable">Seaded pole hetkel saadaval</string>
+    <string name="err_reading_card">Ei saanud ID-kaardilt andmeid lugeda</string>
+    <string name="err_internal">Rakendusesisene viga</string>
+    <string name="err_bad_data">ID-kaardilt loeti vigased andmed, proovi uuesti kaarti kasutada</string>
 </resources>
