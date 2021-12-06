@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.testmobileapp.databinding.ActivityMainBinding
 import com.koushikdutta.ion.Ion
 import org.json.JSONObject
+import java.net.URL
 
 /**
  * Base url where the requests should be made. Add yours here. It must use https.
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        Log.i("myLoggingStuff", URL("https://www.google.ee/?hl=et").host.toString())
         authLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { response ->
             if (response.resultCode == Activity.RESULT_OK) {
                 binding.loginTextView.text = getString(R.string.auth_success)
