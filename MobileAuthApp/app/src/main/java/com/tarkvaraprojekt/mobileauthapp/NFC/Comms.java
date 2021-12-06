@@ -3,6 +3,9 @@ package com.tarkvaraprojekt.mobileauthapp.NFC;
 import android.nfc.tech.IsoDep;
 import android.util.Log;
 
+import com.tarkvaraprojekt.mobileauthapp.auth.AuthAppException;
+import com.tarkvaraprojekt.mobileauthapp.auth.InvalidPINException;
+
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.macs.CMac;
@@ -204,7 +207,7 @@ public class Comms {
         // verify chip's MAC and return session keys
         MAC = getMAC(createAPDU(dataForMACIncomplete, publicKey.getEncoded(false), 65), keyMAC);
         if (!Hex.toHexString(response, 4, 8).equals(Hex.toHexString(MAC))) {
-            throw new RuntimeException("Could not verify chip's MAC."); // *Should* never happen.
+            throw new AuthAppException("Could not verify chip's MAC.", 448); // *Should* never happen.
         }
         return new byte[][]{keyEnc, keyMAC};
 
@@ -315,7 +318,7 @@ public class Comms {
         // select and read the personal data elementary files
         for (byte index : lastBytes) {
 
-            if (index > 15 || index < 1) throw new RuntimeException("Invalid personal data FID.");
+            if (index > 15 || index < 1) throw new AuthAppException("Invalid personal data FID.", 500);
             FID[1] = index;
 
             // store the decrypted datum
@@ -350,7 +353,7 @@ public class Comms {
             if (response[response.length - 2] == 0x69 && response[response.length - 1] == (byte) 0x83) {
                 throw new AuthAppException("Invalid PIN. Authentication method blocked.", 446);
             } else {
-                throw new AuthAppException(String.format("Invalid PIN. Attempts left: %d.", response[response.length - 1] + 64), 401);
+                throw new InvalidPINException(response[response.length - 1] + 64);
             }
         }
     }

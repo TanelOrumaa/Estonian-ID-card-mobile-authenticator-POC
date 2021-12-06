@@ -19,7 +19,7 @@
     <string name="nfc_not_available">NFC is not turned on or is not supported by the phone</string>
     <string name="nfc_reading_error">The provided CAN does not match the ID card</string>
     <string name="id_card_removed_early">ID card was removed too early</string>
-    <string name="wrong_pin">Wrong PIN 1. Tries on the card left %s</string>
+    <string name="wrong_pin">Wrong PIN 1. %s tries left on the card</string>
 
     <!-- string resources for HomeFragment -->
     <string name="pin_status_saved">PIN 1 saved</string>
@@ -75,8 +75,8 @@
     <string name="saved_can">CAN: %s</string>
     <string name="can_delete">Delete CAN</string>
     <string name="saved_pin">PIN1: %s</string>
-    <string name="pin1_add">Add PIN1</string>
-    <string name="pin1_delete">Delete PIN1</string>
+    <string name="pin1_add">Add PIN 1</string>
+    <string name="pin1_delete">Delete PIN 1</string>
     <string name="missing">not saved</string>
     <string name="show">SHOW</string>
     <string name="hide">HIDE</string>
@@ -84,4 +84,13 @@
     <string name="menu_unavailable_message">Settings are currently unavailable</string>
     <string name="can_deleted">CAN deleted</string>
     <string name="pin_deleted">PIN 1 deleted</string>
+
+    <string name="err_unknown">Unknown error</string>
+    <string name="tag_lost">Connection between device and ID-card lost</string>
+    <string name="err_reading_card">Failed to read data from the ID-card</string>
+    <string name="err_internal">Internal error</string>
+    <string name="err_bad_data">Read bad data from the ID-card, try using the card again</string>
+    <string name="err_parameter">Required parameter is missing or invalid</string>
+    <string name="err_authentication">Failed to authenticate</string>
+    <string name="err_card_locked">Card locked</string>
 </resources>

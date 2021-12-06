@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.nfc.NfcAdapter
-import android.nfc.TagLostException
 import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -18,11 +17,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
+import com.tarkvaraprojekt.mobileauthapp.auth.AuthAppException
 import com.tarkvaraprojekt.mobileauthapp.auth.Authenticator
+import com.tarkvaraprojekt.mobileauthapp.auth.InvalidCANException
+import com.tarkvaraprojekt.mobileauthapp.auth.InvalidPINException
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentAuthBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import java.io.IOException
 import java.lang.Exception
+import java.security.GeneralSecurityException
 import kotlin.system.exitProcess
 
 /**
@@ -107,6 +111,9 @@ class AuthFragment : Fragment() {
             requireActivity().runOnUiThread {
                 binding.timeCounter.text = getString(R.string.card_detected)
             }
+            var msgCode = 0
+            var msgArg : Int? = null
+
             val card = IsoDep.get(tag)
             card.timeout = 32768
             card.use {
@@ -119,30 +126,48 @@ class AuthFragment : Fragment() {
                     )
                     paramsModel.setToken(jws)
                     requireActivity().runOnUiThread {
+                        binding.timeCounter.text = getString(R.string.data_read)
                         goToNextFragment()
                     }
-                } catch (e: Exception) {
-                    when(e) {
-                        is TagLostException -> requireActivity().runOnUiThread { binding!!.timeCounter.text = getString(R.string.id_card_removed_early) }
-                        else -> {
-                            when ("invalid pin") {
-                                in e.message.toString().lowercase() -> requireActivity().runOnUiThread {
-                                    val messagePieces = e.message.toString().split(" ")
-                                    binding.timeCounter.text = getString(R.string.wrong_pin, messagePieces[messagePieces.size - 1])
-                                    viewModel.deletePin(requireContext())
-                                }
-                                else -> requireActivity().runOnUiThread {
-                                    binding.timeCounter.text = getString(R.string.wrong_can_text)
-                                    viewModel.deleteCan(requireContext())
-                                }
-                            }
-                        }
+                } catch (e: android.nfc.TagLostException) {
+                    msgCode = R.string.tag_lost
+                } catch (e: InvalidCANException) {
+                    msgCode = R.string.wrong_can_text
+                    // If the CAN is wrong we will also delete the saved CAN so that the user won't use it again.
+                    viewModel.deleteCan(requireContext())
+                } catch (e: InvalidPINException) {
+                    msgCode = R.string.wrong_pin
+                    msgArg = e.remainingAttempts
+                    viewModel.deletePin(requireContext())
+                } catch (e: AuthAppException) {
+                    msgCode = when (e.code) {
+                        400 -> R.string.err_parameter
+                        401 -> R.string.err_authentication
+                        446 -> R.string.err_card_locked
+                        448 -> R.string.err_bad_data
+                        500 -> R.string.err_internal
+                        else -> R.string.err_unknown
                     }
-                    // Give user some time to read the error message
-                    Thread.sleep(2000)
-                    cancelAuth()
+                } catch (e: GeneralSecurityException) {
+                    msgCode = R.string.err_internal
+                } catch (e: IOException) {
+                    msgCode = R.string.err_reading_card
+                } catch (e: Exception) {
+                    msgCode = R.string.err_unknown
                 } finally {
                     adapter.disableReaderMode(activity)
+                }
+
+                if (msgCode != 0) {
+                    requireActivity().runOnUiThread {
+                        var msg = getString(msgCode)
+                        if (msgArg != null)
+                            msg = String.format(msg, msgArg)
+                        binding.timeCounter.text = msg
+                    }
+                    // Gives user some time to read the error message
+                    Thread.sleep(2000)
+                    cancelAuth()
                 }
             }
         }, NfcAdapter.FLAG_READER_NFC_A, null)
