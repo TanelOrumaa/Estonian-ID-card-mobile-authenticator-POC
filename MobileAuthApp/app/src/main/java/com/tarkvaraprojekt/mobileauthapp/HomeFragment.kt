@@ -125,6 +125,7 @@ class HomeFragment : Fragment() {
                 intentParams.setAuthUrl(postAuthTokenUrl)
                 val address = "https://" + URL(getAuthChallengeUrl).host
                 intentParams.setOrigin(address)
+                Log.w("ORIGIN", intentParams.origin)
                 intentParams.setHeaders(headers)
                 Ion.getDefault(activity).conscryptMiddleware.enable(false)
                 Ion.with(activity)

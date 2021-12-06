@@ -61,11 +61,11 @@ class ResultFragment : Fragment() {
     fun postToken() {
         val json = JsonObject()
         json.addProperty("token", paramsModel.token)
-        json.addProperty("challenge", paramsModel.challenge)
+        json.addProperty("headers", paramsModel.headers)
 
         Ion.getDefault(activity).conscryptMiddleware.enable(false)
         Ion.with(activity)
-            .load(paramsModel.origin + paramsModel.authUrl)
+            .load(paramsModel.authUrl)
                 .setJsonObjectBody(json)
                 .asJsonObject()
                 .setCallback { e, result ->
