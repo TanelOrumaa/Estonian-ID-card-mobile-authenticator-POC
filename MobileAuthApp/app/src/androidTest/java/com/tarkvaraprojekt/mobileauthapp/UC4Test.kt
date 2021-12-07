@@ -1,39 +1,16 @@
 package com.tarkvaraprojekt.mobileauthapp
 
-//import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 
 import org.junit.*
-import org.junit.runner.RunWith
-import java.util.concurrent.TimeUnit
 
-@RunWith(AndroidJUnit4::class)
-class UC4Test {
-    @get:Rule
-    var activityActivityTestRule: ActivityTestRule<MainActivity> = ActivityTestRule(
-        MainActivity::class.java
-    )
+class UC4Test : BaseUCTest() {
 
-    @Before
-    fun setUp() {
-        IdlingPolicies.setMasterPolicyTimeout(3, TimeUnit.SECONDS)
-        IdlingPolicies.setIdlingResourceTimeout(3, TimeUnit.SECONDS)
-        activityActivityTestRule.activity
-            .supportFragmentManager.beginTransaction()
-    }
-
-    @After
-    fun tearDown() {
-    }
-
-    fun navigateToCANView() {
+    private fun navigateToCANView() {
         onView(withId(R.id.menu_settings_option)).perform(click())
         try {
             // Delete existing CAN
