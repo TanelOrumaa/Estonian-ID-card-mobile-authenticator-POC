@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.koushikdutta.ion.Ion
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentResultBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
+import org.json.JSONObject
 
 /**
  * ResultFragment is used to create a JWT and to send response to the website/application
@@ -46,8 +48,13 @@ class ResultFragment : Fragment() {
     /**
      * Only used when the MobileAuthApp was launched by an app. Not for website use.
      */
-    private fun createResponse(success: Boolean = true, result: String = "noResult", token: String = "noToken") {
-        val responseCode = if (success) AppCompatActivity.RESULT_OK else AppCompatActivity.RESULT_CANCELED
+    private fun createResponse(
+        success: Boolean = true,
+        result: String = "noResult",
+        token: String = "noToken"
+    ) {
+        val responseCode =
+            if (success) AppCompatActivity.RESULT_OK else AppCompatActivity.RESULT_CANCELED
         val resultIntent = Intent()
         resultIntent.putExtra("result", result)
         resultIntent.putExtra("token", token)
@@ -60,29 +67,35 @@ class ResultFragment : Fragment() {
      */
     fun postToken() {
         val json = JsonObject()
-        json.addProperty("token", paramsModel.token)
-        json.addProperty("headers", paramsModel.headers)
+        json.addProperty("auth-token", paramsModel.token)
+
+
 
         Ion.getDefault(activity).conscryptMiddleware.enable(false)
-        Ion.with(activity)
+        val ion = Ion.with(activity)
             .load(paramsModel.authUrl)
-                .setJsonObjectBody(json)
-                .asJsonObject()
-                .setCallback { e, result ->
-                    if (result == null) {
-                        if (args.mobile) {
-                            createResponse(false)
-                        } else {
-                            requireActivity().finishAndRemoveTask()
-                        }
+        for ((header, value) in paramsModel.headers) {
+            ion.setHeader(header, value)
+        }
+
+        ion
+            .setJsonObjectBody(json)
+            .asJsonObject()
+            .setCallback { e, result ->
+                if (result == null) {
+                    if (args.mobile) {
+                        createResponse(false)
                     } else {
-                        if (args.mobile) {
-                            createResponse(true, result.toString(), paramsModel.token)
-                        } else {
-                            requireActivity().finishAndRemoveTask()
-                        }
+                        requireActivity().finishAndRemoveTask()
+                    }
+                } else {
+                    if (args.mobile) {
+                        createResponse(true, result.toString(), paramsModel.token)
+                    } else {
+                        requireActivity().finishAndRemoveTask()
                     }
                 }
+            }
     }
 
     override fun onDestroy() {

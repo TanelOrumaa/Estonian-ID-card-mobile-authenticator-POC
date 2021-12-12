@@ -1,5 +1,7 @@
 package com.tarkvaraprojekt.mobileauthapp.model
 
+import android.util.Log
+import android.util.Log.WARN
 import androidx.lifecycle.ViewModel
 
 class ParametersViewModel: ViewModel() {
@@ -16,7 +18,7 @@ class ParametersViewModel: ViewModel() {
     private var _origin: String = ""
     val origin get() = _origin
 
-    private var _headers: String = ""
+    private var _headers: Map<String, String> = HashMap<String, String>()
     val headers get() =_headers
 
     fun setChallenge(newChallenge: String) {
@@ -35,7 +37,8 @@ class ParametersViewModel: ViewModel() {
         _origin = newOrigin
     }
 
-    fun setHeaders(newHeaders: String) {
+    fun setHeaders(newHeaders: Map<String, String>) {
+        Log.i("HEADERS", newHeaders.toList().toString())
         _headers = newHeaders
     }
 }

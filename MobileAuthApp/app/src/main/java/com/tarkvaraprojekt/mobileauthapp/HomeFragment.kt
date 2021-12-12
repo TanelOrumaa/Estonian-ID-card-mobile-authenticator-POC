@@ -25,6 +25,7 @@ import com.tarkvaraprojekt.mobileauthapp.NFC.Comms
 import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentHomeBinding
 import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 import com.tarkvaraprojekt.mobileauthapp.model.SmartCardViewModel
+import org.json.JSONObject
 import java.lang.Exception
 import java.lang.RuntimeException
 import java.net.URL
@@ -91,7 +92,8 @@ class HomeFragment : Fragment() {
      */
     private fun goToTheNextFragment(mobile: Boolean = false) {
         (activity as MainActivity).menuAvailable = false
-        val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(auth = true, mobile = mobile)
+        val action =
+            HomeFragmentDirections.actionHomeFragmentToCanFragment(auth = true, mobile = mobile)
         findNavController().navigate(action)
     }
 
@@ -117,28 +119,39 @@ class HomeFragment : Fragment() {
                 intentParams.setAuthUrl(requireActivity().intent.data!!.getQueryParameter("authUrl")!!)
                 intentParams.setOrigin(requireActivity().intent.data!!.getQueryParameter("originUrl")!!)
                 */
-                var getAuthChallengeUrl = requireActivity().intent.data!!.getQueryParameter("getAuthChallengeUrl")!!
-                getAuthChallengeUrl = getAuthChallengeUrl.substring(1, getAuthChallengeUrl.length - 1)
-                var postAuthTokenUrl = requireActivity().intent.data!!.getQueryParameter("postAuthTokenUrl")!!
+                var getAuthChallengeUrl =
+                    requireActivity().intent.data!!.getQueryParameter("getAuthChallengeUrl")!!
+                getAuthChallengeUrl =
+                    getAuthChallengeUrl.substring(1, getAuthChallengeUrl.length - 1)
+                var postAuthTokenUrl =
+                    requireActivity().intent.data!!.getQueryParameter("postAuthTokenUrl")!!
                 postAuthTokenUrl = postAuthTokenUrl.substring(1, postAuthTokenUrl.length - 1)
-                val headers = requireActivity().intent.data!!.getQueryParameter("headers")!!
+                val headers =
+                    getHeaders(requireActivity().intent.data!!.getQueryParameter("headers")!!)
                 intentParams.setAuthUrl(postAuthTokenUrl)
                 val address = "https://" + URL(getAuthChallengeUrl).host
                 intentParams.setOrigin(address)
-                Log.w("ORIGIN", intentParams.origin)
                 intentParams.setHeaders(headers)
                 Ion.getDefault(activity).conscryptMiddleware.enable(false)
-                Ion.with(activity)
+                val ion = Ion.with(activity)
                     .load(getAuthChallengeUrl)
+
+                // Set headers.
+                for ((header, value) in intentParams.headers) {
+                    ion.setHeader(header, value)
+                }
+
+                ion
                     .asJsonObject()
                     .setCallback { _, result ->
                         try {
                             // Get data from the result and call launchAuth method
-                            val challenge = result.asJsonObject["nonce"].toString().replace("\"", "")
+                            val challenge =
+                                result.asJsonObject["nonce"].toString().replace("\"", "")
                             intentParams.setChallenge(challenge)
                             goToTheNextFragment(mobile)
                         } catch (e: Exception) {
-                            Log.i("GETrequest", "was unsuccessful")
+                            Log.i("GETrequest", "was unsuccessful" + e.message)
                             throw RuntimeException()
                         }
                     }
@@ -159,7 +172,7 @@ class HomeFragment : Fragment() {
             } else {
                 message.setMessage(getString(R.string.problem_other))
             }
-            message.setPositiveButton(getString(R.string.continue_button)) {_, _ ->
+            message.setPositiveButton(getString(R.string.continue_button)) { _, _ ->
                 val resultIntent = Intent()
                 requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
                 requireActivity().finish()
@@ -196,6 +209,17 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun getHeaders(headersString: String): Map<String, String> {
+        val headers = HashMap<String, String>()
+        val headersStringFormatted = headersString.substring(1, headersString.length - 1)
+        val headersJsonObject = JSONObject(headersStringFormatted)
+
+        for (name in headersJsonObject.keys()) {
+            headers[name] = headersJsonObject[name].toString()
+        }
+        return headers
+    }
+
     /**
      * Displays texts that inform the user whether the CAN and PIN 1 are saved on the device or not.
      * This might help the user to save some time as checking menu is not necessary unless the user
@@ -222,7 +246,7 @@ class HomeFragment : Fragment() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton(R.string.return_text){_, _ -> }
+            .setPositiveButton(R.string.return_text) { _, _ -> }
             .show()
         val title = dialog.findViewById<TextView>(R.id.alertTitle)
         title?.textSize = 24F
@@ -242,11 +266,17 @@ class HomeFragment : Fragment() {
             binding.detectionActionText.text = getString(R.string.action_detect_unavailable)
             binding.homeActionButton.text = getString(R.string.add_can_text)
             binding.homeActionButton.setOnClickListener {
-                val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(saving = true, fromhome = true)
+                val action = HomeFragmentDirections.actionHomeFragmentToCanFragment(
+                    saving = true,
+                    fromhome = true
+                )
                 findNavController().navigate(action)
             }
             binding.homeHelpButton.setOnClickListener {
-                displayMessage(getString(R.string.can_question), getString(R.string.can_explanation))
+                displayMessage(
+                    getString(R.string.can_question),
+                    getString(R.string.can_explanation)
+                )
             }
             binding.homeActionButton.visibility = View.VISIBLE
             binding.homeHelpButton.visibility = View.VISIBLE
@@ -293,13 +323,15 @@ class HomeFragment : Fragment() {
                             findNavController().navigate(action)
                         }
                     } catch (e: Exception) {
-                        when(e) {
+                        when (e) {
                             is TagLostException -> requireActivity().runOnUiThread {
-                                binding.detectionActionText.text = getString(R.string.id_card_removed_early)
+                                binding.detectionActionText.text =
+                                    getString(R.string.id_card_removed_early)
                                 reset()
                             }
                             else -> requireActivity().runOnUiThread {
-                                binding.detectionActionText.text = getString(R.string.nfc_reading_error)
+                                binding.detectionActionText.text =
+                                    getString(R.string.nfc_reading_error)
                                 viewModel.deleteCan(requireContext())
                                 canState()
                                 reset()
