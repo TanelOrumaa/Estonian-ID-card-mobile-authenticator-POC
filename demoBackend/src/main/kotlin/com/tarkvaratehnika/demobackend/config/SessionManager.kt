@@ -58,7 +58,7 @@ class SessionManager {
                 // Fallback to when for some reason session object doesn't have sessionId attached.
                 sessionId = getSessionId(headers)
             }
-            sessionRegistry[sessionId]!!.roles = arrayListOf()
+            sessionRegistry[sessionId]?.roles = arrayListOf()
             val authentication = UsernamePasswordAuthenticationToken(null, sessionId, listOf())
             securityContext.authentication = authentication
         }

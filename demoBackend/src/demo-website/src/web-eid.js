@@ -8673,9 +8673,6 @@ class WebExtensionService {
                     if (res.statusCode == 200) {
                         console.log(res.statusCode);
                         window.postMessage({ action: this.getRelevantSuccessAction(message) }, location.origin);
-                        res.on("data", (data) => {
-                            console.log("HERE WE GOOO:" + data);
-                        });
                     }
                     else {
                         this.removeFromQueue(message.action);
