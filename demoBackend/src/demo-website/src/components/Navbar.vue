@@ -31,23 +31,21 @@ export default {
       fetch("/auth/logout", requestOptions)
           .then((response) => {
                 console.log(response);
-                this.$store.commit("setLoggedIn", false);
+                this.$store.dispatch("setLoggedIn", false);
                 router.push("/");
               }
           )
     }
   },
   mounted() {
-    if (this.$store.getters.getSessionId == null) {
-      const sessionId = this.$cookie.getCookie("JSESSIONID");
-      this.$store.dispatch("fetchSessionId", sessionId);
-    }
+    const sessionId = this.$cookie.getCookie("JSESSIONID");
+    this.$store.dispatch("fetchSessionId", sessionId);
   }
 }
 </script>
 
 <style scoped>
 nav {
-  height: 5vh;
+  height: 7vh;
 }
 </style>

@@ -1,15 +1,15 @@
 package com.tarkvaratehnika.demobackend.web.rest
 
-import com.tarkvaratehnika.demobackend.security.AuthTokenDTO
+import com.tarkvaratehnika.demobackend.config.SessionManager
+import com.tarkvaratehnika.demobackend.dto.AuthDto
+import com.tarkvaratehnika.demobackend.dto.AuthTokenDTO
 import com.tarkvaratehnika.demobackend.security.AuthTokenDTOAuthenticationProvider
 import com.tarkvaratehnika.demobackend.security.WebEidAuthentication
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("auth")
@@ -19,30 +19,31 @@ class AuthenticationController {
 
 
     @PostMapping("login", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun authenticate(@RequestBody body : String): Authentication {
-        val parts = body.split("\"")
-        val authToken = AuthTokenDTO(parts[3], parts[7])
+    fun authenticate(@RequestHeader headers: Map<String, String>, @RequestBody body : AuthTokenDTO): AuthDto {
+
+        val sessionId = SessionManager.getSessionId(headers)
+
         // Create Spring Security Authentication object with supplied token as credentials.
-        val auth = PreAuthenticatedAuthenticationToken(null, authToken)
+        val auth = PreAuthenticatedAuthenticationToken(null, body)
 
         // Return authentication object if success.
-        return AuthTokenDTOAuthenticationProvider.authenticate(auth)
+        return AuthTokenDTOAuthenticationProvider.authenticate(auth, sessionId)
     }
 
 
     @GetMapping("login", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getAuthenticated(headers: String) : Authentication? {
-        val auth = WebEidAuthentication.fromChallenge("as")
-        if (auth == null) {
-            throw ResponseStatusException(HttpStatus.FORBIDDEN, "Not allowed.")
-        }
-        return auth
+    fun getAuthenticated(@RequestHeader headers: HashMap<String, String>) : AuthDto {
+        return WebEidAuthentication.fromSession(headers)
+    }
+
+    @GetMapping("userData", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getUserData(@RequestHeader headers: Map<String, String>) : AuthDto? {
+        return SessionManager.getSessionAuth(SessionManager.getSessionId(headers))
     }
 
     @PostMapping("logout", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun logOut(@RequestBody body: String) : HttpStatus? {
-        LOG.warn("I WAS HERE")
-        LOG.warn(body)
+    fun logOut(@RequestHeader headers: Map<String, String>, @RequestBody body: String) : HttpStatus? {
+        SessionManager.removeRoleFromCurrentSession(headers)
         return HttpStatus.ACCEPTED
 
     }

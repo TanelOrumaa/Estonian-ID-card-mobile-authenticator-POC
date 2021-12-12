@@ -22,17 +22,27 @@
 
 package com.tarkvaratehnika.demobackend.security
 
+import com.tarkvaratehnika.demobackend.config.ApplicationConfiguration
+import com.tarkvaratehnika.demobackend.config.ApplicationConfiguration.Companion.USER_ROLE
+import com.tarkvaratehnika.demobackend.config.SessionManager
+import com.tarkvaratehnika.demobackend.dto.AuthDto
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.webeid.security.certificate.CertificateData
 
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.WebAuthenticationDetails
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
+import org.springframework.web.server.ResponseStatusException
+import java.io.Serializable
 import java.security.cert.X509Certificate
 import java.util.*
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.collections.ArrayList
-import kotlin.math.log
+import kotlin.collections.HashMap
 
 class WebEidAuthentication(
     private val principalName: String,
@@ -40,39 +50,71 @@ class WebEidAuthentication(
     private val authorities: ArrayList<GrantedAuthority>
 ) : PreAuthenticatedAuthenticationToken(principalName, idCode, authorities), Authentication {
 
+
     // Companion object is for static functions.
     companion object {
-
-        private val loggedInUsers = HashMap<String, Authentication>()
+        private val LOG = LoggerFactory.getLogger(WebEidAuthentication::class.java)
 
         fun fromCertificate(
             userCertificate: X509Certificate,
-            authorities: ArrayList<GrantedAuthority>,
-            challenge: String
-        ): Authentication {
-            val principalName = getPrincipalNameFromCertificate(userCertificate)
+            sessionId: String?,
+        ): AuthDto {
+            // Get user data.
+            val name = getPrincipalNameFromCertificate(userCertificate)
             val idCode = Objects.requireNonNull(CertificateData.getSubjectIdCode(userCertificate))
-            val authentication = WebEidAuthentication(principalName, idCode, authorities)
-            loggedInUsers[challenge] = authentication
-            return authentication
+
+            // Fetch valid sessionId.
+            var methodIndependentSessionId = sessionId
+            if (methodIndependentSessionId == null) {
+                methodIndependentSessionId = SessionManager.getSessionId()
+                if (methodIndependentSessionId == null) {
+                    throw Exception("No session")
+                }
+            }
+
+            // Add role and user data to the AuthDto and return it.
+            SessionManager.addRoleToSession(methodIndependentSessionId, SimpleGrantedAuthority(USER_ROLE))
+            return SessionManager.addUserDataToSession(methodIndependentSessionId, name, idCode)
         }
 
         /**
          * Function for getting a Spring authentication object by supplying a challenge.
          * TODO: Figure out a more secure solution in the future.
          */
-        fun fromChallenge(challenge: String): Authentication? {
+        fun fromSession(headers: HashMap<String, String>): AuthDto {
+            val currentTime = Date()
+
+            // Get sessionId for current session.
+            var sessionId = SessionManager.getSessionId()
+
+            if (sessionId == null) {
+                LOG.warn("SESSION IS NULL")
+                sessionId = SessionManager.getSessionId(headers)
+                    if (sessionId == null) {
+                        LOG.warn("SESSION IS STILL NULL")
+                        throw ResponseStatusException(HttpStatus.FORBIDDEN, "Session ID not found.")
+                    }
+                LOG.warn("SESSION IS NOW: " + sessionId)
+            }
+
+            while (currentTime.time + ApplicationConfiguration.AUTH_REQUEST_TIMEOUT_MS > Date().time) {
+                Thread.sleep(1000)
+
+                if (SessionManager.getSessionHasRole(sessionId, USER_ROLE)) {
+                    // Get AuthDto
+                    val auth = SessionManager.getSessionAuth(sessionId)
+
+                    // Set role and user data to current session.
+                    SessionManager.addRoleToCurrentSession(auth!!)
+                    LOG.warn("ROLE ADDED AND LOGGING IN.")
+                    return auth
+                }
+
+            }
 //            if (ThreadLocalRandom.current().nextFloat() < 0.5f) { // TODO: For testing.
 //                return null
 //            }
-            val auth = loggedInUsers[challenge]
-            if (auth != null) {
-                // If challenge is valid, delete the authentication object from the map (so this can only be fetched once).
-                loggedInUsers.remove(challenge)
-            } else {
-                return null
-            }
-            return auth
+            throw ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "Token not received in time.")
         }
 
 //        // TODO: DELETE

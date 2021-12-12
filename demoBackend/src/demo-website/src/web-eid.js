@@ -8658,16 +8658,33 @@ class WebExtensionService {
     }
     publishMessage(message, timeout) {
         if (message.useAuthApp && message.useAuthApp == true) {
-            if (this.isAndroidDevice()) {
+            if (isAndroidDevice()) {
                 // Launch auth app.
+                console.log("Launching auth app");
                 this.launchAuthApp(message);
             }
             else {
                 // Display QR code.
                 this.displayQRCode(message);
             }
-            this.pollForLoginSuccess(message, timeout).then((res) => {
-                console.log(res);
+            console.log("Polling for success.");
+            this.pollForLoginSuccess(message, timeout).then((req) => {
+                req.on("response", (res) => {
+                    if (res.statusCode == 200) {
+                        console.log(res.statusCode);
+                        window.postMessage({ action: this.getRelevantSuccessAction(message) }, location.origin);
+                        res.on("data", (data) => {
+                            console.log("HERE WE GOOO:" + data);
+                        });
+                    }
+                    else {
+                        this.removeFromQueue(message.action);
+                        return Promise.reject(new ServerRejectedError("Server rejected the authentication."));
+                    }
+                }).on("error", () => {
+                    this.removeFromQueue(message.action);
+                    return Promise.reject(new ServerRejectedError("Server unreachable."));
+                });
             });
         }
         else {
@@ -8703,35 +8720,29 @@ class WebExtensionService {
             if (!message.getAuthSuccessUrl.startsWith("https://")) {
                 throw new ProtocolInsecureError(`HTTPS required for getAuthSuccessUrl ${message.getAuthSuccessUrl}`);
             }
+            console.log("Polling for success.");
             const headers = message.headers;
+            const url = new URL(message.getAuthSuccessUrl);
+            const host = url.hostname;
+            const port = url.port;
+            const path = url.pathname;
             const options = {
+                host: host,
+                port: port,
+                path: path,
                 method: "GET",
                 headers: headers,
                 timeout: timeout,
             };
-            return get(message.getAuthSuccessUrl, options).on("error", (e) => {
-                console.error(e);
+            return get(options, (res) => {
+                console.log("Polling request answered.");
+            }).on("data", (data) => {
+                console.log("DATA: " + data);
+            }).on("error", () => {
+                throw new ServerRejectedError("Authentication failed.");
             }).on("timeout", () => {
-                console.error("Timeout");
+                throw new ServerTimeoutError("Server didn't respond in time");
             });
-            // return await Promise.race([
-            //   https.get(message.getAuthSuccessUrl, options, (res) => {
-            //     if (res.statusCode < 200 || res.statusCode > 299) {
-            //       return reject(new Error(`HTTP status code ${res.statusCode}`))
-            //     }
-            //
-            //     const body = []
-            //     res.on('data', (chunk) => body.push(chunk))
-            //     res.on('end', () => {
-            //       const resString = Buffer.concat(body).toString()
-            //       resolve(resString)
-            //     })
-            //
-            //   this.throwAfterTimeout(
-            //     timeout,
-            //     new ServerTimeoutError(`server failed to respond in time - GET ${message.getAuthSuccessUrl}`),
-            //   ),
-            // ]) as HttpResponse;
         }
         else {
             throw new MissingParameterError("getAuthSuccessUrl missing for Android auth app authentication option.");
@@ -8745,9 +8756,6 @@ class WebExtensionService {
         return new Promise((resolve) => {
             setTimeout(() => resolve(), milliseconds);
         });
-    }
-    isAndroidDevice() {
-        return navigator.userAgent.toLowerCase().indexOf("android") > -1;
     }
     getRelevantAckAction(message) {
         let ackAction;
@@ -8767,6 +8775,24 @@ class WebExtensionService {
         }
         return ackAction;
     }
+    getRelevantSuccessAction(message) {
+        let ackAction;
+        switch (message.action) {
+            case Action$1.AUTHENTICATE:
+                ackAction = Action$1.AUTHENTICATE_SUCCESS;
+                break;
+            case Action$1.SIGN:
+                ackAction = Action$1.SIGN_SUCCESS;
+                break;
+            case Action$1.STATUS:
+                ackAction = Action$1.STATUS_SUCCESS;
+                break;
+            default:
+                ackAction = Action$1.STATUS_SUCCESS;
+                break;
+        }
+        return ackAction;
+    }
     onReplyTimeout(pending) {
         var _a;
         console.log("onReplyTimeout", pending.message.action);
@@ -8776,14 +8802,13 @@ class WebExtensionService {
     onAckTimeout(pending) {
         var _a, _b;
         console.log("onAckTimeout", pending.message.action);
-        console.log("Pending message");
-        console.log(pending.message.authApp);
         if (pending.message.useAuthApp && pending.message.useAuthApp == true) {
             (_a = pending.reject) === null || _a === void 0 ? void 0 : _a.call(pending, new AuthAppNotInstalledError());
         }
         else {
             (_b = pending.reject) === null || _b === void 0 ? void 0 : _b.call(pending, new ExtensionUnavailableError());
         }
+        this.removeFromQueue(pending.message.action);
         clearTimeout(pending.replyTimer);
     }
     getPendingMessage(action) {
@@ -9021,5 +9046,8 @@ async function sign(options) {
     const result = await webExtensionService.send(message, timeout);
     return result.response;
 }
+function isAndroidDevice() {
+    return navigator.userAgent.toLowerCase().indexOf("android") > -1;
+}
 
-export { Action$1 as Action, ErrorCode$1 as ErrorCode, authenticate, config$1 as config, hasVersionProperties, sign, status };
+export { Action$1 as Action, ErrorCode$1 as ErrorCode, authenticate, config$1 as config, hasVersionProperties, isAndroidDevice, sign, status };

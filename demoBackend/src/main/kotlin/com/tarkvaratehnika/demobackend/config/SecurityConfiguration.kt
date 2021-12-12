@@ -1,4 +1,4 @@
-package com.tarkvaratehnika.demobackend.security
+package com.tarkvaratehnika.demobackend.config
 
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -15,9 +15,10 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests()?.antMatchers("/**")?.permitAll()
-            ?.antMatchers("/auth/**")?.permitAll()
-        http.sessionManagement()?.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-        http.csrf().disable()
+        http.authorizeRequests()
+            ?.antMatchers("/welcome")?.hasRole("USER")
+            ?.and()
+            ?.sessionManagement()?.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+            ?.and()?.csrf()?.disable()
     }
 }

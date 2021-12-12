@@ -16,6 +16,9 @@ const store = createStore({
         return {
             authenticated: false,
             jSessionId: null,
+            isAndroid: false,
+            userName: null,
+            userIdCode: null,
         }
     },
     mutations: {
@@ -24,11 +27,32 @@ const store = createStore({
         },
         setSessionId(state, sessionId) {
             state.jSessionId = sessionId;
+        },
+        setIsAndroid(state, isAndroid) {
+            state.isAndroid = isAndroid;
+        },
+        setUserName(state, userName) {
+            state.userName = userName;
+        },
+        setIdCode(state, idCode) {
+            state.userIdCode = idCode;
         }
     },
     actions: {
         fetchSessionId(context, sessionId) {
             context.commit("setSessionId", sessionId);
+        },
+        setLoggedIn(context, isLoggedIn) {
+            context.commit("setLoggedIn", isLoggedIn);
+        },
+        setIsAndroid(context, isAndroid) {
+            context.commit("setIsAndroid", isAndroid);
+        },
+        setUserName(context, userName) {
+            context.commit("setUserName", userName);
+        },
+        setUserIdCode(context, userIdCode) {
+            context.commit("setIdCode", userIdCode);
         }
     },
     getters: {
@@ -37,7 +61,16 @@ const store = createStore({
         },
         getSessionId: state => {
             return state.jSessionId;
-        }
+        },
+        getIsAndroid: state => {
+            return state.isAndroid;
+        },
+        getUserName: state => {
+            return state.userName;
+        },
+        getUserIdCode: state => {
+            return state.userIdCode;
+        },
     },
     plugins: [createPersistedState()],
 })

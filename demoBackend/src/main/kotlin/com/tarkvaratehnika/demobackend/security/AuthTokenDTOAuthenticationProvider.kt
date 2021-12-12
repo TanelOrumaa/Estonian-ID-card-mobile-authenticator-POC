@@ -23,14 +23,12 @@
 package com.tarkvaratehnika.demobackend.security
 
 import com.tarkvaratehnika.demobackend.config.ValidationConfiguration
-import com.tarkvaratehnika.demobackend.config.ValidationConfiguration.Companion.ROLE_USER
-import com.tarkvaratehnika.demobackend.web.rest.AuthenticationController
+import com.tarkvaratehnika.demobackend.dto.AuthDto
+import com.tarkvaratehnika.demobackend.dto.AuthTokenDTO
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.stereotype.Component
 import org.webeid.security.exceptions.TokenValidationException
@@ -44,23 +42,15 @@ object AuthTokenDTOAuthenticationProvider {
 
     private val LOG = LoggerFactory.getLogger(AuthTokenDTOAuthenticationProvider::class.java)
 
-
-    private val USER_ROLE: GrantedAuthority = SimpleGrantedAuthority(ROLE_USER)
-
-
     val tokenValidator: AuthTokenValidator = ValidationConfiguration().validator()
 
     @Throws(AuthenticationException::class)
-    fun authenticate(auth : Authentication) : Authentication {
+    fun authenticate(auth : Authentication, sessionId: String?) : AuthDto {
         val authentication = auth as PreAuthenticatedAuthenticationToken
         val token = (authentication.credentials as AuthTokenDTO).token
-        val challenge = (authentication.credentials as AuthTokenDTO)
-        val authorities = arrayListOf<GrantedAuthority>()
-        authorities.add(USER_ROLE)
-
         try {
             val userCertificate: X509Certificate = tokenValidator.validate(token)
-            return WebEidAuthentication.fromCertificate(userCertificate, authorities, "as")
+            return WebEidAuthentication.fromCertificate(userCertificate, sessionId)
         } catch (e : TokenValidationException) {
             // Validation failed.
             throw AuthenticationServiceException("Token validation failed. " + e.message)
