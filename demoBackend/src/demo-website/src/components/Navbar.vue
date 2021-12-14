@@ -25,8 +25,7 @@ export default {
 
       const requestOptions = {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({"sessionId": this.$store.getters.getSessionId})
+        headers: {"sessionId": this.$store.getters.getSessionId}
       };
       fetch("/auth/logout", requestOptions)
           .then((response) => {

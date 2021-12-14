@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>demoBackend</name>
     <description>demoBackend</description>
+    <packaging>jar</packaging>
     <properties>
         <java.version>11</java.version>
         <kotlin.version>1.5.31</kotlin.version>

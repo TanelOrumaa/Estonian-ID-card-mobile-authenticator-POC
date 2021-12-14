@@ -54,7 +54,7 @@ class SessionManager {
         fun removeRoleFromCurrentSession(headers: Map<String, String>) {
             val securityContext = SecurityContextHolder.getContext()
             var sessionId = securityContext.authentication.credentials
-            if (sessionId == null) {
+            if (sessionId == null || sessionId == "") {
                 // Fallback to when for some reason session object doesn't have sessionId attached.
                 sessionId = getSessionId(headers)
             }

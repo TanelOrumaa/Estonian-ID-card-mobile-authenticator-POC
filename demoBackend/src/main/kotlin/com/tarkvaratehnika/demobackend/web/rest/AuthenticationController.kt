@@ -41,8 +41,8 @@ class AuthenticationController {
         return SessionManager.getSessionAuth(SessionManager.getSessionId(headers))
     }
 
-    @PostMapping("logout", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun logOut(@RequestHeader headers: Map<String, String>, @RequestBody body: String) : HttpStatus? {
+    @PostMapping("logout")
+    fun logOut(@RequestHeader headers: Map<String, String>) : HttpStatus? {
         SessionManager.removeRoleFromCurrentSession(headers)
         return HttpStatus.ACCEPTED
 
