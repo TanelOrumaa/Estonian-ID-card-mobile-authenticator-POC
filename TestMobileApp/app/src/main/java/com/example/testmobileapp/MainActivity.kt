@@ -9,14 +9,14 @@ import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.testmobileapp.databinding.ActivityMainBinding
-import com.koushikdutta.ion.Ion
 import org.json.JSONObject
-import java.net.URL
 
 /**
  * Base url where the requests should be made. Add yours here. It must use https.
  */
-private const val BASE_URL = "https-base-url-here"
+private const val BASE_URL = "https://e871-2001-7d0-88a4-b880-d085-ba91-1799-76e7.ngrok.io"
+private const val AUTH_URL = "$BASE_URL/auth/login"
+private const val CHALLENGE_URL = "$BASE_URL/auth/challenge"
 
 /**
  * Test mobile app to demonstrate how other applications can use MobileAuthApp.
@@ -32,19 +32,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Log.i("myLoggingStuff", URL("https://www.google.ee/?hl=et").host.toString())
         authLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { response ->
             if (response.resultCode == Activity.RESULT_OK) {
                 binding.loginTextView.text = getString(R.string.auth_success)
                 // Logs are used to show what information can be retrieved from the mobileauthapp.
-                Log.i("getResult", response.data?.getStringExtra("token").toString())
-                Log.i("getResult", response.data?.getStringExtra("result").toString())
+                Log.i("getResult", response.data?.getStringExtra("idCode").toString())
+                Log.i("getResult", response.data?.getStringExtra("name").toString())
                 var user = ""
                 try {
-                    val resultObject = JSONObject(response.data?.getStringExtra("result").toString())
-                    user = resultObject.getString("principal")
+                    user = response.data?.getStringExtra("name").toString()
                 } catch (e: Exception) {
-                    Log.i("getResult", "unable to retrieve name from principal")
+                    Log.i("getResult", "unable to retrieve name")
                 }
                 showResult(user)
             }
@@ -55,20 +53,24 @@ class MainActivity : AppCompatActivity() {
 
         showLogin()
 
-        binding.loginOptionNfcButton.setOnClickListener { getData() }
+        binding.loginOptionNfcButton.setOnClickListener {
+            //getData()
+            launchAuth()
+        }
 
     }
 
     /**
      * Method that creates an intent to launch the MobileAuthApp
      */
-    private fun launchAuth(challenge: String = "challenge", originUrl: String = "baseUrl", authUrl: String = "authUrl") {
+    private fun launchAuth() {
         val launchIntent = Intent()
         launchIntent.setClassName("com.tarkvaraprojekt.mobileauthapp", "com.tarkvaraprojekt.mobileauthapp.MainActivity")
         launchIntent.putExtra("action", "auth")
-        launchIntent.putExtra("challenge", challenge)
-        launchIntent.putExtra("originUrl", originUrl)
-        launchIntent.putExtra("authUrl", authUrl)
+        launchIntent.putExtra("challenge", CHALLENGE_URL)
+        launchIntent.putExtra("originUrl", BASE_URL)
+        launchIntent.putExtra("authUrl", AUTH_URL)
+        launchIntent.putExtra("headers","${(0..100000).random()}")
         launchIntent.putExtra("mobile", true)
         authLauncher.launch(launchIntent)
     }
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity() {
      * Method for retrieving data from an endpoint.
      * Ion library is used as it is very convenient for making simple GET requests.
      */
+    /*
     private fun getData() {
         // Enter the server endpoint address to here
         val url = "$BASE_URL/auth/challenge"
@@ -95,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
+     */
 
     private fun showLogin() {
         binding.loginOptions.visibility = View.VISIBLE

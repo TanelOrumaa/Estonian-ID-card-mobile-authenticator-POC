@@ -50,14 +50,14 @@ class ResultFragment : Fragment() {
      */
     private fun createResponse(
         success: Boolean = true,
-        result: String = "noResult",
-        token: String = "noToken"
+        idCode: String = "noCode",
+        name: String = "noName"
     ) {
         val responseCode =
             if (success) AppCompatActivity.RESULT_OK else AppCompatActivity.RESULT_CANCELED
         val resultIntent = Intent()
-        resultIntent.putExtra("result", result)
-        resultIntent.putExtra("token", token)
+        resultIntent.putExtra("idCode", idCode)
+        resultIntent.putExtra("name", name)
         requireActivity().setResult(responseCode, resultIntent)
         requireActivity().finish()
     }
@@ -90,7 +90,11 @@ class ResultFragment : Fragment() {
                     }
                 } else {
                     if (args.mobile) {
-                        createResponse(true, result.toString(), paramsModel.token)
+                        Log.i("myResultTag", result.toString())
+                        val userData = result.asJsonObject["userData"]
+                        val idCode = userData.asJsonObject["idCode"].asString
+                        val name = userData.asJsonObject["name"].asString
+                        createResponse(true, idCode, name)
                     } else {
                         requireActivity().finishAndRemoveTask()
                     }
