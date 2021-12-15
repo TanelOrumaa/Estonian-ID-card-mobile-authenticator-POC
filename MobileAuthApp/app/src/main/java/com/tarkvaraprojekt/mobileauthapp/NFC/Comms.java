@@ -3,6 +3,9 @@ package com.tarkvaraprojekt.mobileauthapp.NFC;
 import android.nfc.tech.IsoDep;
 import android.util.Log;
 
+import com.tarkvaraprojekt.mobileauthapp.auth.AuthAppException;
+import com.tarkvaraprojekt.mobileauthapp.auth.InvalidPINException;
+
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.macs.CMac;
@@ -156,7 +159,7 @@ public class Comms {
     private byte[] getResponse(byte[] APDU, String log) throws IOException {
         byte[] response = idCard.transceive(APDU);
         if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != 0x00) {
-            throw new RuntimeException(String.format("%s failed.", log));
+            throw new AuthAppException(String.format("%s failed.", log), 500);
         }
         Log.i(log, Hex.toHexString(response));
         return response;
@@ -204,7 +207,7 @@ public class Comms {
         // verify chip's MAC and return session keys
         MAC = getMAC(createAPDU(dataForMACIncomplete, publicKey.getEncoded(false), 65), keyMAC);
         if (!Hex.toHexString(response, 4, 8).equals(Hex.toHexString(MAC))) {
-            throw new RuntimeException("Could not verify chip's MAC."); // *Should* never happen.
+            throw new AuthAppException("Could not verify chip's MAC.", 448); // *Should* never happen.
         }
         return new byte[][]{keyEnc, keyMAC};
 
@@ -221,7 +224,7 @@ public class Comms {
         selectFile(FID, info);
         byte[] response = getResponse(new byte[0], readFile, "Read binary");
         if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != 0x00) {
-            throw new RuntimeException(String.format("Could not read %s", info));
+            throw new AuthAppException(String.format("Could not read %s", info), 500);
         }
         return encryptDecryptData(Arrays.copyOfRange(response, 3, 19), Cipher.DECRYPT_MODE);
     }
@@ -290,7 +293,7 @@ public class Comms {
     private void selectFile(byte[] FID, String info) throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, IOException {
         byte[] response = getResponse(FID, selectFile, String.format("Select %s", info));
         if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != 0x00) {
-            throw new RuntimeException(String.format("Could not select %s", info));
+            throw new AuthAppException(String.format("Could not select %s", info), 500);
         }
     }
 
@@ -315,7 +318,7 @@ public class Comms {
         // select and read the personal data elementary files
         for (byte index : lastBytes) {
 
-            if (index > 15 || index < 1) throw new RuntimeException("Invalid personal data FID.");
+            if (index > 15 || index < 1) throw new AuthAppException("Invalid personal data FID.", 500);
             FID[1] = index;
 
             // store the decrypted datum
@@ -348,9 +351,9 @@ public class Comms {
 
         if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != 0x00) {
             if (response[response.length - 2] == 0x69 && response[response.length - 1] == (byte) 0x83) {
-                throw new RuntimeException("Invalid PIN. Authentication method blocked.");
+                throw new AuthAppException("Invalid PIN. Authentication method blocked.", 446);
             } else {
-                throw new RuntimeException(String.format("Invalid PIN. Attempts left: %d.", response[response.length - 1] + 64));
+                throw new InvalidPINException(response[response.length - 1] + 64);
             }
         }
     }
@@ -379,7 +382,7 @@ public class Comms {
             readCert[3] = (byte) (certificate.length % 256);
             byte[] response = getResponse(new byte[0], readCert, "Read the certificate");
             if (response[response.length - 2] == 0x6b && response[response.length - 1] == 0x00) {
-                throw new RuntimeException("Wrong read parameters.");
+                throw new AuthAppException("Wrong read parameters.", 400);
             }
 
             // Set the range containing a portion of the certificate and decrypt it
@@ -414,7 +417,7 @@ public class Comms {
 
         byte[] response = getResponse(Env, MSESetEnv, "Set environment");
         if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != 0x00) {
-            throw new RuntimeException("Setting the environment failed.");
+            throw new AuthAppException("Setting the environment failed.", 500);
         }
 
         InternalAuthenticate[4] = (byte) (0x1d + 16 * (token.length / 16));
@@ -422,7 +425,7 @@ public class Comms {
         response = getResponse(token, InternalAuthenticate, "Internal Authenticate");
 
         if (response[response.length - 2] != (byte) 0x90 || response[response.length - 1] != 0x00) {
-            throw new RuntimeException("Signing the token failed.");
+            throw new AuthAppException("Signing the token failed.", 500);
         }
 
         byte[] signature = encryptDecryptData(Arrays.copyOfRange(response, 3, 115), Cipher.DECRYPT_MODE);
