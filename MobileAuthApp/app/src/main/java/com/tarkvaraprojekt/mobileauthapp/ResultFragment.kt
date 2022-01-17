@@ -47,17 +47,20 @@ class ResultFragment : Fragment() {
 
     /**
      * Only used when the MobileAuthApp was launched by an app. Not for website use.
+     * Not really the safest way of doing things, but sufficient for POC purposes.
      */
     private fun createResponse(
         success: Boolean = true,
         idCode: String = "noCode",
-        name: String = "noName"
+        name: String = "noName",
+        authority: String = "noAuthority"
     ) {
         val responseCode =
             if (success) AppCompatActivity.RESULT_OK else AppCompatActivity.RESULT_CANCELED
         val resultIntent = Intent()
         resultIntent.putExtra("idCode", idCode)
         resultIntent.putExtra("name", name)
+        resultIntent.putExtra("authority", authority)
         requireActivity().setResult(responseCode, resultIntent)
         requireActivity().finish()
     }
@@ -82,6 +85,7 @@ class ResultFragment : Fragment() {
             .setJsonObjectBody(json)
             .asJsonObject()
             .setCallback { e, result ->
+                Log.i("resultTag", result.toString())
                 if (result == null) {
                     if (args.mobile) {
                         createResponse(false)
@@ -90,11 +94,11 @@ class ResultFragment : Fragment() {
                     }
                 } else {
                     if (args.mobile) {
-                        Log.i("myResultTag", result.toString())
                         val userData = result.asJsonObject["userData"]
                         val idCode = userData.asJsonObject["idCode"].asString
                         val name = userData.asJsonObject["name"].asString
-                        createResponse(true, idCode, name)
+                        val authority = result.asJsonObject["roles"].asJsonArray[0].asJsonObject["authority"].asString
+                        createResponse(true, idCode, name, authority)
                     } else {
                         requireActivity().finishAndRemoveTask()
                     }

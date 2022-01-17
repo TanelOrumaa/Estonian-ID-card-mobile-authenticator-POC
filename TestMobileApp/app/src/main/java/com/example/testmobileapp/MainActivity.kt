@@ -14,7 +14,7 @@ import org.json.JSONObject
 /**
  * Base url where the requests should be made. Add yours here. It must use https.
  */
-private const val BASE_URL = "https://e871-2001-7d0-88a4-b880-d085-ba91-1799-76e7.ngrok.io"
+private const val BASE_URL = "https://a0fe-2001-7d0-88ab-b880-7571-cba0-5db2-11b7.ngrok.io"
 private const val AUTH_URL = "$BASE_URL/auth/login"
 private const val CHALLENGE_URL = "$BASE_URL/auth/challenge"
 
@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                 // Logs are used to show what information can be retrieved from the mobileauthapp.
                 Log.i("getResult", response.data?.getStringExtra("idCode").toString())
                 Log.i("getResult", response.data?.getStringExtra("name").toString())
+                Log.i("getResult", response.data?.getStringExtra("authority").toString())
                 var user = ""
                 try {
                     user = response.data?.getStringExtra("name").toString()
