@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.nfc.NfcAdapter
 import android.nfc.TagLostException
 import android.nfc.tech.IsoDep
@@ -14,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -106,10 +104,28 @@ class HomeFragment : Fragment() {
         try {
             if (mobile) {
                 // We use !! to get extras because we want an exception to be thrown when something is missing.
-                intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
+                //intentParams.setChallenge(requireActivity().intent.getStringExtra("challenge")!!)
                 intentParams.setAuthUrl(requireActivity().intent.getStringExtra("authUrl")!!)
                 intentParams.setOrigin(requireActivity().intent.getStringExtra("originUrl")!!)
-                goToTheNextFragment(mobile)
+                val challengeUrl = requireActivity().intent.getStringExtra("challenge")!!
+                val headers = requireActivity().intent.getStringExtra("headers")!!
+                val map: HashMap<String, String> = HashMap()
+                map.put("sessionId", headers)
+                intentParams.setHeaders(map)
+                Ion.getDefault(activity).conscryptMiddleware.enable(false)
+                Ion.with(activity)
+                    .load(challengeUrl)
+                    .setHeader("sessionId", headers)
+                    .asJsonObject()
+                    .setCallback { _, result ->
+                        try {
+                            val challenge = result.asJsonObject["nonce"].toString().replace("\"", "")
+                            intentParams.setChallenge(challenge)
+                            goToTheNextFragment(mobile)
+                        } catch (e: Exception) {
+                            Log.i("GETrequest", e.toString())
+                        }
+                    }
             } else { //Website
                 /*
                 var challenge = requireActivity().intent.data!!.getQueryParameter("challenge")!!
