@@ -19,7 +19,7 @@ private const val AUTH_URL = "$BASE_URL/auth/login"
 private const val CHALLENGE_URL = "$BASE_URL/auth/challenge"
 
 /**
- * Test mobile app to demonstrate how other applications can use MobileAuthApp.
+ * Test mobile app to demonstrate how other applications could potentially use MobileAuthApp.
  * Single purpose app that launches the MobileAuthApp and gets the response back (JWT).
  */
 class MainActivity : AppCompatActivity() {
@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         showLogin()
 
         binding.loginOptionNfcButton.setOnClickListener {
-            //getData()
             launchAuth()
         }
 
@@ -75,31 +74,6 @@ class MainActivity : AppCompatActivity() {
         launchIntent.putExtra("mobile", true)
         authLauncher.launch(launchIntent)
     }
-
-    /**
-     * Method for retrieving data from an endpoint.
-     * Ion library is used as it is very convenient for making simple GET requests.
-     */
-    /*
-    private fun getData() {
-        // Enter the server endpoint address to here
-        val url = "$BASE_URL/auth/challenge"
-        Ion.getDefault(this).conscryptMiddleware.enable(false)
-        Ion.with(applicationContext)
-            .load(url)
-            .asJsonObject()
-            .setCallback { _, result ->
-                try {
-                    // Get data from the result and call launchAuth method
-                    val challenge = result.asJsonObject["nonce"].toString().replace("\"", "")
-                    Log.v("Challenge", challenge)
-                    launchAuth(challenge, BASE_URL, "/auth/authentication")
-                } catch (e: Exception) {
-                    Log.i("GETrequest", "was unsuccessful")
-                }
-            }
-    }
-     */
 
     private fun showLogin() {
         binding.loginOptions.visibility = View.VISIBLE
