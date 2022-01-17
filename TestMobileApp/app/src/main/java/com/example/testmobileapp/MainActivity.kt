@@ -21,6 +21,7 @@ private const val CHALLENGE_URL = "$BASE_URL/auth/challenge"
 /**
  * Test mobile app to demonstrate how other applications could potentially use MobileAuthApp.
  * Single purpose app that launches the MobileAuthApp and gets the response back (JWT).
+ * Only for demo purposes.
  */
 class MainActivity : AppCompatActivity() {
 
