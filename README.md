@@ -22,11 +22,4 @@ More info about installing third party applications on the Android phones: https
 The project comes with a test mobile application and a test web application that can be used to try the MobileAuthApp authentication feature even if you don't have any web applications or mobile applications that require user authentication. Both projects come with a README file that help with a setup.
 The mobile authentication application, when launched by the user not a website or some other application, can also read card holder's information, which can be used to verify whether the application reads the information from the ID card correctly.
 
-### Wiki pages relevant for the "Software project" subject
-* [Project Vision](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-Vision)
-* [Release Notes](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Release-notes)
-* [Project tasks](https://tvp-mobile-authentication.atlassian.net/jira/software/projects/MOB/boards/1/backlog) (Ask Tanel for JIRA permissions if needed).
-* [Project plan](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Project-plan)
-* [Use Cases](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Cases)
-* [User stories](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/User-stories)
-* [Use Case Tests](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki/Use-Case-Tests)
+### See the [Wiki](https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/wiki) for pages relevant for the "Software project" subject
