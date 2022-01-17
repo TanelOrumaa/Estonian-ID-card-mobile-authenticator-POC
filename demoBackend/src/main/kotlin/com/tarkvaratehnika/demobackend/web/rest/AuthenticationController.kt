@@ -1,5 +1,6 @@
 package com.tarkvaratehnika.demobackend.web.rest
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tarkvaratehnika.demobackend.config.SessionManager
 import com.tarkvaratehnika.demobackend.dto.AuthDto
 import com.tarkvaratehnika.demobackend.dto.AuthTokenDTO
@@ -8,6 +9,7 @@ import com.tarkvaratehnika.demobackend.security.WebEidAuthentication
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.web.bind.annotation.*
 
@@ -19,12 +21,18 @@ class AuthenticationController {
 
 
     @PostMapping("login", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun authenticate(@RequestHeader headers: Map<String, String>, @RequestBody body : AuthTokenDTO): AuthDto {
-
+    fun authenticate(@RequestHeader headers: Map<String, String>, @RequestBody authTokenDTO: AuthTokenDTO): AuthDto {
         val sessionId = SessionManager.getSessionId(headers)
 
+        // Check if an error occurred in the auth app.
+        if (authTokenDTO.error != null && authTokenDTO.error != 200) {
+            val auth = AuthDto(arrayListOf(), hashMapOf(), authTokenDTO.error)
+            SessionManager.addErrorToSession(sessionId, auth)
+            return auth
+        }
+
         // Create Spring Security Authentication object with supplied token as credentials.
-        val auth = PreAuthenticatedAuthenticationToken(null, body)
+        val auth = PreAuthenticatedAuthenticationToken(null, authTokenDTO)
 
         // Return authentication object if success.
         return AuthTokenDTOAuthenticationProvider.authenticate(auth, sessionId)
@@ -32,7 +40,7 @@ class AuthenticationController {
 
 
     @GetMapping("login", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getAuthenticated(@RequestHeader headers: HashMap<String, String>) : AuthDto {
+    fun getAuthenticated(@RequestHeader headers: HashMap<String, String>) : ResponseEntity<String> {
         return WebEidAuthentication.fromSession(headers)
     }
 

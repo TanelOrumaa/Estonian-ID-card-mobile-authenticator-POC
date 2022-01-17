@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### web-eid.js ###
-!**src/demo-website/src/web-eid.js
+src/demo-website/src/web-eid.js

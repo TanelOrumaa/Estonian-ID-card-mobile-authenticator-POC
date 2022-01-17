@@ -68,8 +68,7 @@ class ResultFragment : Fragment() {
     fun postToken() {
         val json = JsonObject()
         json.addProperty("auth-token", paramsModel.token)
-
-
+        json.addProperty("error", 200)
 
         Ion.getDefault(activity).conscryptMiddleware.enable(false)
         val ion = Ion.with(activity)

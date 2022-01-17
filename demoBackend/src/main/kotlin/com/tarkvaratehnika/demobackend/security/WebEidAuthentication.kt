@@ -22,12 +22,14 @@
 
 package com.tarkvaratehnika.demobackend.security
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tarkvaratehnika.demobackend.config.ApplicationConfiguration
 import com.tarkvaratehnika.demobackend.config.ApplicationConfiguration.Companion.USER_ROLE
 import com.tarkvaratehnika.demobackend.config.SessionManager
 import com.tarkvaratehnika.demobackend.dto.AuthDto
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.webeid.security.certificate.CertificateData
 
 import org.springframework.security.core.Authentication
@@ -78,59 +80,46 @@ class WebEidAuthentication(
         }
 
         /**
-         * Function for getting a Spring authentication object by supplying a challenge.
-         * TODO: Figure out a more secure solution in the future.
+         * Function for getting a Spring authentication object for this session.
          */
-        fun fromSession(headers: HashMap<String, String>): AuthDto {
+        fun fromSession(headers: HashMap<String, String>): ResponseEntity<String> {
+            val mapper = jacksonObjectMapper()
+
             val currentTime = Date()
 
             // Get sessionId for current session.
             var sessionId = SessionManager.getSessionId()
 
             if (sessionId == null) {
-                LOG.warn("SESSION IS NULL")
                 sessionId = SessionManager.getSessionId(headers)
                     if (sessionId == null) {
-                        LOG.warn("SESSION IS STILL NULL")
-                        throw ResponseStatusException(HttpStatus.FORBIDDEN, "Session ID not found.")
+                        return ResponseEntity.status(400).body(mapper.writeValueAsString(400))
                     }
-                LOG.warn("SESSION IS NOW: " + sessionId)
             }
 
             while (currentTime.time + ApplicationConfiguration.AUTH_REQUEST_TIMEOUT_MS > Date().time) {
                 Thread.sleep(1000)
 
+                // Check if an error has been submitted for this session.
+                val error = SessionManager.getError(sessionId)
+                if (error != 200) {
+                    return ResponseEntity.status(error).body(mapper.writeValueAsString(error))
+                }
+
+                // Check if this session has received a role.
                 if (SessionManager.getSessionHasRole(sessionId, USER_ROLE)) {
                     // Get AuthDto
                     val auth = SessionManager.getSessionAuth(sessionId)
 
                     // Set role and user data to current session.
                     SessionManager.addRoleToCurrentSession(auth!!)
-                    LOG.warn("ROLE ADDED AND LOGGING IN.")
-                    return auth
+                    return ResponseEntity.status(200).body(mapper.writeValueAsString(auth))
                 }
-
             }
-//            if (ThreadLocalRandom.current().nextFloat() < 0.5f) { // TODO: For testing.
-//                return null
-//            }
-            throw ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "Token not received in time.")
-        }
 
-//        // TODO: DELETE
-//
-//        const val ROLE_USER: String = "ROLE_USER"
-//        private val USER_ROLE: GrantedAuthority = SimpleGrantedAuthority(ROLE_USER)
-//
-//        fun addAuth(challenge: String) {
-//            val authorities = arrayListOf<GrantedAuthority>()
-//            authorities.add(USER_ROLE)
-//            val auth = WebEidAuthentication("Somename", "11111111111", authorities)
-//            loggedInUsers[challenge] = auth
-//        }
-//
-//
-//        // TODO: DELETE UNTIL
+            // In case of timeout return 408.
+            return ResponseEntity.status(408).body(mapper.writeValueAsString(408))
+        }
 
         private fun getPrincipalNameFromCertificate(userCertificate: X509Certificate): String {
             return Objects.requireNonNull(CertificateData.getSubjectGivenName(userCertificate)) + " " +

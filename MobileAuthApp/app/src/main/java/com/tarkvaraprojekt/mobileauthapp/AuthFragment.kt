@@ -68,18 +68,18 @@ class AuthFragment : Fragment() {
 
             override fun onFinish() {
                 Thread.sleep(750)
-                cancelAuth()
+                cancelAuth(408)
             }
         }.start()
         // The button exists in code for testing reasons, but not visible to the user anymore unless visibility is changed in the code.
         binding.nextButton.visibility = View.GONE
         binding.nextButton.setOnClickListener { goToNextFragment() }
-        binding.cancelButton.setOnClickListener { cancelAuth() }
+        binding.cancelButton.setOnClickListener { cancelAuth(444) }
         val adapter = NfcAdapter.getDefaultAdapter(activity)
         if (adapter != null)
             getInfoFromIdCard(adapter)
         else { // If NFC adapter can not be detected then end the auth process as it is not possible to read an ID card
-            cancelAuth() // It would be a good idea to show user some notification as it might be confusing if the app suddenly closes
+            cancelAuth(447) // It would be a good idea to show user some notification as it might be confusing if the app suddenly closes
         }
     }
 
@@ -89,7 +89,7 @@ class AuthFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun cancelAuth() {
+    private fun cancelAuth(code: Int) {
         viewModel.clearUserInfo()
         timer.cancel()
         if (args.mobile) {
@@ -97,6 +97,7 @@ class AuthFragment : Fragment() {
             requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
             requireActivity().finish()
         } else {
+            (activity as MainActivity).returnError(code)
             requireActivity().finishAndRemoveTask()
         }
     }
@@ -123,24 +124,28 @@ class AuthFragment : Fragment() {
                     }
                 } catch (e: Exception) {
                     when(e) {
-                        is TagLostException -> requireActivity().runOnUiThread { binding!!.timeCounter.text = getString(R.string.id_card_removed_early) }
+                        is TagLostException -> requireActivity().runOnUiThread {
+                            binding!!.timeCounter.text = getString(R.string.id_card_removed_early)
+                            cancelAuth(444)
+                        }
                         else -> {
                             when ("invalid pin") {
                                 in e.message.toString().lowercase() -> requireActivity().runOnUiThread {
                                     val messagePieces = e.message.toString().split(" ")
                                     binding.timeCounter.text = getString(R.string.wrong_pin, messagePieces[messagePieces.size - 1])
                                     viewModel.deletePin(requireContext())
+                                    cancelAuth(449)
                                 }
                                 else -> requireActivity().runOnUiThread {
                                     binding.timeCounter.text = getString(R.string.wrong_can_text)
                                     viewModel.deleteCan(requireContext())
+                                    cancelAuth(449)
                                 }
                             }
                         }
                     }
                     // Give user some time to read the error message
                     Thread.sleep(2000)
-                    cancelAuth()
                 } finally {
                     adapter.disableReaderMode(activity)
                 }

@@ -1,9 +1,15 @@
 <template>
   <div class="container container-md d-flex flex-column">
     <div>
-      <h3 class="text-center">Welcome to Estonian ID card mobile authentication demo website. When using an Android mobile phone, you can
-        log in to the
-        website using your ID card by using the button below.</h3>
+      <h3 class="text-center">Welcome to Estonian ID card mobile authentication demo website.</h3>
+      <p>This website to demonstrates the viability of using your NFC-enabled ID-card and your smartphone to authenticate yourself.
+        This is a proof of concept solution, so currently only authentication is supported. This solution was created for <a href="https://courses.cs.ut.ee/2021/tvp/">Software Project (Tarkvaraprojekt)</a> course in the University of Tartu
+      in cooperation with <a href="https://github.com/martinpaljak/">Martin Paljak</a>.</p>
+      <p>This solution is meant to be web-eid.js compatible, so this example website uses a <a href="https://github.com/TanelOrumaa/web-eid.js">fork of web-eid.js</a> which supports the Android authentication app.</p>
+      <h2>Usage</h2>
+      <p>To get started, download and install the authentication Android app from <a href="https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC/releases">GitHub</a> (Android 8.0+ required).
+        You can then click "Login" to authenticate yourself on this demo website with the app or if you are using a non-Android device, you can use both the app or the default web-eid.js option to login using the smartcard reader.
+      </p>
 
       <p class="text-center">Read more from <a href="https://github.com/TanelOrumaa/Estonian-ID-card-mobile-authenticator-POC">here.</a></p>
     </div>

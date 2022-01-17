@@ -19,11 +19,10 @@ class SessionManager {
         private val sessionRegistry = HashMap<String, AuthDto>()
 
         fun registerSession(sessionId: String) {
-            LOG.warn("REGISTERING SESSION $sessionId")
             if (sessionRegistry.containsKey(sessionId)) {
                 LOG.debug("Session already exists.")
             } else {
-                sessionRegistry[sessionId] = AuthDto(arrayListOf(), hashMapOf())
+                sessionRegistry[sessionId] = AuthDto(arrayListOf(), hashMapOf(), 200)
             }
         }
 
@@ -35,6 +34,22 @@ class SessionManager {
             } else {
                 throw Exception("Session with sessionId: $sessionId does not exist.")
             }
+        }
+
+        fun addErrorToSession(sessionId: String?, authDto: AuthDto) {
+            // Errors are only sent by authentication app, so we can ignore sessionId being null.
+            if (sessionRegistry.containsKey(sessionId)) {
+                sessionRegistry[sessionId]!!.errorCode = authDto.errorCode
+            }
+        }
+
+        fun getError(sessionId: String) : Int {
+            if (sessionRegistry.containsKey(sessionId)) {
+                if (sessionRegistry[sessionId]!!.errorCode != 200) {
+                    return sessionRegistry[sessionId]!!.errorCode
+                }
+            }
+            return 200
         }
 
         /**
