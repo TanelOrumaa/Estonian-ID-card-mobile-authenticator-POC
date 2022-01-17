@@ -90,6 +90,7 @@ class CanFragment : Fragment() {
                 requireActivity().setResult(AppCompatActivity.RESULT_CANCELED, resultIntent)
                 requireActivity().finish()
             } else {
+                (activity as MainActivity).returnError(444)
                 requireActivity().finishAndRemoveTask()
             }
         } else {

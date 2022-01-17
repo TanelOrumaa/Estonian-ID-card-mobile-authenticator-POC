@@ -22,17 +22,29 @@
 
 package com.tarkvaratehnika.demobackend.security
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.tarkvaratehnika.demobackend.config.ApplicationConfiguration
+import com.tarkvaratehnika.demobackend.config.ApplicationConfiguration.Companion.USER_ROLE
+import com.tarkvaratehnika.demobackend.config.SessionManager
+import com.tarkvaratehnika.demobackend.dto.AuthDto
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.webeid.security.certificate.CertificateData
 
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.web.authentication.WebAuthenticationDetails
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
+import org.springframework.web.server.ResponseStatusException
+import java.io.Serializable
 import java.security.cert.X509Certificate
 import java.util.*
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.collections.ArrayList
-import kotlin.math.log
+import kotlin.collections.HashMap
 
 class WebEidAuthentication(
     private val principalName: String,
@@ -40,55 +52,74 @@ class WebEidAuthentication(
     private val authorities: ArrayList<GrantedAuthority>
 ) : PreAuthenticatedAuthenticationToken(principalName, idCode, authorities), Authentication {
 
+
     // Companion object is for static functions.
     companion object {
-
-        private val loggedInUsers = HashMap<String, Authentication>()
+        private val LOG = LoggerFactory.getLogger(WebEidAuthentication::class.java)
 
         fun fromCertificate(
             userCertificate: X509Certificate,
-            authorities: ArrayList<GrantedAuthority>,
-            challenge: String
-        ): Authentication {
-            val principalName = getPrincipalNameFromCertificate(userCertificate)
+            sessionId: String?,
+        ): AuthDto {
+            // Get user data.
+            val name = getPrincipalNameFromCertificate(userCertificate)
             val idCode = Objects.requireNonNull(CertificateData.getSubjectIdCode(userCertificate))
-            val authentication = WebEidAuthentication(principalName, idCode, authorities)
-            loggedInUsers[challenge] = authentication
-            return authentication
+
+            // Fetch valid sessionId.
+            var methodIndependentSessionId = sessionId
+            if (methodIndependentSessionId == null) {
+                methodIndependentSessionId = SessionManager.getSessionId()
+                if (methodIndependentSessionId == null) {
+                    throw Exception("No session")
+                }
+            }
+
+            // Add role and user data to the AuthDto and return it.
+            SessionManager.addRoleToSession(methodIndependentSessionId, SimpleGrantedAuthority(USER_ROLE))
+            return SessionManager.addUserDataToSession(methodIndependentSessionId, name, idCode)
         }
 
         /**
-         * Function for getting a Spring authentication object by supplying a challenge.
-         * TODO: Figure out a more secure solution in the future.
+         * Function for getting a Spring authentication object for this session.
          */
-        fun fromChallenge(challenge: String): Authentication? {
-//            if (ThreadLocalRandom.current().nextFloat() < 0.5f) { // TODO: For testing.
-//                return null
-//            }
-            val auth = loggedInUsers[challenge]
-            if (auth != null) {
-                // If challenge is valid, delete the authentication object from the map (so this can only be fetched once).
-                loggedInUsers.remove(challenge)
-            } else {
-                return null
-            }
-            return auth
-        }
+        fun fromSession(headers: HashMap<String, String>): ResponseEntity<String> {
+            val mapper = jacksonObjectMapper()
 
-//        // TODO: DELETE
-//
-//        const val ROLE_USER: String = "ROLE_USER"
-//        private val USER_ROLE: GrantedAuthority = SimpleGrantedAuthority(ROLE_USER)
-//
-//        fun addAuth(challenge: String) {
-//            val authorities = arrayListOf<GrantedAuthority>()
-//            authorities.add(USER_ROLE)
-//            val auth = WebEidAuthentication("Somename", "11111111111", authorities)
-//            loggedInUsers[challenge] = auth
-//        }
-//
-//
-//        // TODO: DELETE UNTIL
+            val currentTime = Date()
+
+            // Get sessionId for current session.
+            var sessionId = SessionManager.getSessionId()
+
+            if (sessionId == null) {
+                sessionId = SessionManager.getSessionId(headers)
+                    if (sessionId == null) {
+                        return ResponseEntity.status(400).body(mapper.writeValueAsString(400))
+                    }
+            }
+
+            while (currentTime.time + ApplicationConfiguration.AUTH_REQUEST_TIMEOUT_MS > Date().time) {
+                Thread.sleep(1000)
+
+                // Check if an error has been submitted for this session.
+                val error = SessionManager.getError(sessionId)
+                if (error != 200) {
+                    return ResponseEntity.status(error).body(mapper.writeValueAsString(error))
+                }
+
+                // Check if this session has received a role.
+                if (SessionManager.getSessionHasRole(sessionId, USER_ROLE)) {
+                    // Get AuthDto
+                    val auth = SessionManager.getSessionAuth(sessionId)
+
+                    // Set role and user data to current session.
+                    SessionManager.addRoleToCurrentSession(auth!!)
+                    return ResponseEntity.status(200).body(mapper.writeValueAsString(auth))
+                }
+            }
+
+            // In case of timeout return 408.
+            return ResponseEntity.status(408).body(mapper.writeValueAsString(408))
+        }
 
         private fun getPrincipalNameFromCertificate(userCertificate: X509Certificate): String {
             return Objects.requireNonNull(CertificateData.getSubjectGivenName(userCertificate)) + " " +

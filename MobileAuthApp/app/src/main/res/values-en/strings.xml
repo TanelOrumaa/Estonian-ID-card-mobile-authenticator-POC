@@ -67,7 +67,7 @@
     <string name="gender_label">SEX</string>
 
     <!-- string resources for ResultFragment layout-->
-    <string name="result_text">Controlling the created token</string>
+    <string name="result_text">Checking the created token</string>
     <string name="result_info">The app will close automatically</string>
 
     <!-- menu -->
