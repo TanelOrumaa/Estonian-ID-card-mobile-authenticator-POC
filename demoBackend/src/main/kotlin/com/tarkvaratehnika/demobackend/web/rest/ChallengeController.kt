@@ -22,13 +22,23 @@
 
 package com.tarkvaratehnika.demobackend.web.rest
 
+import com.tarkvaratehnika.demobackend.config.SessionManager
 import com.tarkvaratehnika.demobackend.dto.ChallengeDto
-import com.tarkvaratehnika.demobackend.security.WebEidAuthentication
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.server.ResponseStatusException
 import org.webeid.security.nonce.NonceGenerator
+
 
 @RestController
 @RequestMapping("auth")
@@ -37,10 +47,30 @@ class ChallengeController (val nonceGenerator: NonceGenerator) {
     private val LOG = LoggerFactory.getLogger(ChallengeController::class.java)
 
     @GetMapping("challenge")
-    fun challenge(): ChallengeDto {
+    fun challenge(@RequestHeader headers: Map<String, String>): ChallengeDto {
+
+        val sessionId = SessionManager.getSessionId(headers)
+
+        if (sessionId == null) {
+            LOG.warn("SESSION ID MISSING FOR CHALLENGE")
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "SessionId missing.")
+        }
+
+        SessionManager.registerSession(sessionId)
+
+//        val context = SecurityContextHolder.getContext()
+//        val authorities = arrayListOf<GrantedAuthority>()
+//        authorities.add(SimpleGrantedAuthority("USER"))
+//        authorities.add(SimpleGrantedAuthority("ROLE_USER"))
+//        val auth = context.authentication
+//
+//        val newAuth: Authentication =
+//            UsernamePasswordAuthenticationToken(auth.principal, auth.credentials, authorities)
+//        SecurityContextHolder.getContext().authentication = newAuth;
+
+//        SessionManager.createSession(SessionManager.getSessionId(headers))
         val challengeDto = ChallengeDto(nonceGenerator.generateAndStoreNonce())
         LOG.warn(challengeDto.nonce)
-//        WebEidAuthentication.addAuth(challengeDto.nonce) // For testing.
         return challengeDto
     }
 

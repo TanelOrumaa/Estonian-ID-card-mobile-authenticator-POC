@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### web-eid.js ###
+src/demo-website/src/web-eid.js

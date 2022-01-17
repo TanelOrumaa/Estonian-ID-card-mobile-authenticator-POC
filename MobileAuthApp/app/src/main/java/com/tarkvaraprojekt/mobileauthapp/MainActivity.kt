@@ -5,9 +5,17 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navArgs
+import com.google.gson.JsonObject
+import com.koushikdutta.ion.Ion
 import com.tarkvaraprojekt.mobileauthapp.databinding.ActivityMainBinding
+import com.tarkvaraprojekt.mobileauthapp.databinding.FragmentResultBinding
+import com.tarkvaraprojekt.mobileauthapp.model.ParametersViewModel
 
 
 /**
@@ -16,6 +24,8 @@ import com.tarkvaraprojekt.mobileauthapp.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navigationController: NavController
+    private val paramsModel: ParametersViewModel by viewModels()
+
 
     // If true the settings menu can be accessed from the toolbar in the upper part of the screen.
     var menuAvailable: Boolean = true
@@ -53,5 +63,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    fun returnError(errorCode: Int) {
+        val json = JsonObject()
+        json.addProperty("auth-token", "")
+        json.addProperty("error", errorCode)
+
+        Ion.getDefault(this).conscryptMiddleware.enable(false)
+        val ion = Ion.with(this)
+            .load(paramsModel.authUrl)
+        for ((header, value) in paramsModel.headers) {
+            ion.setHeader(header, value)
+        }
+
+        ion
+            .setJsonObjectBody(json)
+            .asJsonObject()
+            .setCallback { _, _ ->
+
+            }
     }
 }

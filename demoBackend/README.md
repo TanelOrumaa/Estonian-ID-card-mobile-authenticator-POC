@@ -32,7 +32,7 @@ Copy the second forwarding link (the one with https) and put it in ```com.tarkva
 ### 3. Run the project
 Use your favourite IDE or just run it via commandline with ```./mvnw spring-boot:run```
 
-On your Android device browser navigate to the url you copied earlier and you should see the website landing page. If you have the mobile authentication app installed, you should be able to log into the website with your Estonian ID-card.
+On your browser (Android to test out from Android device or desktop to try out ID-card reader or QR-code capability) navigate to the url you copied earlier and you should see the website landing page. If you have the mobile authentication app installed, you should be able to log into the website with your Estonian ID-card.
 
 
 ## Credits...
