@@ -14,7 +14,7 @@ import org.json.JSONObject
 /**
  * Base url where the requests should be made. Add yours here. It must use https.
  */
-private const val BASE_URL = "https://a0fe-2001-7d0-88ab-b880-7571-cba0-5db2-11b7.ngrok.io"
+private const val BASE_URL = "https://heaid.ee"
 private const val AUTH_URL = "$BASE_URL/auth/login"
 private const val CHALLENGE_URL = "$BASE_URL/auth/challenge"
 
